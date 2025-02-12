@@ -5,11 +5,22 @@
   
 .dashboard-content {
     margin-top: 50px;
-    margin-left: 245px; 
     width: 100%;
     /* padding: 20px; */
   }
+  .dashboard-container .dashboard-content {
+    transition: margin-left 0.3s ease;
+  }
 
+.dashboard-container.open .dashboard-content {
+    margin-left: 250px; 
+    
+  }
+  
+.dashboard-container.closed .dashboard-content {
+    margin-left: 80px;
+  }
+  
 
 .dashboard-container {
     padding: 20px;
@@ -25,7 +36,8 @@
   }
   
   .dashboard-cards {
-    justify-content: space-between;
+    justify-content: space-between !important;
+    align-items: center;
    
   }
   

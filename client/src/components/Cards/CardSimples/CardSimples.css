@@ -8,12 +8,21 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
     width: 100%;
-    max-width: 249px; 
+    
+    transition: all 0.3s ease-in-out; /* Adicionando transição */
+  }
+  
+  .card.open {
+    max-width: 240px;
+  }
+  
+  .card.closed {
+    max-width: 260px;
   }
   
   .card-icon {
     font-size: 45px;
-    color: #0066ff /* Cor do ícone */
+    color: #0066ff;
   }
   
   .card-content {
@@ -39,7 +48,7 @@
   .dashboard-cards {
     display: flex;
     gap: 20px;
-    flex-wrap: wrap; /* Para se ajustar em telas menores */
+    flex-wrap: wrap;
     justify-content: start;
   }
   

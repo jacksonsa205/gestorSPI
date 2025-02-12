@@ -1,82 +1,121 @@
-
 import React, { useState } from "react";
 import "./Sidebar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome, faBuilding, faWrench, faAngleDown, faCircle } from "@fortawesome/free-solid-svg-icons";
 import logo from "../../assets/imagens/sidebar.png";
+import logoClosed from "../../assets/imagens/sidebarClosed.png";
 
+const Sidebar = ({ isOpen }) => {
+  const [activeMenu, setActiveMenu] = useState(null);
+  const [openSubmenus, setOpenSubmenus] = useState({
+    obras: false,
+    nucleo: false
+  });
 
-const Sidebar = () => {
-  
-  const [isObrasOpen, setIsObrasOpen] = useState(false);
-  const [isNucleoTecnicoOpen, setIsNucleoTecnicoOpen] = useState(false);
+  const handleMenuHover = (menu) => {
+    if (!isOpen) setActiveMenu(menu);
+  };
 
-  // Funções para alternar os submenus
-  const toggleObras = () => setIsObrasOpen(!isObrasOpen);
-  const toggleNucleoTecnico = () => setIsNucleoTecnicoOpen(!isNucleoTecnicoOpen);
+  const handleMenuLeave = () => {
+    if (!isOpen) setActiveMenu(null);
+  };
+
+  const toggleSubmenu = (menu) => {
+    if (isOpen) {
+      setOpenSubmenus(prev => ({ ...prev, [menu]: !prev[menu] }));
+    }
+  };
 
   return (
-    <div className="sidebar">
+    <div className={`sidebar ${isOpen ? "open" : "closed"}`}>
       <div className="sidebar-logo">
-        <img src={logo} alt="Logo" className="logo-image" />
+        <img 
+          src={isOpen ? logo : logoClosed} 
+          alt="Logo" 
+          className={`logo-image ${isOpen ? "" : "compact"}`} 
+        />
       </div>
+      
       <ul className="sidebar-links">
-        <li>
-          <FontAwesomeIcon icon={faHome} className="sidebar-icon" />
-          <span>Dashboard</span>
+        {/* Dashboard */}
+        <li className="menu-item">
+          <div className="menu-content">
+            <FontAwesomeIcon icon={faHome} className="sidebar-icon" />
+            <span className="menu-label">Dashboard</span>
+          </div>
         </li>
 
-        {/* Menu Gestão de Obras */}
-        <li onClick={toggleObras}>
-          <FontAwesomeIcon icon={faBuilding} className="sidebar-icon" /> {/* Novo ícone para Gestão de Obras */}
-          <span>Gestão de Obras</span>
-          <FontAwesomeIcon
-            icon={faAngleDown}
-            className={`sidebar-arrow ${isObrasOpen ? "open" : ""}`}
-          />
+        {/* Gestão de Obras */}
+        <li 
+          className="menu-item has-submenu"
+          onMouseEnter={() => handleMenuHover('obras')}
+          onMouseLeave={handleMenuLeave}
+          onClick={() => toggleSubmenu('obras')}
+        >
+          <div className="menu-content">
+            <FontAwesomeIcon icon={faBuilding} className="sidebar-icon" />
+            <span className="menu-label">Gestão de Obras</span>
+            {isOpen && (
+              <FontAwesomeIcon
+                icon={faAngleDown}
+                className={`sidebar-arrow ${openSubmenus.obras ? "open" : ""}`}
+              />
+            )}
+          </div>
+          
+          {(isOpen ? openSubmenus.obras : activeMenu === 'obras') && (
+            <ul className={`submenu ${!isOpen ? "popup" : ""}`}>
+              <li className="submenu-item">
+                <FontAwesomeIcon icon={faCircle} className="submenu-icon" />
+                <span>Relatório 1</span>
+              </li>
+              <li className="submenu-item">
+                <FontAwesomeIcon icon={faCircle} className="submenu-icon" />
+                <span>Relatório 2</span>
+              </li>
+              <li className="submenu-item">
+                <FontAwesomeIcon icon={faCircle} className="submenu-icon" />
+                <span>Relatório 3</span>
+              </li>
+            </ul>
+          )}
         </li>
-        {isObrasOpen && (
-          <ul className="submenu">
-            <li>
-              <FontAwesomeIcon icon={faCircle} className="submenu-icon" />
-              Relatório 1
-            </li>
-            <li>
-              <FontAwesomeIcon icon={faCircle} className="submenu-icon" />
-              Relatório 2
-            </li>
-            <li>
-              <FontAwesomeIcon icon={faCircle} className="submenu-icon" />
-              Relatório 3
-            </li>
-          </ul>
-        )}
 
-        {/* Menu Núcleo Técnico */}
-        <li onClick={toggleNucleoTecnico}>
-          <FontAwesomeIcon icon={faWrench} className="sidebar-icon" /> {/* Novo ícone para Núcleo Técnico */}
-          <span>Núcleo Técnico</span>
-          <FontAwesomeIcon
-            icon={faAngleDown}
-            className={`sidebar-arrow ${isNucleoTecnicoOpen ? "open" : ""}`}
-          />
+        {/* Núcleo Técnico */}
+        <li 
+          className="menu-item has-submenu"
+          onMouseEnter={() => handleMenuHover('nucleo')}
+          onMouseLeave={handleMenuLeave}
+          onClick={() => toggleSubmenu('nucleo')}
+        >
+          <div className="menu-content">
+            <FontAwesomeIcon icon={faWrench} className="sidebar-icon" />
+            <span className="menu-label">Núcleo Técnico</span>
+            {isOpen && (
+              <FontAwesomeIcon
+                icon={faAngleDown}
+                className={`sidebar-arrow ${openSubmenus.nucleo ? "open" : ""}`}
+              />
+            )}
+          </div>
+          
+          {(isOpen ? openSubmenus.nucleo : activeMenu === 'nucleo') && (
+            <ul className={`submenu ${!isOpen ? "popup" : ""}`}>
+              <li className="submenu-item">
+                <FontAwesomeIcon icon={faCircle} className="submenu-icon" />
+                <span>Configuração 1</span>
+              </li>
+              <li className="submenu-item">
+                <FontAwesomeIcon icon={faCircle} className="submenu-icon" />
+                <span>Configuração 2</span>
+              </li>
+              <li className="submenu-item">
+                <FontAwesomeIcon icon={faCircle} className="submenu-icon" />
+                <span>Configuração 3</span>
+              </li>
+            </ul>
+          )}
         </li>
-        {isNucleoTecnicoOpen && (
-          <ul className="submenu">
-            <li>
-              <FontAwesomeIcon icon={faCircle} className="submenu-icon" />
-              Configuração 1
-            </li>
-            <li>
-              <FontAwesomeIcon icon={faCircle} className="submenu-icon" />
-              Configuração 2
-            </li>
-            <li>
-              <FontAwesomeIcon icon={faCircle} className="submenu-icon" />
-              Configuração 3
-            </li>
-          </ul>
-        )}
       </ul>
     </div>
   );
