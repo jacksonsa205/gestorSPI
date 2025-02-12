@@ -1,0 +1,108 @@
+/* Centralizar o formulário de login na tela */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f3f4f6; /* cor de fundo */
+}
+  
+.login-form {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+  
+.login-form h2 {
+    font-family: 'Inter', sans-serif;
+    color: #333;
+}
+  
+input[type="text"],
+input[type="password"] {
+    background-color: transparent; /* Fundo transparente */
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    width: 100%;
+    color: #333; /* Cor do texto */
+    font-size: 16px;
+}
+  
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-color: #0066ff; /* Borda azul no foco */
+    outline: none;
+}
+
+button[type="submit"] {
+    cursor: pointer;
+    background-color: #0066ff; /* Cor do botão */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    width: 100%;
+    font-size: 16px;
+}
+
+button[type="submit"]:hover {
+    background-color: #0055cc; /* Cor do botão no hover */
+}
+
+/* Estilizando o contêiner da logo */
+.logo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+/* Ajustando o tamanho da logo */
+.login-logo {
+    width: 240px; /* Defina um tamanho adequado */
+    height: auto;
+}
+
+/* Estilizando o contêiner da senha */
+.password-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input {
+    flex: 1;
+    padding: 8px 40px 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 100%;
+    font-size: 1rem;
+}
+
+/* Botão do olho */
+.eye-button {
+    position: absolute;
+    right: 2px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    color: #555;
+    font-size: 1rem;
+    outline: none; /* Remove a borda ao focar */
+}
+
+.eye-button:focus {
+    outline: none; /* Remove a borda de foco */
+    box-shadow: none; /* Remove qualquer efeito de foco */
+}
+
+.eye-button:hover {
+    color: #0066ff;
+    background: none !important;
+    border: none !important;
+}
