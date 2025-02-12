@@ -3,10 +3,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faBars, faExpand, faSignOutAlt, faIdBadge } from "@fortawesome/free-solid-svg-icons";
 import "./Header.css";
 
+import { useNavigate } from "react-router-dom";
+
 const Header = ({ toggleSidebar }) => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleFullScreen = () => {
     if (!isFullScreen) {
@@ -39,10 +42,11 @@ const Header = ({ toggleSidebar }) => {
 
   const handleLogout = () => {
     console.log("Realizando logout...");
+    navigate("/");
   };
 
   const navigateToProfile = () => {
-    console.log("Navegando para o perfil...");
+    navigate("/profile"); 
   };
 
   const handleMenuClick = () => {

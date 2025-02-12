@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Sidebar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome, faBuilding, faWrench, faAngleDown, faCircle } from "@fortawesome/free-solid-svg-icons";
@@ -6,11 +7,16 @@ import logo from "../../assets/imagens/sidebar.png";
 import logoClosed from "../../assets/imagens/sidebarClosed.png";
 
 const Sidebar = ({ isOpen }) => {
+  const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = useState(null);
   const [openSubmenus, setOpenSubmenus] = useState({
     obras: false,
     nucleo: false
   });
+
+  const handleDashboardClick = () => {
+    navigate("/dashboard");
+  };
 
   const handleMenuHover = (menu) => {
     if (!isOpen) setActiveMenu(menu);
@@ -38,7 +44,7 @@ const Sidebar = ({ isOpen }) => {
       
       <ul className="sidebar-links">
         {/* Dashboard */}
-        <li className="menu-item">
+        <li className="menu-item" onClick={handleDashboardClick}>
           <div className="menu-content">
             <FontAwesomeIcon icon={faHome} className="sidebar-icon" />
             <span className="menu-label">Dashboard</span>
@@ -67,22 +73,19 @@ const Sidebar = ({ isOpen }) => {
             <ul className={`submenu ${!isOpen ? "popup" : ""}`}>
               <li className="submenu-item">
                 <FontAwesomeIcon icon={faCircle} className="submenu-icon" />
-                <span>Relatório 1</span>
+                <span>Report REM</span>
               </li>
               <li className="submenu-item">
                 <FontAwesomeIcon icon={faCircle} className="submenu-icon" />
-                <span>Relatório 2</span>
+                <span>Mapa Obras</span>
               </li>
-              <li className="submenu-item">
-                <FontAwesomeIcon icon={faCircle} className="submenu-icon" />
-                <span>Relatório 3</span>
-              </li>
+              
             </ul>
           )}
         </li>
 
         {/* Núcleo Técnico */}
-        <li 
+        {/* <li 
           className="menu-item has-submenu"
           onMouseEnter={() => handleMenuHover('nucleo')}
           onMouseLeave={handleMenuLeave}
@@ -115,7 +118,7 @@ const Sidebar = ({ isOpen }) => {
               </li>
             </ul>
           )}
-        </li>
+        </li> */}
       </ul>
     </div>
   );
