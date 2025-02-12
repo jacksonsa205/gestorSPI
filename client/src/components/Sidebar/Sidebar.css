@@ -1,0 +1,76 @@
+/* src/components/Sidebar.css */
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: #0066ff;
+    color: white;
+    padding-top: 20px;
+    position: fixed;
+    left: 0;
+    top: 0;
+  }
+  
+  .sidebar-logo {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .sidebar-logo .logo-image {
+    width: 80%; /* Ajuste o tamanho conforme necessário */
+    max-width: 200px; /* Limita o tamanho máximo da imagem */
+    margin-top: 10px;
+  }
+  
+  .sidebar-links {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar-links li {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .sidebar-links li:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Efeito de hover */
+  }
+  
+  .sidebar-icon {
+    margin-right: 10px;
+  }
+  
+  .submenu {
+    list-style: none;
+    padding-left: 20px; /* Indentação para o submenu */
+  }
+  
+  .submenu li {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .submenu li:hover {
+    background-color: rgba(255, 255, 255, 0.3); /* Hover nos itens do submenu */
+  }
+  
+  .submenu-icon {
+    margin-right: 10px; /* Espaçamento para o ícone */
+    color: white; /* Cor do ícone */
+    font-size: 6px; /* Ajustando o tamanho do círculo */
+  }
+  /* Estilo para a seta */
+  .sidebar-arrow {
+    margin-left: auto; /* Empurrar a seta para o lado direito */
+    transition: transform 0.3s;
+  }
+  
+  .sidebar-arrow.open {
+    transform: rotate(180deg); /* Gira a seta quando o submenu está aberto */
+  }
