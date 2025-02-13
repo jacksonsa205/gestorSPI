@@ -1,54 +1,23 @@
-.card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #ffffff;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    width: 100%;
-    
-    transition: all 0.3s ease-in-out; /* Adicionando transição */
+ /* Estilos para os Cards */
+ .card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background-color: white;
   }
   
-  .card.open {
-    max-width: 240px;
+.card-icon .svg-inline--fa {
+    color: #0066ff !important;
+    font-size: 1.5rem;
   }
   
-  .card.closed {
-    max-width: 260px;
+.card-title {
+    color: #333 !important;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
   }
   
-  .card-icon {
-    font-size: 45px;
-    color: #0066ff;
-  }
-  
-  .card-content {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .card-content h3 {
-    font-size: 16px;
-    font-weight: 600;
-    margin: 0;
-    color: #333;
-  }
-  
-  .card-content p {
-    font-size: 25px;
-    font-weight: 700;
-    color: #555;
-    margin: 5px 0 0;
-  }
-  
-  .dashboard-cards {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    justify-content: start;
+.card-text {
+    color: #666 !important;
+    font-weight: bold;
   }
   

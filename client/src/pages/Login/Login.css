@@ -1,26 +1,21 @@
 /* Centralizar o formulário de login na tela */
 .login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     height: 100vh;
     background-color: #0066ff; /* cor de fundo */
 }
-  
+
 .login-form {
-    background-color: white;
-    padding: 2rem;
+    max-width: 400px;
+    width: 100%;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
 }
-  
+
 .login-form h2 {
     font-family: 'Inter', sans-serif;
     color: #333;
 }
-  
+
 input[type="text"],
 input[type="password"] {
     background-color: transparent; /* Fundo transparente */
@@ -31,7 +26,7 @@ input[type="password"] {
     color: #333; /* Cor do texto */
     font-size: 16px;
 }
-  
+
 input[type="text"]:focus,
 input[type="password"]:focus {
     border-color: #0066ff; /* Borda azul no foco */

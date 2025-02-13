@@ -14,16 +14,16 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-form">
-        <div className="logo-container">
+    <div className="login-container d-flex justify-content-center align-items-center">
+      <div className="login-form bg-white p-4 rounded shadow-sm">
+        <div className="logo-container mb-4 text-center">
           <img src="/imagens/logo.png" alt="Logo" className="login-logo" />
         </div>
 
-        <h2 className="text-2xl font-semibold text-center mb-6">Faça o login</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+        <h2 className="text-center mb-4">Faça o login</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label htmlFor="username" className="form-label">
               E-mail
             </label>
             <input
@@ -31,29 +31,29 @@ const Login = () => {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="form-control"
               placeholder="Digite seu e-mail"
               required
             />
           </div>
 
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+          <div className="mb-3">
+            <label htmlFor="password" className="form-label">
               Senha
             </label>
-            <div className="password-container">
+            <div className="password-container position-relative">
               <input
                 id="password"
-                type={showPassword ? "text" : "password"}
+                type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="password-input"
+                className="password-input form-control"
                 placeholder="Digite sua senha"
                 required
               />
               <button
                 type="button"
-                className="eye-button"
+                className="eye-button position-absolute"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
@@ -64,7 +64,7 @@ const Login = () => {
           <div>
             <button
               type="submit"
-              className="w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="btn btn-primary w-100 py-2"
             >
               Entrar
             </button>

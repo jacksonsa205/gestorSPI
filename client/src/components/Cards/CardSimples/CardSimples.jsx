@@ -1,17 +1,31 @@
-import React from 'react';
+import { Card } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import PropTypes from 'prop-types';
 import './CardSimples.css';
 
-const Card = ({ titulo, icone, valor, isOpen }) => {
+const CardSimples = ({ icon, title, value }) => {
   return (
-    <div className={`card ${isOpen ? 'open' : 'closed'}`}>
-      <FontAwesomeIcon icon={icone} className="card-icon" />
-      <div className="card-content">
-        <h3>{titulo}</h3>
-        <p>{valor}</p>
-      </div>
-    </div>
+    <Card>
+      <Card.Body className="d-flex align-items-center">
+        <div className="card-icon me-3">
+          <FontAwesomeIcon icon={icon} size="2x" />
+        </div>
+        <div>
+          <Card.Title>{title}</Card.Title>
+          <Card.Text className="h4">{value}</Card.Text>
+        </div>
+      </Card.Body>
+    </Card>
   );
 };
 
-export default Card;
+CardSimples.propTypes = {
+  icon: PropTypes.object.isRequired,
+  title: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]).isRequired
+};
+
+export default CardSimples;

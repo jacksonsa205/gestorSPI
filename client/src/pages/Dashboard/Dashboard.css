@@ -1,56 +1,9 @@
-/* src/pages/Dashboard.css */
-.dashboard-container {
-    display: flex;
-  }
-  
-.dashboard-content {
-    margin-top: 50px;
-    width: 100%;
-    /* padding: 20px; */
-  }
-  .dashboard-container .dashboard-content {
-    transition: margin-left 0.3s ease;
-  }
 
-.dashboard-container.open .dashboard-content {
-    margin-left: 250px; 
-    
-  }
-  
-.dashboard-container.closed .dashboard-content {
-    margin-left: 80px;
-  }
+
   
 
-.dashboard-container {
-    padding: 20px;
-    background-color: #f4f7fc;
-    min-height: 100vh;
-  }
+
   
-  .dashboard-title {
-    
-    font-size: 2rem;
-    color: #333;
-    margin-bottom: 20px;
-  }
-  
-  .dashboard-cards {
-    justify-content: space-between !important;
-    align-items: center;
-   
-  }
-  
-  /* Estilo dos gráficos e outras visualizações */
-  .dashboard-charts {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .dashboard-charts h3 {
-    font-size: 1.25rem;
-    margin-bottom: 20px;
-  }
-  
+
+ 
+

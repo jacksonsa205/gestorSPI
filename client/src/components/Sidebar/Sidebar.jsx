@@ -1,125 +1,169 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "./Sidebar.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faBuilding, faWrench, faAngleDown, faCircle } from "@fortawesome/free-solid-svg-icons";
+import { useState, useRef, useEffect } from 'react';
+import { Button } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faHome,
+  faChevronDown,
+  faChevronUp,
+  faPersonDigging,
+  faCircle,
+  faScrewdriverWrench
+} from '@fortawesome/free-solid-svg-icons';
 import logo from "../../assets/imagens/sidebar.png";
 import logoClosed from "../../assets/imagens/sidebarClosed.png";
+import './Sidebar.css';
 
-const Sidebar = ({ isOpen }) => {
-  const navigate = useNavigate();
-  const [activeMenu, setActiveMenu] = useState(null);
-  const [openSubmenus, setOpenSubmenus] = useState({
-    obras: false,
-    nucleo: false
-  });
+const Sidebar = ({ collapsed, toggleSidebar }) => {
+  const [expandedItem, setExpandedItem] = useState(null);
+  const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
+  const [showPopup, setShowPopup] = useState(false);
+  const itemRefs = useRef([]);
+  const sidebarRef = useRef(null);
+  const [clickedItemIndex, setClickedItemIndex] = useState(null);
 
-  const handleDashboardClick = () => {
-    navigate("/dashboard");
-  };
+  const menuItems = [
+    { 
+      icon: faHome, 
+      text: 'Dashboard',
+      link: '/'
+    },
+    { 
+      icon: faPersonDigging, 
+      text: 'Gestor de Obras',
+      subItems: [
+        { text: 'Report REM', link: '/obras/nova' },
+        { text: 'Mapa', link: '/obras/listagem' }
+      ]
+    },
+    { 
+        icon: faScrewdriverWrench, 
+        text: 'Núcleo Técnico',
+        subItems: [
+          { text: 'Gestão de Carimbos', link: '/nt/gestao-carimbos' },
+          { text: 'Mapa', link: '/nt/mapa' }
+        ]
+      },
+  ];
 
-  const handleMenuHover = (menu) => {
-    if (!isOpen) setActiveMenu(menu);
-  };
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(e.target)) {
+        setShowPopup(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
-  const handleMenuLeave = () => {
-    if (!isOpen) setActiveMenu(null);
-  };
-
-  const toggleSubmenu = (menu) => {
-    if (isOpen) {
-      setOpenSubmenus(prev => ({ ...prev, [menu]: !prev[menu] }));
+  // Modifique o handleItemClick:
+const handleItemClick = (index, e) => {
+    if (menuItems[index].subItems) {
+      if (collapsed) {
+        const rect = e.currentTarget.getBoundingClientRect();
+        setClickedItemIndex(index);
+        setPopupPosition({
+          top: rect.top + window.scrollY,
+          left: rect.left + rect.width
+        });
+        setShowPopup(prev => !prev);
+      } else {
+        setExpandedItem(expandedItem === index ? null : index);
+      }
     }
   };
 
   return (
-    <div className={`sidebar ${isOpen ? "open" : "closed"}`}>
-      <div className="sidebar-logo">
+    <div 
+      className="sidebar"
+      ref={sidebarRef}
+      style={{ 
+        width: collapsed ? '80px' : '250px',
+        backgroundColor: '#0066ff'
+      }}
+    >
+      <div className="sidebar-header">
         <img 
-          src={isOpen ? logo : logoClosed} 
+          src={collapsed ? logoClosed : logo} 
           alt="Logo" 
-          className={`logo-image ${isOpen ? "" : "compact"}`} 
+          className={collapsed ? 'sidebar-logo-closed' : 'sidebar-logo'}
         />
       </div>
-      
-      <ul className="sidebar-links">
-        {/* Dashboard */}
-        <li className="menu-item" onClick={handleDashboardClick}>
-          <div className="menu-content">
-            <FontAwesomeIcon icon={faHome} className="sidebar-icon" />
-            <span className="menu-label">Dashboard</span>
-          </div>
-        </li>
 
-        {/* Gestão de Obras */}
-        <li 
-          className="menu-item has-submenu"
-          onMouseEnter={() => handleMenuHover('obras')}
-          onMouseLeave={handleMenuLeave}
-          onClick={() => toggleSubmenu('obras')}
-        >
-          <div className="menu-content">
-            <FontAwesomeIcon icon={faBuilding} className="sidebar-icon" />
-            <span className="menu-label">Gestão de Obras</span>
-            {isOpen && (
-              <FontAwesomeIcon
-                icon={faAngleDown}
-                className={`sidebar-arrow ${openSubmenus.obras ? "open" : ""}`}
-              />
+      <div className="sidebar-menu">
+        {menuItems.map((item, index) => (
+          <div key={index} className="menu-group">
+            <Button 
+                variant="link" 
+                className={`menu-item ${collapsed ? 'collapsed' : ''}`}
+                onClick={(e) => handleItemClick(index, e)}
+                ref={el => itemRefs.current[index] = el}
+                >
+                <div className="menu-icon-wrapper">
+                    <FontAwesomeIcon icon={item.icon} className="menu-icon" />
+                    {/* Texto sempre visível quando não collapsed */}
+                    {!collapsed && (
+                    <span className="menu-text">{item.text}</span>
+                    )}
+                    {/* Texto adicional apenas quando collapsed */}
+                    {collapsed && (
+                    <span className="collapsed-text">{item.text}</span>
+                    )}
+                </div>
+                
+                {!collapsed && item.subItems && (
+                    <FontAwesomeIcon 
+                    icon={expandedItem === index ? faChevronUp : faChevronDown} 
+                    className="chevron-icon"
+                    size="xs"
+                    />
+                )}
+                </Button>
+
+            {/* Submenu normal */}
+            {!collapsed && expandedItem === index && item.subItems && (
+              <div className="submenu">
+                {item.subItems.map((subItem, subIndex) => (
+                  <Button
+                    key={subIndex}
+                    variant="link"
+                    className="submenu-item"
+                    onClick={() => console.log('Navegar para:', subItem.link)}
+                  >
+                    <FontAwesomeIcon icon={faCircle} className="submenu-icon" />
+                    <span className="submenu-text">{subItem.text}</span>
+                  </Button>
+                ))}
+              </div>
             )}
           </div>
-          
-          {(isOpen ? openSubmenus.obras : activeMenu === 'obras') && (
-            <ul className={`submenu ${!isOpen ? "popup" : ""}`}>
-              <li className="submenu-item">
-                <FontAwesomeIcon icon={faCircle} className="submenu-icon" />
-                <span>Report REM</span>
-              </li>
-              <li className="submenu-item">
-                <FontAwesomeIcon icon={faCircle} className="submenu-icon" />
-                <span>Mapa Obras</span>
-              </li>
-              
-            </ul>
-          )}
-        </li>
+        ))}
+      </div>
 
-        {/* Núcleo Técnico */}
-        {/* <li 
-          className="menu-item has-submenu"
-          onMouseEnter={() => handleMenuHover('nucleo')}
-          onMouseLeave={handleMenuLeave}
-          onClick={() => toggleSubmenu('nucleo')}
+      {/* Popup para collapsed */}
+      {collapsed && showPopup && clickedItemIndex !== null && (
+        <div 
+            className="submenu-popup"
+            style={{
+            top: `${popupPosition.top}px`,
+            left: `${popupPosition.left}px`
+            }}
         >
-          <div className="menu-content">
-            <FontAwesomeIcon icon={faWrench} className="sidebar-icon" />
-            <span className="menu-label">Núcleo Técnico</span>
-            {isOpen && (
-              <FontAwesomeIcon
-                icon={faAngleDown}
-                className={`sidebar-arrow ${openSubmenus.nucleo ? "open" : ""}`}
-              />
-            )}
-          </div>
-          
-          {(isOpen ? openSubmenus.nucleo : activeMenu === 'nucleo') && (
-            <ul className={`submenu ${!isOpen ? "popup" : ""}`}>
-              <li className="submenu-item">
-                <FontAwesomeIcon icon={faCircle} className="submenu-icon" />
-                <span>Configuração 1</span>
-              </li>
-              <li className="submenu-item">
-                <FontAwesomeIcon icon={faCircle} className="submenu-icon" />
-                <span>Configuração 2</span>
-              </li>
-              <li className="submenu-item">
-                <FontAwesomeIcon icon={faCircle} className="submenu-icon" />
-                <span>Configuração 3</span>
-              </li>
-            </ul>
-          )}
-        </li> */}
-      </ul>
+            {menuItems[clickedItemIndex].subItems.map((subItem, subIndex) => (
+            <Button
+                key={subIndex}
+                variant="link"
+                className="popup-item"
+                onClick={() => {
+                console.log('Navegar para:', subItem.link);
+                setShowPopup(false);
+                }}
+            >
+                <FontAwesomeIcon icon={faCircle} className="popup-icon" />
+                <span className="popup-text">{subItem.text}</span>
+            </Button>
+            ))}
+        </div>
+        )}
     </div>
   );
 };
