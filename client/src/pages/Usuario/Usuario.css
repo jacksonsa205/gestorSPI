@@ -1,0 +1,78 @@
+.profile-header {
+    background-color: #f8f9fa;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+.avatar-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+.avatar-placeholder {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: #0066ff;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: bold;
+  }
+  
+.user-name {
+    font-size: 1.8rem;
+    margin-top: 1rem;
+    color: #333;
+  }
+  
+.user-role {
+    font-size: 0.9rem;
+  }
+  
+.security-item {
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    transition: all 0.3s;
+  }
+  
+.security-item:hover {
+    background-color: #e9ecef;
+  }
+  
+.activity-item {
+    padding: 10px;
+    border-radius: 8px;
+    transition: all 0.3s;
+  }
+  
+.activity-item:hover {
+    background-color: #f8f9fa;
+  }
+  
+.activity-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+  }
+  
+.card-header {
+    background-color: white;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #f8f9fa;
+  }
+  
+.form-control:read-only {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    cursor: not-allowed;
+  }
