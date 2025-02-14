@@ -4,6 +4,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Login from './pages/Login/Login';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Usuario from './pages/Usuario/Usuario';
+import Acesso from './pages/Acesso/Acesso';
+import LogAplicacao from './pages/LogAplicacao/LogAplicacao';
+import EscalaPlantao from './pages/EscalaPlantao/EscalaPlantao';
 
 function App() {
   return (
@@ -12,6 +15,9 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Usuario/>} />
+        <Route path="/acesso" element={<Acesso />} />
+        <Route path="/log-aplicacao" element={<LogAplicacao />} />
+        <Route path="/escala-plantao" element={<EscalaPlantao />} />
       </Routes>
     </Router>
   );

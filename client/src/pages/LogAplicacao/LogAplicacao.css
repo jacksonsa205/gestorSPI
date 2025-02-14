@@ -1,0 +1,62 @@
+.log-container {
+    padding: 20px;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+  }
+  
+  .filters-section {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .chart-section {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  /* .chart-container {
+    padding: 15px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+  } */
+  
+.table-responsive{
+    width: 100% !important;
+}
+  .logs-table {
+    background-color: white;
+    border-radius: 8px;
+ 
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  }
+  
+  .logs-table th {
+    background-color: #0066ff;
+    color: white;
+  }
+  
+  .badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  
+  .badge.login {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .badge.alteração {
+    background-color: #ffc107;
+    color: black;
+  }
+  
+  .badge.exclusão {
+    background-color: #dc3545;
+    color: white;
+  }

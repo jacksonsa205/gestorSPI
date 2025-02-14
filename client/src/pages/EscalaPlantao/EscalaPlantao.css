@@ -1,0 +1,150 @@
+/* Container principal */
+.escala-container {
+    padding: 20px;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+  }
+  
+  /* Cabeçalho */
+  .escala-header {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .escala-title {
+    color: #2c3e50;
+    margin-bottom: 0;
+  }
+  
+  .escala-add-button {
+    min-width: 150px;
+  }
+  
+  /* Filtro */
+  .escala-filter {
+    margin-top: 20px;
+  }
+  
+  .escala-search .form-control {
+    border-radius: 4px;
+  }
+  
+  /* Tabela */
+  .escala-table {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  }
+  
+  .escala-table th {
+    background-color: #2c3e50;
+    color: white;
+    padding: 12px;
+  }
+  
+  .escala-row td {
+    vertical-align: middle;
+    padding: 12px;
+  }
+  
+  .escala-team-badge {
+    font-size: 0.9em;
+    padding: 8px;
+    margin-bottom: 5px;
+  }
+  
+  .escala-member-badge {
+    font-size: 0.8em;
+    padding: 6px;
+  }
+  
+  /* Date Pickers */
+  .escala-date-input-wrapper {
+    margin-top: 8px;
+  }
+  
+  .escala-date-pickers .react-datepicker-wrapper {
+    width: 100%;
+  }
+  
+  /* Accordion */
+  .accordion-button {
+    background-color: #f8f9fa !important;
+    font-weight: 500;
+  }
+  
+  .accordion-button:not(.collapsed) {
+    background-color: #e9ecef !important;
+  }
+  
+  .escala-team-members {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 8px;
+  }
+  
+  .escala-member-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .escala-member-card:hover {
+    background-color: #f8f9fa;
+  }
+  
+  .escala-member-card.selected {
+    background-color: #e3f2fd;
+    border-color: #90caf9;
+  }
+  
+  /* Modal */
+  .escala-modal .modal-content {
+    border-radius: 8px;
+  }
+  
+  .escala-modal-header {
+    background-color: #2c3e50;
+    color: white;
+    border-bottom: none;
+  }
+  
+  .escala-modal-title {
+    font-weight: 500;
+  }
+  
+  .escala-modal-body {
+    padding: 20px;
+  }
+  
+  .escala-modal-footer {
+    border-top: none;
+    padding: 15px 20px;
+  }
+  
+  .escala-modal-cancel {
+    min-width: 100px;
+  }
+  
+  .escala-modal-save {
+    min-width: 100px;
+  }
+  
+  /* Responsividade */
+  @media (max-width: 768px) {
+    .escala-team-members {
+      grid-template-columns: 1fr;
+    }
+    
+    .escala-member-card {
+      padding: 8px;
+    }
+  }

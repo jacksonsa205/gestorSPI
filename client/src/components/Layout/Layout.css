@@ -3,7 +3,7 @@
     background-color: #f2f2f2;
   }
   
-  .main-content {
+.main-content {
     transition: all 0.3s;
     min-height: 100vh;
     display: flex;
@@ -16,7 +16,7 @@
     padding: 20px;
   }
    */
-  .main-header {
+.main-header {
     background-color: white !important;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -29,43 +29,56 @@
     width: calc(100% - 22px);
   }
   
-  .page-title {
+.page-title {
     padding-left: 20px;
     color: #333;
     font-size: 2rem;
     margin-bottom: 1rem;
   }
-  
-  .user-popup {
+ 
+.user-icon-btn{
+   color: #333 !important;
+   font-weight: bold;
+   text-decoration: none;
+}
+
+.user-icon-btn:hover{
+    color: #0066ff !important;
+ }
+
+.user-icon{
+    margin-right: 5px;
+} 
+.user-popup {
     position: absolute;
-    left: -98px;
+    left: calc(100% - 143px);
     top: 55px;
     background: white;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     min-width: 160px;
     z-index: 1000;
-    padding: 8px 0;
+    padding: 8px;
   }
 
-  .popup-item {
+.popup-item {
     width: 100%;
-    padding: 8px 16px;
+    padding: 5px;
     background: none;
     border: 0;
     text-align: left;
-    color: #444;
+    color: #333 !important;
     display: flex;
     align-items: center;
     transition: all 0.3s;
   }
   
 .popup-item:hover {
-    background: #f8f9fa;
-    color: #0066ff;
+    border-radius: 8px;
+    background: #e0e0e0 !important;
   }
 
-  .toggle-btn {
+.toggle-btn {
     color: #666 !important;
     padding: 0.5rem !important;
   }
@@ -73,7 +86,7 @@
   
   
   
-  .menu-item {
+.menu-item {
     width: 100%;
     color: white !important;
     text-align: left;
@@ -95,13 +108,13 @@
     min-width: 25px;
   }
   
-  .main-footer {
+.main-footer {
     margin-top: 50px;
     background-color: transparent;
     
   }
 
-  .text-center.py-3{
+.text-center.py-3{
     font-size: 12px;
     color: #666;
   }

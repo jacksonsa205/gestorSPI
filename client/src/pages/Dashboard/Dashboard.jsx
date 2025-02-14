@@ -3,13 +3,17 @@ import {
   faUser, 
   faChartColumn,
   faBox,
-  faFile
+  faFile,
+  faUsers,
+  faSitemap
 } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Adicione esta importação
 
 import Layout from "../../components/Layout/Layout";
 import CardSimples from "../../components/Cards/CardSimples/CardSimples";
 import BarChartComponent from '../../components/Charts/BarChartComponent';
 import LineChartComponent from '../../components/Charts/LineChartComponent';
+import PlantonistasPorEquipe from '../../components/Plantonista/PlantonistasPorEquipe';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -23,11 +27,86 @@ const Dashboard = () => {
     { name: 'Jun', value: 2390 },
   ];
 
+  // Dados dos plantonistas
+  const plantonistas = {
+    "Escritório": [
+      {
+        nome: "Claudia Martins",
+        cargo: "Assistente Administrativo",
+        email: "claudia@empresa.com",
+        celular: "(11) 94444-4444"
+      },
+      {
+        nome: "Roberto Alves",
+        cargo: "Coordenador Logístico",
+        email: "roberto@empresa.com",
+        celular: "(11) 93333-3333"
+      }
+    ],
+    "Suporte Técnico": [
+      {
+        nome: "Fernanda Lima",
+        cargo: "Líder de Suporte",
+        email: "fernanda@empresa.com",
+        celular: "(11) 96666-6666"
+      },
+      {
+        nome: "Pedro Rocha",
+        cargo: "Técnico de Suporte",
+        email: "pedro@empresa.com",
+        celular: "(11) 95555-5555"
+      },
+      {
+        nome: "Mariana Costa",
+        cargo: "Técnico de Suporte Júnior",
+        email: "mariana@empresa.com",
+        celular: "(11) 92222-2222"
+      }
+    ],
+    "Rede Externa": [
+      {
+        nome: "Ricardo Oliveira",
+        cargo: "Técnico de Campo Sênior",
+        email: "ricardo@empresa.com",
+        celular: "(11) 97777-7777"
+      },
+      {
+        nome: "Amanda Silva",
+        cargo: "Técnica de Fibra Óptica",
+        email: "amanda@empresa.com",
+        celular: "(11) 98888-8888"
+      },
+      {
+        nome: "Gustavo Santos",
+        cargo: "Assistente de Instalações",
+        email: "gustavo@empresa.com",
+        celular: "(11) 91111-1111"
+      }
+    ]
+  };
+
   return (
     <Layout
       title="Dashboard"
       content={
         <div>
+
+           {/* Seção de Plantonistas */}
+           <Container fluid className="mt-4">
+                <h5 className="mb-4">
+                    <FontAwesomeIcon icon={faSitemap} className="me-2" />
+                    Equipes de Plantão 15/02/2025 Até 16/02/2025
+                </h5>
+                
+                {Object.entries(plantonistas).map(([equipe, membros]) => (
+                    <PlantonistasPorEquipe
+                    key={equipe}
+                    titulo={equipe}
+                    plantonistas={membros}
+                    />
+                ))}
+            </Container>
+
           {/* Seção de Cards */}
           <Container fluid className="mt-4">
             <Row>

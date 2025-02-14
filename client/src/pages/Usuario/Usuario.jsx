@@ -1,150 +1,293 @@
-import { Container, Row, Col, Card, Button, Form } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useState } from 'react';
+import { Container, Row, Col, Button, ListGroup, Form, Badge } from 'react-bootstrap';
 import { 
-  faUser,
-  faEnvelope,
-  faPhone,
-  faIdCard,
-  faLock,
+  faUser, 
   faShieldHalved,
-  faClockRotateLeft,
-  faBriefcase
+  faBell,
+  faKey,
+  faEnvelope,
+  faSms,
+  faUserShield,
+  faLock,
+  faSave,
+  faTimes
 } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import Layout from "../../components/Layout/Layout";
 import './Usuario.css';
 
 const Usuario = () => {
-  const userData = {
-    name: "João da Silva",
-    role: "Administrador",
-    email: "joao.silva@empresa.com",
-    phone: "(11) 99999-9999",
-    Cargo: "Deselvolvedor FullStack",
-    lastLogin: "2024-03-15 14:30:00"
+  // Estados
+  const [editMode, setEditMode] = useState(false);
+  const [doisFatoresAtivo, setDoisFatoresAtivo] = useState(true);
+  const [notificacoes, setNotificacoes] = useState({
+    email: true,
+    sms: false,
+    app: true
+  });
+  
+  // Estados editáveis
+  const [userData, setUserData] = useState({
+    nome: "Carlos Oliveira",
+    email: "c.oliveira@assistec.com.br",
+    cargo: "Técnico Nível III"
+  });
+
+  // Estados temporários para edição
+  const [editedData, setEditedData] = useState({ ...userData });
+  
+  // Estados para alteração de senha
+  const [senha, setSenha] = useState({
+    atual: '',
+    nova: '',
+    confirmacao: ''
+  });
+
+  // Estados das permissões (exemplo)
+  const [permissoes] = useState([
+    { nome: "Gestor de Obras", nivel: "Completo" },
+    { nome: "Núcleo Técnico ", nivel: "Parcial" },
+    { nome: "Escala de Plantão", nivel: "Completo" },
+    
+  ]);
+
+  // Handlers
+  const handleEditToggle = () => {
+    if (editMode) {
+      // Simular salvamento dos dados
+      setUserData(editedData);
+    }
+    setEditMode(!editMode);
   };
 
-  const activities = [
-    { id: 1, title: "Senha alterada", date: "2024-03-10 09:15", description: "Alteração de senha de acesso" },
-    { id: 2, title: "Login realizado", date: "2024-03-09 08:45", description: "Acesso pelo navegador Chrome" },
-    { id: 3, title: "Perfil atualizado", date: "2024-03-08 16:20", description: "Atualização dos dados cadastrais" },
-  ];
+  const handleCancelEdit = () => {
+    setEditedData(userData);
+    setEditMode(false);
+  };
+
+  const handleInputChange = (e) => {
+    setEditedData({
+      ...editedData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSenhaChange = (e) => {
+    setSenha({
+      ...senha,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handle2FAToggle = () => {
+    setDoisFatoresAtivo(!doisFatoresAtivo);
+  };
+
+  const handleNotificacoesChange = (type) => {
+    setNotificacoes({
+      ...notificacoes,
+      [type]: !notificacoes[type]
+    });
+  };
+
+  const handleSubmitSenha = (e) => {
+    e.preventDefault();
+    // Lógica para alterar senha
+    console.log('Senha alterada:', senha);
+    setSenha({ atual: '', nova: '', confirmacao: '' });
+  };
 
   return (
     <Layout
-      title="Perfil"
+      title="Perfil do Colaborador"
       content={
-        <Container fluid className="usuario-container">
+        <Container className="usuario-container">
           {/* Cabeçalho */}
-          <Card className="profile-header mb-4">
-            <Card.Body className="text-center">
-              <div className="avatar-container mb-3">
-                <div className="avatar-placeholder">
-                  {userData.name[0]}
-                </div>
+          <Row className="profile-header mb-4 align-items-center">
+            <Col md={8} className="d-flex align-items-center">
+              <div className="avatar-circle me-3">
+                <FontAwesomeIcon icon={faUserShield} size="2x" className="text-light" />
               </div>
-              <h2 className="user-name">{userData.name}</h2>
-              <p className="user-role text-muted">{userData.role}</p>
-              <Button variant="outline-primary" size="sm">
-                Editar Perfil
-              </Button>
-            </Card.Body>
-          </Card>
+              <div>
+                {editMode ? (
+                  <>
+                    <Form.Control
+                      name="nome"
+                      value={editedData.nome}
+                      onChange={handleInputChange}
+                      className="mb-2"
+                    />
+                    <Form.Control
+                      name="cargo"
+                      value={editedData.cargo}
+                      onChange={handleInputChange}
+                      className="mb-2"
+                    />
+                    <Form.Control
+                      name="email"
+                      value={editedData.email}
+                      onChange={handleInputChange}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <h2 className="mb-1">{userData.nome}</h2>
+                    <p className="text-muted mb-0">{userData.cargo}</p>
+                    <small className="text-muted">{userData.email}</small>
+                  </>
+                )}
+              </div>
+            </Col>
+            <Col md={4} className="text-end">
+              {editMode ? (
+                <div className="d-grid gap-2">
+                  <Button variant="primary" size="sm" onClick={handleEditToggle}>
+                    <FontAwesomeIcon icon={faSave} className="me-2" />
+                    Salvar
+                  </Button>
+                  <Button variant="secondary" size="sm" onClick={handleCancelEdit}>
+                    Cancelar
+                  </Button>
+                </div>
+              ) : (
+                <Button variant="outline-primary" size="sm" onClick={handleEditToggle}>
+                  <FontAwesomeIcon icon={faUser} className="me-2" />
+                  Editar Perfil
+                </Button>
+              )}
+            </Col>
+          </Row>
 
           <Row>
-            {/* Coluna Esquerda - Informações Principais */}
-            <Col lg={8} className="mb-4">
-              <Card className="mb-4">
-                <Card.Header className="d-flex align-items-center">
-                  <FontAwesomeIcon icon={faIdCard} className="me-2" />
-                  Informações Pessoais
-                </Card.Header>
-                <Card.Body>
-                  <Form>
-                    <Form.Group className="mb-3">
-                      <Form.Label><FontAwesomeIcon icon={faUser} className="me-2" />Nome Completo</Form.Label>
-                      <Form.Control type="text" value={userData.name} readOnly />
-                    </Form.Group>
-
-                    <Row className="mb-3">
-                      <Col md={6}>
-                        <Form.Group>
-                          <Form.Label><FontAwesomeIcon icon={faEnvelope} className="me-2" />E-mail</Form.Label>
-                          <Form.Control type="email" value={userData.email} readOnly />
-                        </Form.Group>
-                      </Col>
-                      <Col md={6}>
-                        <Form.Group>
-                          <Form.Label><FontAwesomeIcon icon={faPhone} className="me-2" />Telefone</Form.Label>
-                          <Form.Control type="tel" value={userData.phone} readOnly />
-                        </Form.Group>
-                      </Col>
-                    </Row>
-
-                    <Form.Group>
-                      <Form.Label><FontAwesomeIcon icon={faBriefcase} className="me-2" />Cargo</Form.Label>
-                      <Form.Control type="text" value={userData.Cargo} readOnly />
-                    </Form.Group>
-                  </Form>
-                </Card.Body>
-              </Card>
-
-              <Card>
-                <Card.Header className="d-flex align-items-center">
-                  <FontAwesomeIcon icon={faLock} className="me-2" />
+            {/* Coluna Esquerda - Dados e Segurança */}
+            <Col md={6}>
+              <div className="security-section mb-4 p-4">
+                <h4 className="mb-4">
+                  <FontAwesomeIcon icon={faShieldHalved} className="me-2" />
                   Segurança
-                </Card.Header>
-                <Card.Body>
-                  <div className="security-item mb-3">
+                </h4>
+                
+                <div className="mb-4">
+                  <Form.Group controlId="form2FA">
                     <div className="d-flex justify-content-between align-items-center">
-                      <div>
-                        <h6>Alterar Senha</h6>
-                        <p className="text-muted mb-0">Última alteração: 10/03/2024</p>
-                      </div>
-                      <Button variant="outline-secondary" size="sm">
-                        Alterar
-                      </Button>
+                      <Form.Label>
+                        <FontAwesomeIcon icon={faLock} className="me-2" />
+                        Autenticação em Dois Fatores (2FA)
+                      </Form.Label>
+                      <Form.Check 
+                        type="switch"
+                        checked={doisFatoresAtivo}
+                        onChange={handle2FAToggle}
+                        label={doisFatoresAtivo ? 'Ativo' : 'Inativo'}
+                      />
                     </div>
-                  </div>
+                  </Form.Group>
+                </div>
 
-                  <div className="security-item">
-                    <div className="d-flex justify-content-between align-items-center">
-                      <div>
-                        <h6>Autenticação de Dois Fatores</h6>
-                        <p className="text-muted mb-0">Proteção adicional da conta</p>
-                      </div>
-                      <Button variant="outline-success" size="sm">
-                        Ativar
-                      </Button>
-                    </div>
-                  </div>
-                </Card.Body>
-              </Card>
+                <Form onSubmit={handleSubmitSenha}>
+                  <h5 className="mb-3"><FontAwesomeIcon icon={faKey} className="me-2" />Alterar Senha</h5>
+                  
+                  <Form.Group className="mb-3">
+                    <Form.Label>Senha Atual</Form.Label>
+                    <Form.Control
+                      type="password"
+                      name="atual"
+                      value={senha.atual}
+                      onChange={handleSenhaChange}
+                      required
+                    />
+                  </Form.Group>
+
+                  <Form.Group className="mb-3">
+                    <Form.Label>Nova Senha</Form.Label>
+                    <Form.Control
+                      type="password"
+                      name="nova"
+                      value={senha.nova}
+                      onChange={handleSenhaChange}
+                      required
+                    />
+                  </Form.Group>
+
+                  <Form.Group className="mb-4">
+                    <Form.Label>Confirmar Nova Senha</Form.Label>
+                    <Form.Control
+                      type="password"
+                      name="confirmacao"
+                      value={senha.confirmacao}
+                      onChange={handleSenhaChange}
+                      required
+                    />
+                  </Form.Group>
+
+                  <Button variant="primary" type="submit">
+                    Atualizar Senha
+                  </Button>
+                </Form>
+              </div>
             </Col>
 
-            {/* Coluna Direita - Atividades Recentes */}
-            <Col lg={4}>
-              <Card>
-                <Card.Header className="d-flex align-items-center">
-                  <FontAwesomeIcon icon={faClockRotateLeft} className="me-2" />
-                  Atividades Recentes
-                </Card.Header>
-                <Card.Body>
-                  {activities.map(activity => (
-                    <div key={activity.id} className="activity-item mb-3">
-                      <div className="d-flex">
-                        <div className="activity-icon me-3">
-                          <FontAwesomeIcon icon={faShieldHalved} />
-                        </div>
-                        <div>
-                          <h6 className="mb-1">{activity.title}</h6>
-                          <p className="text-muted mb-0 small">{activity.description}</p>
-                          <small className="text-muted">{activity.date}</small>
-                        </div>
-                      </div>
-                    </div>
+            {/* Coluna Direita - Permissões e Notificações */}
+            <Col md={6}>
+              <div className="permissions-section mb-4 p-4">
+                <h4 className="mb-4">
+                  <FontAwesomeIcon icon={faUserShield} className="me-2" />
+                  Permissões de Acesso
+                </h4>
+                
+                <ListGroup variant="flush">
+                  {permissoes.map((permissao, index) => (
+                    <ListGroup.Item key={index} className="d-flex justify-content-between align-items-center">
+                      <span>{permissao.nome}</span>
+                      <Badge bg={permissao.nivel === 'Completo' ? 'primary' : 'secondary'}>
+                        {permissao.nivel}
+                      </Badge>
+                    </ListGroup.Item>
                   ))}
-                </Card.Body>
-              </Card>
+                </ListGroup>
+              </div>
+
+              <div className="notifications-section p-4">
+                <h4 className="mb-4">
+                  <FontAwesomeIcon icon={faBell} className="me-2" />
+                  Preferências de Notificação
+                </h4>
+
+                <Form>
+                  <Form.Group className="mb-3">
+                    <Form.Check 
+                      type="switch"
+                      id="email-notifications"
+                      label="Notificações por E-mail"
+                      checked={notificacoes.email}
+                      onChange={() => handleNotificacoesChange('email')}
+                      icon={<FontAwesomeIcon icon={faEnvelope} />}
+                    />
+                  </Form.Group>
+
+                  <Form.Group className="mb-3">
+                    <Form.Check 
+                      type="switch"
+                      id="sms-notifications"
+                      label="Notificações por SMS"
+                      checked={notificacoes.sms}
+                      onChange={() => handleNotificacoesChange('sms')}
+                      icon={<FontAwesomeIcon icon={faSms} />}
+                    />
+                  </Form.Group>
+
+                  <Form.Group>
+                    <Form.Check 
+                      type="switch"
+                      id="app-notifications"
+                      label="Notificações no Aplicativo"
+                      checked={notificacoes.app}
+                      onChange={() => handleNotificacoesChange('app')}
+                    />
+                  </Form.Group>
+                </Form>
+              </div>
             </Col>
           </Row>
         </Container>

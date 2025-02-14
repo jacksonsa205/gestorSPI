@@ -1,0 +1,48 @@
+/* .acesso-container {
+    padding: 20px;
+    min-height: 100vh;
+  } */
+  
+  .filtros-section {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  
+  .table-responsive {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  }
+  
+  .floating-action {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1000;
+  }
+  
+  .permissoes-grid {
+    display: grid;
+    gap: 20px;
+  }
+  
+  .permissao-categoria {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+  }
+  
+  .permissao-categoria h6 {
+    color: #2c3e50;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+  }
+  
+  .table th {
+    background-color: #0066ff;
+    color: white;
+  }

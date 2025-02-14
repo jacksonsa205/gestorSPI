@@ -1,0 +1,106 @@
+/* CrachaPlantonista.css */
+.crachaplantonista-container {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  margin: 10px;
+  background: linear-gradient(145deg, #fff5f0 0%, #ffffff 100%);
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  min-width: 220px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.crachaplantonista-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+
+.crachaplantonista-avatar {
+  margin-bottom: 15px;
+  background: linear-gradient(45deg, #ff6600, #ff944d);
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(255,102,0,0.2);
+}
+
+.crachaplantonista-avatar-icon {
+  font-size: 2.5rem;
+  color: white;
+  transition: transform 0.3s ease;
+}
+
+.crachaplantonista-container:hover .crachaplantonista-avatar-icon {
+  transform: scale(1.1);
+}
+
+.crachaplantonista-info {
+  text-align: center;
+  width: 100%;
+}
+
+.crachaplantonista-nome {
+  font-size: 1.1rem;
+  margin: 0;
+  color: #2c3e50;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.crachaplantonista-cargo {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 8px 0;
+  font-weight: 500;
+}
+
+.crachaplantonista-contatos {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 2px solid #ffeee6;
+  width: 100%;
+}
+
+.crachaplantonista-contato-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: #444;
+  margin: 8px 0;
+}
+
+.crachaplantonista-icone {
+  color: #ff6600;
+  font-size: 1rem;
+  min-width: 20px;
+}
+
+/* Efeito de brilho hover */
+.crachaplantonista-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.4),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.crachaplantonista-container:hover::after {
+  left: 100%;
+}

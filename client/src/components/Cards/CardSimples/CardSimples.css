@@ -1,23 +1,123 @@
- /* Estilos para os Cards */
- .card {
-    border: none;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    background-color: white;
+/* CardSimples.css */
+.cardsimples-container {
+  border: none;
+  border-radius: 15px;
+  background: linear-gradient(145deg, #f6f9ff 0%, #ffffff 100%);
+  box-shadow: 0 4px 20px rgba(0, 102, 255, 0.1);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  position: relative;
+  min-width: 180px;
+  width: 100%;
+}
+
+.cardsimples-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 102, 255, 0.15);
+}
+
+.cardsimples-body {
+  padding: 1.2rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.cardsimples-icon-wrapper {
+  background: linear-gradient(45deg, #0066ff, #00a8ff);
+  min-width: 50px;
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0, 102, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.cardsimples-icon {
+  color: white !important;
+  font-size: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.cardsimples-container:hover .cardsimples-icon {
+  transform: scale(1.1);
+}
+
+.cardsimples-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.cardsimples-title {
+  color: #6c757d !important;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardsimples-value {
+  color: #2c3e50 !important;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Efeito de brilho hover */
+.cardsimples-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.cardsimples-container:hover::after {
+  left: 100%;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .cardsimples-body {
+    padding: 1rem;
+    gap: 0.8rem;
   }
   
-.card-icon .svg-inline--fa {
-    color: #0066ff !important;
-    font-size: 1.5rem;
+  .cardsimples-icon-wrapper {
+    width: 45px;
+    height: 45px;
   }
   
-.card-title {
-    color: #333 !important;
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
+  .cardsimples-icon {
+    font-size: 1.3rem;
   }
   
-.card-text {
-    color: #666 !important;
-    font-weight: bold;
+  .cardsimples-title {
+    font-size: 0.85rem;
   }
   
+  .cardsimples-value {
+    font-size: 1.3rem;
+  }
+}

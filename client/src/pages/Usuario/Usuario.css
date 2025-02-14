@@ -1,78 +1,53 @@
-.profile-header {
-    background-color: #f8f9fa;
-    border: none;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+/* .usuario-container {
+    padding: 2rem;
+    max-width: 1400px;
+  }
+   */
+  .profile-header {
+    padding: 1.5rem;
+    margin-left: -1px;
+    margin-right: 0px;
+    background:#fff;
+    border-radius: 10px;
+    border: 1px solid #dee2e6;
   }
   
-.avatar-container {
-    position: relative;
-    display: inline-block;
-  }
-  
-.avatar-placeholder {
-    width: 120px;
-    height: 120px;
+  .avatar-circle {
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
     background-color: #0066ff;
-    color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 3rem;
-    font-weight: bold;
+  }
+
+
+  
+  .security-section, .permissions-section, .notifications-section {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border: 1px solid #eee;
   }
   
-.user-name {
-    font-size: 1.8rem;
-    margin-top: 1rem;
-    color: #333;
+  .permissions-section .list-group-item {
+    border-color: #f8f9fa;
+    padding: 1rem;
   }
   
-.user-role {
-    font-size: 0.9rem;
+  .form-check-input:checked {
+    background-color: #0066ff;
+    border-color: #0066ff;
   }
   
-.security-item {
-    padding: 15px;
-    border-radius: 8px;
-    background-color: #f8f9fa;
-    transition: all 0.3s;
+  .badge {
+    font-weight: 500;
+    padding: 0.5em 0.8em;
   }
   
-.security-item:hover {
-    background-color: #e9ecef;
-  }
-  
-.activity-item {
-    padding: 10px;
-    border-radius: 8px;
-    transition: all 0.3s;
-  }
-  
-.activity-item:hover {
-    background-color: #f8f9fa;
-  }
-  
-.activity-icon {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    background-color: #e9ecef;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #666;
-  }
-  
-.card-header {
-    background-color: white;
-    font-weight: 600;
-    color: #333;
+  h4 {
+    color: #2c3e50;
     border-bottom: 2px solid #f8f9fa;
-  }
-  
-.form-control:read-only {
-    background-color: #f8f9fa;
-    border-color: #dee2e6;
-    cursor: not-allowed;
+    padding-bottom: 0.5rem;
   }

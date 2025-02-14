@@ -5,14 +5,14 @@ import './CardSimples.css';
 
 const CardSimples = ({ icon, title, value }) => {
   return (
-    <Card>
-      <Card.Body className="d-flex align-items-center">
-        <div className="card-icon me-3">
-          <FontAwesomeIcon icon={icon} size="2x" />
+    <Card className="cardsimples-container">
+      <Card.Body className="cardsimples-body">
+        <div className="cardsimples-icon-wrapper">
+          <FontAwesomeIcon icon={icon} className="cardsimples-icon" />
         </div>
-        <div>
-          <Card.Title>{title}</Card.Title>
-          <Card.Text className="h4">{value}</Card.Text>
+        <div className="cardsimples-content">
+          <Card.Title className="cardsimples-title">{title}</Card.Title>
+          <Card.Text className="cardsimples-value">{value}</Card.Text>
         </div>
       </Card.Body>
     </Card>

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; 
 import { Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
@@ -20,27 +21,28 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
   const itemRefs = useRef([]);
   const sidebarRef = useRef(null);
   const [clickedItemIndex, setClickedItemIndex] = useState(null);
+  const navigate = useNavigate();
 
   const menuItems = [
     { 
       icon: faHome, 
       text: 'Dashboard',
-      link: '/'
+      link: '/dashboard'
     },
     { 
       icon: faPersonDigging, 
       text: 'Gestor de Obras',
       subItems: [
-        { text: 'Report REM', link: '/obras/nova' },
-        { text: 'Mapa', link: '/obras/listagem' }
+        { text: 'Report REM', link: '' },
+        { text: 'Mapa', link: '' }
       ]
     },
     { 
         icon: faScrewdriverWrench, 
         text: 'Núcleo Técnico',
         subItems: [
-          { text: 'Gestão de Carimbos', link: '/nt/gestao-carimbos' },
-          { text: 'Mapa', link: '/nt/mapa' }
+          { text: 'Gestão de Carimbos', link: '' },
+          { text: 'Mapa', link: '' }
         ]
       },
   ];
@@ -56,8 +58,17 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
   }, []);
 
   // Modifique o handleItemClick:
-const handleItemClick = (index, e) => {
-    if (menuItems[index].subItems) {
+  const handleItemClick = (index, e) => {
+    const item = menuItems[index];
+    
+    // Navegação direta para itens sem submenu
+    if (!item.subItems && item.link) {
+      navigate(item.link);
+      return;
+    }
+  
+    // Lógica original para itens com submenu
+    if (item.subItems) {
       if (collapsed) {
         const rect = e.currentTarget.getBoundingClientRect();
         setClickedItemIndex(index);
@@ -71,6 +82,7 @@ const handleItemClick = (index, e) => {
       }
     }
   };
+  
 
   return (
     <div 
@@ -121,40 +133,37 @@ const handleItemClick = (index, e) => {
 
             {/* Submenu normal */}
             {!collapsed && expandedItem === index && item.subItems && (
-              <div className="submenu">
-                {item.subItems.map((subItem, subIndex) => (
-                  <Button
-                    key={subIndex}
-                    variant="link"
-                    className="submenu-item"
-                    onClick={() => console.log('Navegar para:', subItem.link)}
-                  >
-                    <FontAwesomeIcon icon={faCircle} className="submenu-icon" />
-                    <span className="submenu-text">{subItem.text}</span>
-                  </Button>
-                ))}
-              </div>
-            )}
+                <div className="submenu">
+                    {item.subItems.map((subItem, subIndex) => (
+                    <Button
+                        key={subIndex}
+                        variant="link"
+                        className="submenu-item"
+                        onClick={() => {
+                        navigate(subItem.link);
+                        setExpandedItem(null);
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faCircle} className="submenu-icon" />
+                        <span className="submenu-text">{subItem.text}</span>
+                    </Button>
+                    ))}
+                </div>
+                )}
           </div>
         ))}
       </div>
 
       {/* Popup para collapsed */}
       {collapsed && showPopup && clickedItemIndex !== null && (
-        <div 
-            className="submenu-popup"
-            style={{
-            top: `${popupPosition.top}px`,
-            left: `${popupPosition.left}px`
-            }}
-        >
+        <div className="submenu-popup" style={popupPosition}>
             {menuItems[clickedItemIndex].subItems.map((subItem, subIndex) => (
             <Button
                 key={subIndex}
                 variant="link"
                 className="popup-item"
                 onClick={() => {
-                console.log('Navegar para:', subItem.link);
+                navigate(subItem.link);
                 setShowPopup(false);
                 }}
             >

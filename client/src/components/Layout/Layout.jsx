@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef} from 'react';
+import { useNavigate } from 'react-router-dom'; // Importação correta
 import { Container, Navbar, Button, Col, Row } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
@@ -6,7 +7,10 @@ import {
   faXmark,
   faExpand,
   faUserCircle,
-  faUser
+  faUser,
+  faDoorOpen,
+  faFileLines,
+  faCalendarDays
 } from '@fortawesome/free-solid-svg-icons';
 import Sidebar from '../Sidebar/Sidebar';
 import './Layout.css';
@@ -15,6 +19,7 @@ const Layout = ({ title, content }) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const menuRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -78,18 +83,31 @@ const Layout = ({ title, content }) => {
                   className="user-icon-btn"
                   onClick={() => setShowUserMenu(!showUserMenu)}
                 >
-                  <FontAwesomeIcon icon={faUserCircle} size="lg" />
+                  <FontAwesomeIcon icon={faUserCircle} size="lg" className="user-icon" />
+                  Jackson
                 </Button>
 
                 {showUserMenu && (
                   <div className="user-popup">
-                    <button className="popup-item">
-                      <FontAwesomeIcon icon={faUser} className="me-2" />
-                      Perfil
+                    <button className="popup-item" onClick={() => navigate("/acesso")}>
+                        <FontAwesomeIcon icon={faDoorOpen} className="me-2" />
+                        Acesso
                     </button>
-                    <button className="popup-item">
-                      <FontAwesomeIcon icon={faXmark} className="me-2" />
-                      Sair
+                    <button className="popup-item" onClick={() => navigate("/log-aplicacao")}>
+                        <FontAwesomeIcon icon={faFileLines} className="me-2" />
+                        Logs
+                    </button>
+                    <button className="popup-item" onClick={() => navigate("/escala-plantao")}>
+                        <FontAwesomeIcon icon={faCalendarDays} className="me-2" />
+                        Escala Pl.
+                    </button>
+                    <button className="popup-item" onClick={() => navigate("/profile")}>
+                        <FontAwesomeIcon icon={faUser} className="me-2" />
+                        Perfil
+                    </button>
+                    <button className="popup-item" onClick={() => navigate("/")}>
+                        <FontAwesomeIcon icon={faXmark} className="me-2" />
+                        Sair
                     </button>
                   </div>
                 )}
