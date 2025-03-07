@@ -92,7 +92,7 @@ const Dashboard = () => {
         <div>
 
            {/* Seção de Plantonistas */}
-           <Container fluid className="mt-4">
+           {/* <Container fluid className="mt-4">
                 <h5 className="mb-4">
                     <FontAwesomeIcon icon={faSitemap} className="me-2" />
                     Equipes de Plantão 15/02/2025 Até 16/02/2025
@@ -105,7 +105,7 @@ const Dashboard = () => {
                     plantonistas={membros}
                     />
                 ))}
-            </Container>
+            </Container> */}
 
           {/* Seção de Cards */}
           <Container fluid className="mt-4">

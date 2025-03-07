@@ -41,8 +41,11 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
         icon: faScrewdriverWrench, 
         text: 'Núcleo Técnico',
         subItems: [
-          { text: 'Gestão de Carimbos', link: '' },
-          { text: 'Mapa', link: '' }
+          { text: 'Carimbos', link: '' },
+          { text: 'Consulta OLT', link: '' },
+          { text: 'OLT UPLINK', link: '' },
+          { text: 'OLT Isolada', link: '' },
+          // { text: 'Mapa', link: '' }
         ]
       },
   ];

@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Login from './pages/Login/Login';
+import Cadastro from './pages/Cadastro/Cadastro';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Usuario from './pages/Usuario/Usuario';
 import Acesso from './pages/Acesso/Acesso';
@@ -13,6 +14,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/cadastro" element={<Cadastro />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Usuario/>} />
         <Route path="/acesso" element={<Acesso />} />
