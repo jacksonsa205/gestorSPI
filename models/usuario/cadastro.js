@@ -55,45 +55,49 @@ const listarUsuarios = async () => {
     return rows;
 };
 
-// models/usuario/cadastro.js
 const editarUsuario = async (id, dados) => {
-    const query = `
-      UPDATE TB_GSPI_Usuarios SET
-      RE = ?,
-      NOME = ?,
-      CELULAR = ?,
-      EMAIL = ?,
-      EMPRESA = ?,
-      REGIONAL = ?,
-      DIVISAO = ?,
-      CONTRATO = ?,
-      PERFIL = ?,
-      STATUS = ?,
-      PERMISSOES = ?,
-      PERMISSOES_MODULO = ?,
-      PERMISSOES_SUBMODULO = ?
-      WHERE ID = ?`;
-    
-    const params = [
-      dados.re,
-      dados.nome,
-      dados.celular,
-      dados.email,
-      dados.empresa,
-      dados.regional,
-      dados.divisao,
-      dados.contrato,
-      dados.perfil,
-      dados.status,
-      JSON.stringify(dados.permissoes),
-      JSON.stringify(dados.permissoes_modulo),
-      JSON.stringify(dados.permissoes_submodulo),
-      id
-    ];
-  
-    const [result] = await pool.execute(query, params);
-    return result;
-  };
+  const query = `
+    UPDATE TB_GSPI_Usuarios SET
+    RE = ?,
+    NOME = ?,
+    CELULAR = ?,
+    EMAIL = ?,
+    EMPRESA = ?,
+    REGIONAL = ?,
+    DIVISAO = ?,
+    CONTRATO = ?,
+    PERFIL = ?,
+    STATUS = ?,
+    PERMISSOES = ?,
+    PERMISSOES_MODULO = ?,
+    PERMISSOES_SUBMODULO = ?
+    WHERE ID = ?`;
+
+  // Garante que as permissões sejam salvas como números separados por vírgulas
+  const permissoes = Array.isArray(dados.permissoes) ? dados.permissoes.join(',') : dados.permissoes;
+  const permissoesModulo = Array.isArray(dados.permissoes_modulo) ? dados.permissoes_modulo.join(',') : dados.permissoes_modulo;
+  const permissoesSubmodulo = Array.isArray(dados.permissoes_submodulo) ? dados.permissoes_submodulo.join(',') : dados.permissoes_submodulo;
+
+  const params = [
+    dados.re,
+    dados.nome,
+    dados.celular,
+    dados.email,
+    dados.empresa,
+    dados.regional,
+    dados.divisao,
+    dados.contrato,
+    dados.perfil,
+    dados.status,
+    permissoes, // Permissões como string (ex: "1,2,3")
+    permissoesModulo, // Permissões do módulo como string (ex: "1,2")
+    permissoesSubmodulo, // Permissões do submódulo como string (ex: "1,3")
+    id
+  ];
+
+  const [result] = await pool.execute(query, params);
+  return result;
+};
   
   const excluirUsuario = async (id) => {
     const query = 'DELETE FROM TB_GSPI_Usuarios WHERE ID = ?';

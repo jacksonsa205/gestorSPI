@@ -19,11 +19,11 @@ import {
   faSave
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import useAuthValidation from '../../hooks/useAuthValidation';
 import Layout from "../../components/Layout/Layout";
 import './Acesso.css';
 
 const Acesso = () => {
-  const API_URL = '';
   const [usuarios, setUsuarios] = useState([]);
   const [modules, setModules] = useState([]);
   const [submodules, setSubmodules] = useState([]);
@@ -56,12 +56,14 @@ const Acesso = () => {
   const [erro, setErro] = useState('');
   const [carregando, setCarregando] = useState(true);
 
+  
+
   useEffect(() => {
     const carregarDados = async () => {
       try {
         const [usuariosResponse, permissoesResponse] = await Promise.all([
-          fetch(`${API_URL}/usuario/buscar`),
-          fetch(`${API_URL}/usuario/permissoes`)
+          fetch(`${import.meta.env.VITE_API_URL}/usuario/buscar`),
+          fetch(`${import.meta.env.VITE_API_URL}/usuario/permissoes`)
         ]);
 
         if (!usuariosResponse.ok) throw new Error('Erro ao carregar usuários');
@@ -105,6 +107,8 @@ const Acesso = () => {
     carregarDados();
   }, []);
 
+  
+
   const groupedSubmodules = useMemo(() => {
     return submodules.reduce((agrupado, submodulo) => {
       if (!agrupado[submodulo.ID_MODULO]) {
@@ -119,7 +123,7 @@ const Acesso = () => {
     try {
       if (!novoUsuario.senha) throw new Error('Senha é obrigatória');
 
-      const response = await fetch(`${API_URL}/usuario/cadastrar`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/usuario/cadastrar`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -174,7 +178,7 @@ const Acesso = () => {
         permissoes_submodulo: JSON.stringify(usuarioEditando.permissoes_submodulo)
       };
   
-      const response = await fetch(`${API_URL}/usuario/editar/${usuarioEditando.id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/usuario/editar/${usuarioEditando.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -195,7 +199,7 @@ const Acesso = () => {
     if (!window.confirm('Tem certeza que deseja excluir este usuário?')) return;
     
     try {
-      const response = await fetch(`${API_URL}/usuario/excluir/${userId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/usuario/excluir/${userId}`, {
         method: 'DELETE',
       });
       
@@ -209,7 +213,7 @@ const Acesso = () => {
 
   const carregarUsuarios = async () => {
     try {
-      const response = await fetch(`${API_URL}/usuario/buscar`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/usuario/buscar`);
       if (!response.ok) throw new Error('Erro ao carregar usuários');
       
       const data = await response.json();
@@ -247,6 +251,17 @@ const Acesso = () => {
     const matchStatus = filtro.status === 'todos' || usuario.status === parseInt(filtro.status);
   return matchPesquisa && matchPerfil && matchStatus;
   });
+
+  // Validações: módulo 1 (Dashboard), sem submodulo, ação de leitura (1)
+  const { loading, user, permissions } = useAuthValidation(4, null, 1,);
+
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
+
+  if (!permissions.canRead) {
+    return <div>Você não tem permissão para visualizar esta página. Contate o administrador.</div>;
+  }
 
   return (
     <Layout
@@ -304,7 +319,7 @@ const Acesso = () => {
                       <th>RE</th>
                       <th>Nome</th>
                       <th>Email</th>
-                      <th>Perfil</th>
+                      <th>Cargo</th>
                       <th>Status</th>
                       <th>Último Acesso</th>
                       <th>Ações</th>
@@ -637,12 +652,25 @@ const PermissoesEditor = ({ usuario, atualizarUsuario, modulos, submodulosAgrupa
       acao: 'permissoes'
     }[tipo];
 
-    const valoresAtuais = usuario[campo] || [];
-    const novosValores = valoresAtuais.includes(valor)
-      ? valoresAtuais.filter(v => v !== valor)
-      : [...valoresAtuais, valor];
+    // Garante que o campo seja um array
+    const valoresAtuais = Array.isArray(usuario[campo]) ? usuario[campo] : [];
 
-    atualizarUsuario({ ...usuario, [campo]: novosValores });
+    // Cria um novo array com base na seleção/deseleção
+    const novosValores = valoresAtuais.includes(valor)
+      ? valoresAtuais.filter(v => v !== valor) // Remove o valor se já existir
+      : [...valoresAtuais, valor]; // Adiciona o valor se não existir
+
+    // Atualiza o estado do usuário de forma imutável
+    const usuarioAtualizado = { 
+      ...usuario, 
+      [campo]: novosValores 
+    };
+
+    console.log('Novos valores:', novosValores); // Log para depuração
+    console.log('Usuário atualizado:', usuarioAtualizado); // Log para depuração
+
+    // Atualiza o estado do usuário
+    atualizarUsuario(usuarioAtualizado);
   };
 
   return (

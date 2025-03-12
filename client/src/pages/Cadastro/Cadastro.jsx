@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faCheckCircle, faTimesCircle, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import './Cadastro.css';
@@ -9,7 +9,7 @@ const EMPRESAS = ['Vivo', 'Abilit', 'Tel', 'Telemom', 'Icomon'];
 const REGIONAIS = ['SP Interior'];
 const DIVISOES = ['Assistência', 'Rede Externa', 'Planta interna', 'Móvel', 'Escritório', 'Planejamento'];
 const CONTRATOS = ['Osasco', 'São Jose dos Campo', 'Campinas', 'Interior', 'PC/SC', 'Jundiai'];
-const CARGOS = ['Técnico', 'Assistente', 'Analista', 'Coordenador', 'Gerente'];
+const CARGOS = ['Técnico', 'Assistente', 'Analista', 'Consultor','Coordenador','Especialista', 'Gerente','Diretor'];
 
 // Função para normalizar texto
 const normalizeText = (text) => {
@@ -67,7 +67,7 @@ const Cadastro = () => {
   
       try {
         setCarregandoEmail(true);
-        const resposta = await fetch('/usuario/buscar');
+        const resposta = await fetch(`${import.meta.env.VITE_API_URL}/usuario/buscar`);
         
         if (!resposta.ok) {
           throw new Error('Falha ao buscar usuários');
@@ -175,7 +175,7 @@ const Cadastro = () => {
         perfil: 'tecnico'
       };
       
-      const resposta = await fetch('/usuario/cadastrar', {
+      const resposta = await fetch(`${import.meta.env.VITE_API_URL}/usuario/cadastrar`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -434,6 +434,12 @@ const Cadastro = () => {
             Cadastrar
           </button>
         </form>
+        
+         {/* Link para a página de cadastro */}
+         <div className="mt-3 text-center">
+          <span>Já tem uma conta? </span>
+          <Link to="/" className="text-primary">Entre</Link>
+        </div>
       </div>
     </div>
   );

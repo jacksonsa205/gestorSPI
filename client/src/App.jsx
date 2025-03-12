@@ -8,6 +8,7 @@ import Usuario from './pages/Usuario/Usuario';
 import Acesso from './pages/Acesso/Acesso';
 import LogAplicacao from './pages/LogAplicacao/LogAplicacao';
 import EscalaPlantao from './pages/EscalaPlantao/EscalaPlantao';
+import ConsultaOLT from './pages/NucleoTecnico/ConsultaOLT/ConsultaOLT';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/cadastro" element={<Cadastro />} />
+        <Route path="/nucleo-tecnico/consultaOLT" element={<ConsultaOLT />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Usuario/>} />
         <Route path="/acesso" element={<Acesso />} />

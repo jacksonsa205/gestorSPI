@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
+import {
   faHome,
   faChevronDown,
   faChevronUp,
@@ -12,6 +12,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import logo from "../../assets/imagens/sidebar.png";
 import logoClosed from "../../assets/imagens/sidebarClosed.png";
+import useAuthValidation from '../../hooks/useAuthValidation'; // Importe o hook
 import './Sidebar.css';
 
 const Sidebar = ({ collapsed, toggleSidebar }) => {
@@ -23,32 +24,48 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
   const [clickedItemIndex, setClickedItemIndex] = useState(null);
   const navigate = useNavigate();
 
+  // Use o hook para obter as permissões
+  const { permissoesModulo , permissoesSubmodulo} = useAuthValidation(null, null, null);
+
+  // Defina os menus e submenus com base nas permissões
   const menuItems = [
-    { 
-      icon: faHome, 
+    {
+      id: 1, // ID do módulo
+      icon: faHome,
       text: 'Dashboard',
       link: '/dashboard'
     },
-    { 
-      icon: faPersonDigging, 
+    {
+      id: 2, // ID do módulo
+      icon: faPersonDigging,
       text: 'Gestor de Obras',
       subItems: [
-        { text: 'Report REM', link: '' },
-        { text: 'Mapa', link: '' }
+        { id: 1, text: 'Report REM', link: '' }, 
+        { id: 2, text: 'Mapa', link: '' } 
       ]
     },
-    { 
-        icon: faScrewdriverWrench, 
-        text: 'Núcleo Técnico',
-        subItems: [
-          { text: 'Carimbos', link: '' },
-          { text: 'Consulta OLT', link: '' },
-          { text: 'OLT UPLINK', link: '' },
-          { text: 'OLT Isolada', link: '' },
-          // { text: 'Mapa', link: '' }
-        ]
-      },
+    {
+      id: 3, // ID do módulo
+      icon: faScrewdriverWrench,
+      text: 'Núcleo Técnico',
+      subItems: [
+        { id: 3, text: 'Carimbos', link: '' }, 
+        { id: 4, text: 'Consulta OLT', link: '/nucleo-tecnico/consultaOLT' }, 
+        { id: 5, text: 'OLT UPLINK', link: '' }, 
+        { id: 6, text: 'OLT Isolada', link: '' } 
+      ]
+    },
   ];
+
+  // Função para verificar permissões de módulo
+  const hasModulePermission = (moduleId) => {
+    return permissoesModulo.includes(moduleId);
+  };
+
+  // Função para verificar permissões de submódulo
+  const hasSubmodulePermission = (submoduleId) => {
+    return permissoesSubmodulo.includes(submoduleId);
+  };
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -60,17 +77,16 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Modifique o handleItemClick:
   const handleItemClick = (index, e) => {
     const item = menuItems[index];
-    
+
     // Navegação direta para itens sem submenu
     if (!item.subItems && item.link) {
       navigate(item.link);
       return;
     }
-  
-    // Lógica original para itens com submenu
+
+    // Lógica para itens com submenu
     if (item.subItems) {
       if (collapsed) {
         const rect = e.currentTarget.getBoundingClientRect();
@@ -85,97 +101,103 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
       }
     }
   };
-  
 
   return (
-    <div 
+    <div
       className="sidebar"
       ref={sidebarRef}
-      style={{ 
+      style={{
         width: collapsed ? '80px' : '250px',
         backgroundColor: '#0066ff'
       }}
     >
       <div className="sidebar-header">
-        <img 
-          src={collapsed ? logoClosed : logo} 
-          alt="Logo" 
+        <img
+          src={collapsed ? logoClosed : logo}
+          alt="Logo"
           className={collapsed ? 'sidebar-logo-closed' : 'sidebar-logo'}
         />
       </div>
 
       <div className="sidebar-menu">
         {menuItems.map((item, index) => (
-          <div key={index} className="menu-group">
-            <Button 
-                variant="link" 
+          // Renderiza apenas se o usuário tiver permissão para o módulo
+          hasModulePermission(item.id) && (
+            <div key={index} className="menu-group">
+              <Button
+                variant="link"
                 className={`menu-item ${collapsed ? 'collapsed' : ''}`}
                 onClick={(e) => handleItemClick(index, e)}
                 ref={el => itemRefs.current[index] = el}
-                >
+              >
                 <div className="menu-icon-wrapper">
-                    <FontAwesomeIcon icon={item.icon} className="menu-icon" />
-                    {/* Texto sempre visível quando não collapsed */}
-                    {!collapsed && (
+                  <FontAwesomeIcon icon={item.icon} className="menu-icon" />
+                  {!collapsed && (
                     <span className="menu-text">{item.text}</span>
-                    )}
-                    {/* Texto adicional apenas quando collapsed */}
-                    {collapsed && (
+                  )}
+                  {collapsed && (
                     <span className="collapsed-text">{item.text}</span>
-                    )}
+                  )}
                 </div>
-                
+
                 {!collapsed && item.subItems && (
-                    <FontAwesomeIcon 
-                    icon={expandedItem === index ? faChevronUp : faChevronDown} 
+                  <FontAwesomeIcon
+                    icon={expandedItem === index ? faChevronUp : faChevronDown}
                     className="chevron-icon"
                     size="xs"
-                    />
+                  />
                 )}
-                </Button>
+              </Button>
 
-            {/* Submenu normal */}
-            {!collapsed && expandedItem === index && item.subItems && (
+              {/* Submenu normal */}
+              {!collapsed && expandedItem === index && item.subItems && (
                 <div className="submenu">
-                    {item.subItems.map((subItem, subIndex) => (
-                    <Button
+                  {item.subItems.map((subItem, subIndex) => (
+                    // Renderiza apenas se o usuário tiver permissão para o submódulo
+                    hasSubmodulePermission(subItem.id) && (
+                      <Button
                         key={subIndex}
                         variant="link"
                         className="submenu-item"
                         onClick={() => {
-                        navigate(subItem.link);
-                        setExpandedItem(null);
+                          navigate(subItem.link);
+                          setExpandedItem(null);
                         }}
-                    >
+                      >
                         <FontAwesomeIcon icon={faCircle} className="submenu-icon" />
                         <span className="submenu-text">{subItem.text}</span>
-                    </Button>
-                    ))}
+                      </Button>
+                    )
+                  ))}
                 </div>
-                )}
-          </div>
+              )}
+            </div>
+          )
         ))}
       </div>
 
       {/* Popup para collapsed */}
       {collapsed && showPopup && clickedItemIndex !== null && (
         <div className="submenu-popup" style={popupPosition}>
-            {menuItems[clickedItemIndex].subItems.map((subItem, subIndex) => (
-            <Button
+          {menuItems[clickedItemIndex].subItems.map((subItem, subIndex) => (
+            // Renderiza apenas se o usuário tiver permissão para o submódulo
+            hasSubmodulePermission(subItem.id) && (
+              <Button
                 key={subIndex}
                 variant="link"
                 className="popup-item"
                 onClick={() => {
-                navigate(subItem.link);
-                setShowPopup(false);
+                  navigate(subItem.link);
+                  setShowPopup(false);
                 }}
-            >
+              >
                 <FontAwesomeIcon icon={faCircle} className="popup-icon" />
                 <span className="popup-text">{subItem.text}</span>
-            </Button>
-            ))}
+              </Button>
+            )
+          ))}
         </div>
-        )}
+      )}
     </div>
   );
 };

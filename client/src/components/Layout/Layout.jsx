@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef} from 'react';
-import { useNavigate } from 'react-router-dom'; // Importação correta
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Container, Navbar, Button, Col, Row } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
@@ -13,13 +13,22 @@ import {
   faCalendarDays
 } from '@fortawesome/free-solid-svg-icons';
 import Sidebar from '../Sidebar/Sidebar';
+import axios from 'axios';
+import useAuthValidation from '../../hooks/useAuthValidation';
 import './Layout.css';
 
 const Layout = ({ title, content }) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0); // Chave de atualização
   const menuRef = useRef(null);
   const navigate = useNavigate();
+
+  // Força a atualização das permissões quando o menu é aberto
+  const { permissoesModulo, user } = useAuthValidation(null, null, null, refreshKey);
+
+  // Extrai o primeiro nome do usuário
+  const firstName = user?.NOME?.split(' ')[0] || 'Usuário';
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -32,11 +41,44 @@ const Layout = ({ title, content }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const handleMenuToggle = () => {
+    if (!showUserMenu) {
+      // Atualiza as permissões apenas quando o menu é aberto
+      setRefreshKey(prev => prev + 1);
+    }
+    setShowUserMenu(!showUserMenu);
+  };
+
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen();
     } else {
       document.exitFullscreen();
+    }
+  };
+
+  const hasPermission = (moduloId) => {
+    return permissoesModulo.includes(moduloId);
+  };
+
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      
+      // Envia requisição de logout para o servidor
+      await axios.post('http://localhost:3000/usuario/logout', null, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+    } catch (error) {
+      console.error('Erro durante o logout:', error);
+    } finally {
+      
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      navigate('/');
     }
   };
 
@@ -47,12 +89,10 @@ const Layout = ({ title, content }) => {
         toggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
       />
 
-      {/* Main Content */}
       <div 
         className="main-content" 
         style={{ marginLeft: sidebarCollapsed ? '80px' : '250px' }}
       >
-        {/* Header */}
         <Navbar className="main-header">
           <Container fluid>
             <div className="d-flex justify-content-between w-100 align-items-center">
@@ -81,34 +121,50 @@ const Layout = ({ title, content }) => {
                 <Button 
                   variant="link" 
                   className="user-icon-btn"
-                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  onClick={handleMenuToggle} // Usa o novo handler
                 >
                   <FontAwesomeIcon icon={faUserCircle} size="lg" className="user-icon" />
-                  Jackson
+                  {firstName} {/* Exibe o primeiro nome do usuário */}
                 </Button>
 
                 {showUserMenu && (
                   <div className="user-popup">
-                    <button className="popup-item" onClick={() => navigate("/acesso")}>
+                    {/* Itens do menu com validação dinâmica */}
+                    {hasPermission(4) && (
+                      <button className="popup-item" onClick={() => navigate("/acesso")}>
                         <FontAwesomeIcon icon={faDoorOpen} className="me-2" />
                         Acesso
-                    </button>
-                    <button className="popup-item" onClick={() => navigate("/log-aplicacao")}>
+                      </button>
+                    )}
+
+                    {hasPermission(5) && (
+                      <button className="popup-item" onClick={() => navigate("/log-aplicacao")}>
                         <FontAwesomeIcon icon={faFileLines} className="me-2" />
                         Logs
-                    </button>
-                    <button className="popup-item" onClick={() => navigate("/escala-plantao")}>
+                      </button>
+                    )}
+
+                    {hasPermission(6) && (
+                      <button className="popup-item" onClick={() => navigate("/escala-plantao")}>
                         <FontAwesomeIcon icon={faCalendarDays} className="me-2" />
                         Escala Pl.
-                    </button>
-                    <button className="popup-item" onClick={() => navigate("/profile")}>
+                      </button>
+                    )}
+
+                    {hasPermission(7) && (
+                      <button className="popup-item" onClick={() => navigate("/profile")}>
                         <FontAwesomeIcon icon={faUser} className="me-2" />
                         Perfil
-                    </button>
-                    <button className="popup-item" onClick={() => navigate("/")}>
+                      </button>
+                    )}
+
+                      <button 
+                        className="popup-item" 
+                        onClick={handleLogout} // Alterado para a nova função
+                      >
                         <FontAwesomeIcon icon={faXmark} className="me-2" />
                         Sair
-                    </button>
+                      </button>
                   </div>
                 )}
               </div>
@@ -116,7 +172,6 @@ const Layout = ({ title, content }) => {
           </Container>
         </Navbar>
 
-        {/* Content */}
         <div className="content-wrapper">
           <h1 className="page-title">{title}</h1>
           {content}

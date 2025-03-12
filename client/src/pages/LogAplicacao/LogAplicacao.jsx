@@ -17,15 +17,26 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-
+import useAuthValidation from '../../hooks/useAuthValidation';
 import Layout from "../../components/Layout/Layout";
 import './LogAplicacao.css';
 
 const LogAplicacao = () => {
-  // Estados para filtros
+  
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedAction, setSelectedAction] = useState('Todas');
   const [selectedPeriod, setSelectedPeriod] = useState('Últimos 7 dias');
+
+  const { loading, user, permissions } = useAuthValidation(5, null, 1);
+
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
+
+  if (!permissions.canRead) {
+    
+    return <div>Você não tem permissão...</div>;
+  }
 
   // Dados mockados
   const logsData = [

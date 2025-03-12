@@ -1,9 +1,15 @@
-// const home = require('./home/home.routes');
+const auth = require('./usuario/auth.routes');
 const permissoes = require('./permissoes/permissoes.routes')
+const sessao = require('./usuario/sessao.routes');
 const cadastro = require('./usuario/cadastro.routes');
+const consultaOLT = require('./nucleoTecnico/consultaOLT.routes');
+const olt = require('./olt/olt.routes');
 
 module.exports = {
-  // home,
+  auth,
   permissoes,
-  cadastro
+  sessao,
+  cadastro,
+  consultaOLT,
+  olt
 };

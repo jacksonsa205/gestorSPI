@@ -23,7 +23,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-
+import useAuthValidation from '../../hooks/useAuthValidation';
 import Layout from "../../components/Layout/Layout";
 import './EscalaPlantao.css';
 
@@ -45,6 +45,7 @@ const teams = {
 };
 
 const EscalaPlantao = () => {
+  
   // Estados
   const [showModal, setShowModal] = useState(false);
   const [startDate, setStartDate] = useState(null);
@@ -70,6 +71,17 @@ const EscalaPlantao = () => {
       }
     }
   }, [editingId]);
+
+  const { loading, user, permissions } = useAuthValidation(6, null, 1);
+
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
+
+  if (!permissions.canRead) {
+    
+    return <div>Você não tem permissão...</div>;
+  }
 
   // Handlers
   const handleTeamSelect = (teamName, member) => {
