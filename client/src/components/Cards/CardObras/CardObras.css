@@ -1,4 +1,3 @@
-/* components/CardEtapas.css */
 .card-obra-container {
     border: none;
     border-radius: 12px;
@@ -39,7 +38,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
   }
   
   .card-obra-title {
@@ -86,6 +85,7 @@
     transition: 0.4s;
   }
   
+  
   /* Estilos para a lista de contratos */
   .card-obra-contratos {
     margin-top: 1rem;
@@ -97,7 +97,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.25rem 0; /* Reduzindo o padding vertical */
+    padding: 0.25rem 0; /* Espaçamento compacto */
     border-bottom: 1px solid #f8f9fa; /* Linha divisória entre itens */
   }
   

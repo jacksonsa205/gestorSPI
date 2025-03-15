@@ -1,0 +1,24 @@
+.chart-background {
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(145deg, #f6f9ff 0%, #ffffff 100%);
+    box-shadow: 0 3px 12px rgba(0, 102, 255, 0.08);
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.chart-title {
+  color: #6c757d;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.chart-card-body {
+  padding: 0;
+}
+
+.chart-wrapper {
+  width: 100%;
+  height: 100%;
+}

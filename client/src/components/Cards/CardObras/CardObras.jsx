@@ -2,14 +2,17 @@ import { Col } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './CardObras.css'; // Importando o CSS
 
-const CardObras = ({ etapa, cor, icone, total, contratos }) => {
+const CardObras = ({ etapa, icone, total, contratos, gradient }) => {
   return (
     <Col lg={3} md={6} className="mb-4">
       <div className="card-obra-container">
         <div className="card-obra-body">
-          <div className="d-flex align-items-center">
-            {/* Ícone com fundo colorido */}
-            <div className="card-obra-icon-wrapper" style={{ backgroundColor: cor }}>
+          <div className="d-flex align-items-center w-100 h-100">
+            {/* Ícone com fundo gradiente */}
+            <div 
+              className="card-obra-icon-wrapper"
+              style={{ background: `linear-gradient(45deg, ${gradient[0]}, ${gradient[1]})` }}
+            >
               <FontAwesomeIcon icon={icone} className="card-obra-icon" />
             </div>
 
