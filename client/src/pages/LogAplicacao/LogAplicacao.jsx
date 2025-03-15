@@ -19,6 +19,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import useAuthValidation from '../../hooks/useAuthValidation';
 import Layout from "../../components/Layout/Layout";
+import Loading from '../../components/Loading/Loading';
 import './LogAplicacao.css';
 
 const LogAplicacao = () => {
@@ -30,7 +31,7 @@ const LogAplicacao = () => {
   const { loading, user, permissions } = useAuthValidation(5, null, 1);
 
   if (loading) {
-    return <div>Carregando...</div>;
+    return <Loading />; 
   }
 
   if (!permissions.canRead) {

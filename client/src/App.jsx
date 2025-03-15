@@ -9,6 +9,8 @@ import Acesso from './pages/Acesso/Acesso';
 import LogAplicacao from './pages/LogAplicacao/LogAplicacao';
 import EscalaPlantao from './pages/EscalaPlantao/EscalaPlantao';
 import ConsultaOLT from './pages/NucleoTecnico/ConsultaOLT/ConsultaOLT';
+import ReporteREM from './pages/GestaoObras/ReporteREM/ReporteREM';
+import MapaREM from './pages/GestaoObras/Mapa/MapaREM';
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/cadastro" element={<Cadastro />} />
+        <Route path="/gestao-obras/reporteREM" element={<ReporteREM />} />
+        <Route path="/gestao-obras/mapaREM" element={<MapaREM />} />
         <Route path="/nucleo-tecnico/consultaOLT" element={<ConsultaOLT />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Usuario/>} />

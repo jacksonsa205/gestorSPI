@@ -40,8 +40,8 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
       icon: faPersonDigging,
       text: 'Gestor de Obras',
       subItems: [
-        { id: 1, text: 'Report REM', link: '' }, 
-        { id: 2, text: 'Mapa', link: '' } 
+        { id: 1, text: 'Report REM', link: '/gestao-obras/reporteREM' }, 
+        { id: 2, text: 'Mapa', link: '/gestao-obras/mapaREM' } 
       ]
     },
     {
@@ -51,6 +51,7 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
       subItems: [
         { id: 3, text: 'Carimbos', link: '' }, 
         { id: 4, text: 'Consulta OLT', link: '/nucleo-tecnico/consultaOLT' }, 
+        { id: 4, text: 'Consulta Prioridade', link: '/nucleo-tecnico/consultaOLT' },
         { id: 5, text: 'OLT UPLINK', link: '' }, 
         { id: 6, text: 'OLT Isolada', link: '' } 
       ]

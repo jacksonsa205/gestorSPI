@@ -1,0 +1,103 @@
+/* Arquivo ConsultaOLT.css */
+.tabela-dados {
+    font-size: 12px; /* Ajuste o tamanho da fonte conforme necessário */
+    text-align: center;
+  }
+
+.tabela-head{
+    text-align: center;
+    font-size: 13px;
+}
+
+ /* Estilo para a seção de Causa e Solução */
+.causa-solucao {
+    padding: 1rem;
+    background-color: #f8f9fa; /* Fundo cinza claro */
+    border-radius: 0.5rem; /* Bordas arredondadas */
+  }
+  
+  .descricao-title{
+    font-size: 18px;
+    font-weight: 600;
+    color: red;
+  }
+  
+  .observacao-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: green;
+  }
+  .descricao {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #555;
+  }
+  
+  .paginacao-container {
+    margin-top: 5px; /* Espaçamento superior */
+    width: 100%; /* Ocupa toda a largura disponível */
+  }
+
+  .filtros-section .btn {
+    margin-left: 8px; /* Espaçamento entre os botões */
+  }
+
+
+  /* Estilo base para a div */
+
+  .badge-etapa-detalhe {
+    padding: 3px 8px; 
+    border-radius: 5px;
+    color: white;
+    font-size: 12px !important;
+    font-weight: bold;
+    max-width: 150px;
+    height: 22px;
+    text-align: center; /* Centraliza o texto */
+    display: inline-block; /* Ajusta a largura conforme o texto */
+}
+  .badge-etapa {
+    padding: 3px 8px; 
+    border-radius: 5px;
+    color: white;
+    font-size: 8px !important;
+    font-weight: bold;
+  }
+
+  
+  
+  /* Cores personalizadas para cada etapa */
+  .badge-etapa-PENDENTE {
+    background-color: #DC3545; /* Vermelho */
+  }
+  
+  .badge-etapa-PRIORIZADA {
+    background-color: #E97132; /* Laranja */
+  }
+  
+  .badge-etapa-CANCELADA {
+    background-color: #6C757D; /* Cinza */
+  }
+  
+  .badge-etapa-AVALIAÇÃO {
+    background-color: #FA7A6C; /* Rosa */
+  }
+  
+  .badge-etapa-PROJETO {
+    background-color: #9900CC; /* Roxo */
+    
+  }
+  
+  .badge-etapa-APROVACAO-CUSTO {
+    background-color: #0C769E; /* Azul escuro */
+  }
+  
+  .badge-etapa-EXECUÇÃO {
+    background-color: #00B050; /* Verde */
+  }
+  
+  .badge-etapa-CONCLUÍDAS {
+    background-color: #0066FF; /* Azul */
+  }
+
+  

@@ -20,7 +20,9 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useAuthValidation from '../../hooks/useAuthValidation';
+import TabelaPaginada from '../../components/Table/TabelaPaginada';
 import Layout from "../../components/Layout/Layout";
+import Loading from '../../components/Loading/Loading';
 import './Acesso.css';
 
 const Acesso = () => {
@@ -252,11 +254,42 @@ const Acesso = () => {
   return matchPesquisa && matchPerfil && matchStatus;
   });
 
+  const colunas = [
+    { chave: 're', titulo: 'RE' },
+    { chave: 'nome', titulo: 'Nome' },
+    { chave: 'email', titulo: 'Email' },
+    { 
+      chave: 'perfil', 
+      titulo: 'Cargo',
+      formato: (valor) => (
+        <Badge bg={
+          valor === 'administrador' ? 'danger' : 
+          valor === 'gerente' ? 'warning' : 'secondary'
+        }>
+          {valor}
+        </Badge>
+      )
+    },
+    { 
+      chave: 'status', 
+      titulo: 'Status',
+      formato: (valor) => (
+        <Badge bg={
+          valor === 1 ? 'success' : 
+          valor === 3 ? 'danger' : 'secondary'
+        }>
+          {valor === 1 ? 'Ativo' : valor === 3 ? 'Bloqueado' : 'Inativo'}
+        </Badge>
+      )
+    },
+    { chave: 'ultimoAcesso', titulo: 'Último Acesso' }
+  ];
+
   // Validações: módulo 1 (Dashboard), sem submodulo, ação de leitura (1)
   const { loading, user, permissions } = useAuthValidation(4, null, 1,);
 
   if (loading) {
-    return <div>Carregando...</div>;
+    return <Loading />; 
   }
 
   if (!permissions.canRead) {
@@ -312,69 +345,17 @@ const Acesso = () => {
 
           <Row>
             <Col>
-              <div className="table-responsive">
-                <Table striped hover>
-                  <thead>
-                    <tr>
-                      <th>RE</th>
-                      <th>Nome</th>
-                      <th>Email</th>
-                      <th>Cargo</th>
-                      <th>Status</th>
-                      <th>Último Acesso</th>
-                      <th>Ações</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {usuariosFiltrados.map(usuario => (
-                      <tr key={usuario.id}>
-                        <td>{usuario.re}</td>
-                        <td>{usuario.nome}</td>
-                        <td>{usuario.email}</td>
-                        <td>
-                          <Badge bg={
-                            usuario.perfil === 'administrador' ? 'danger' : 
-                            usuario.perfil === 'gerente' ? 'warning' : 'secondary'
-                          }>
-                            {usuario.perfil}
-                          </Badge>
-                        </td>
-                        <td>
-                        <td>
-                          <Badge bg={
-                            usuario.status === 1 ? 'success' : 
-                            usuario.status === 3 ? 'danger' : 'secondary'
-                          }>
-                            {usuario.status === 1 ? 'Ativo' : usuario.status === 3 ? 'Bloqueado' : 'Inativo'}
-                          </Badge>
-                        </td>
-                        </td>
-                        <td>{usuario.ultimoAcesso}</td>
-                        <td>
-                          <Button 
-                            variant="outline-primary" 
-                            size="sm" 
-                            onClick={() => {
-                              setUsuarioEditando(usuario);
-                              setShowEditarModal(true);
-                            }}
-                          >
-                            <FontAwesomeIcon icon={faEdit} />
-                          </Button>
-                          <Button 
-                            variant="outline-danger" 
-                            size="sm" 
-                            className="ms-2"
-                            onClick={() => handleExcluirUsuario(usuario.id)}
-                          >
-                            <FontAwesomeIcon icon={faTrash} />
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </div>
+              <TabelaPaginada
+                dados={usuariosFiltrados}
+                colunas={colunas}
+                onEditar={(usuario) => {
+                  setUsuarioEditando(usuario);
+                  setShowEditarModal(true);
+                }}
+                onExcluir={(usuario) => handleExcluirUsuario(usuario.id)}
+                permissoes={permissions}
+                acoesCustomizadas={true}
+              />
             </Col>
           </Row>
 

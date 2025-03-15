@@ -1,85 +1,106 @@
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row } from 'react-bootstrap';
 import { 
-  faUser, 
-  faChartColumn,
-  faBox,
-  faFile,
-  faUsers,
-  faSitemap
+  faClock,
+  faExclamationTriangle,
+  faTimesCircle,
+  faClipboardCheck,
+  faDraftingCompass,
+  faFileInvoiceDollar,
+  faHardHat,
+  faCheckCircle
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Layout from "../../components/Layout/Layout";
-import CardSimples from "../../components/Cards/CardSimples/CardSimples";
-import BarChartComponent from '../../components/Charts/BarChartComponent';
-import LineChartComponent from '../../components/Charts/LineChartComponent';
 import useAuthValidation from '../../hooks/useAuthValidation';
-import './Dashboard.css';
+import Loading from '../../components/Loading/Loading';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import CardObras from '../../components/Cards/CardObras/CardObras'; 
 
+const etapasConfig = [
+  { etapa: 'PENDENTE', cor: '#dc3545', label: 'Pendente', icone: faClock },
+  { etapa: 'PRIORIZADA', cor: '#E97132', label: 'Priorizada', icone: faExclamationTriangle },
+  { etapa: 'CANCELADA', cor: '#6c757d', label: 'Cancelada', icone: faTimesCircle },
+  { etapa: 'AVALIAÇÃO', cor: '#FA7A6C', label: 'Avaliação', icone: faClipboardCheck },
+  { etapa: 'PROJETO', cor: '#9900CC', label: 'Projeto', icone: faDraftingCompass },
+  { etapa: 'APROVACAO-CUSTO', cor: '#0C769E', label: 'Aprovação Custo', icone: faFileInvoiceDollar },
+  { etapa: 'EXECUÇÃO', cor: '#00B050', label: 'Execução', icone: faHardHat },
+  { etapa: 'CONCLUÍDAS', cor: '#0066FF', label: 'Concluídas', icone: faCheckCircle },
+];
 
 const Dashboard = () => {
-  // Validações: módulo 1 (Dashboard), sem submodulo, ação de leitura (1)
   const { loading, user, permissions } = useAuthValidation(1, null, 1);
+  const [obras, setObras] = useState([]);
+
+  useEffect(() => {
+    const fetchObras = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/gestao-obra/buscar`);
+        console.log("Dados da API:", response.data); // Verifique os dados retornados
+        setObras(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar obras:", error);
+      }
+    };
+
+    fetchObras();
+  }, []);
 
   if (loading) {
-    return <div>Carregando...</div>;
+    return <Loading />; 
   }
 
   if (!permissions.canRead) {
     return <div>Você não tem permissão...</div>;
   }
 
-  // Dados compartilhados para ambos os gráficos
-  const chartData = [
-    { name: 'Jan', value: 4000 },
-    { name: 'Fev', value: 3000 },
-    { name: 'Mar', value: 5000 },
-    { name: 'Abr', value: 2780 },
-    { name: 'Mai', value: 1890 },
-    { name: 'Jun', value: 2390 },
-  ];
+  // Agrupar obras por etapa e contrato (CLUSTER)
+  const resumoPorEtapa = obras.reduce((acc, obra) => {
+    const etapa = obra.ETAPA || 'PENDENTE'; // Usar 'PENDENTE' como padrão se não houver etapa
+    const contrato = obra.CLUSTER || 'Sem Contrato'; // Usar 'Sem Contrato' como padrão se não houver CLUSTER
+
+    if (!acc[etapa]) {
+      acc[etapa] = {
+        total: 0,
+        contratos: {},
+      };
+    }
+    acc[etapa].total += 1;
+
+    if (!acc[etapa].contratos[contrato]) {
+      acc[etapa].contratos[contrato] = 0;
+    }
+    acc[etapa].contratos[contrato] += 1;
+
+    return acc;
+  }, {});
 
   return (
     <Layout
       title="Dashboard"
       content={
         <div>
-          {/* Seção de Cards (exibida apenas se a permissão de ação for 2) */}
-          {permissions.canEdit && ( // Verifica se a permissão de ação é 2 (canEdit)
-            <Container fluid className="mt-4">
-              <Row>
-                {[
-                  { title: 'Visitas', value: '2.4k', icon: faUser },
-                  { title: 'Vendas', value: '$24k', icon: faChartColumn },
-                  { title: 'Pedidos', value: '1.2k', icon: faBox },
-                  { title: 'Receita', value: '$48k', icon: faFile },
-                ].map((item, index) => (
-                  <Col key={index} lg={3} md={6} className="mb-4">
-                    <CardSimples
-                      icon={item.icon}
-                      title={item.title}
-                      value={item.value}
-                    />
-                  </Col>
-                ))}
-              </Row>
-            </Container>
-          )}
-
-          {/* Seção de Gráficos Lado a Lado */}
+          
           <Container fluid className="mt-4">
+            <h5 className='resumo-obras-title'>Resumo da Obras SPI</h5>
             <Row>
-              <Col md={6} className="mb-4">
-                <BarChartComponent 
-                  title="Desempenho Mensal"
-                  data={chartData}
-                />
-              </Col>
-              <Col md={6} className="mb-4">
-                <LineChartComponent 
-                  title="Evolução Mensal"
-                  data={chartData}
-                />
-              </Col>
+              {etapasConfig.map((etapa, index) => {
+                const dadosEtapa = resumoPorEtapa[etapa.etapa] || { total: 0, contratos: {} };
+                const contratosFormatados = Object.keys(dadosEtapa.contratos).map((contrato) => ({
+                  nome: contrato,
+                  quantidade: dadosEtapa.contratos[contrato],
+                }));
+
+                return (
+                  <CardObras
+                    key={index}
+                    etapa={etapa.label}
+                    cor={etapa.cor}
+                    icone={etapa.icone}
+                    total={dadosEtapa.total}
+                    contratos={contratosFormatados}
+                  />
+                );
+              })}
             </Row>
           </Container>
         </div>

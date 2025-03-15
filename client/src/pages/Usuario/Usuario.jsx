@@ -15,6 +15,8 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Layout from "../../components/Layout/Layout";
+import useAuthValidation from '../../hooks/useAuthValidation';
+import Loading from '../../components/Loading/Loading';
 import './Usuario.css';
 
 const Usuario = () => {
@@ -97,6 +99,17 @@ const Usuario = () => {
     console.log('Senha alterada:', senha);
     setSenha({ atual: '', nova: '', confirmacao: '' });
   };
+
+  // Validações: módulo 1 (Dashboard), sem submodulo, ação de leitura (1)
+  const { loading, user, permissions } = useAuthValidation(7, null, 1);
+
+  if (loading) {
+    return <Loading />; 
+  }
+
+  if (!permissions.canRead) {
+    return <div>Você não tem permissão...</div>;
+  }
 
   return (
     <Layout

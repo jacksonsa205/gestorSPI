@@ -3,19 +3,16 @@ import {
   Container,
   Row,
   Col,
-  Table,
   Button,
   Form,
   InputGroup,
   Modal,
   Badge,
   Alert,
-  Pagination 
 } from 'react-bootstrap';
 import {
   faSearch,
   faEdit,
-  faTrash,
   faPlus,
   faSave,
   faExclamationTriangle,
@@ -27,6 +24,8 @@ import Papa from 'papaparse';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useAuthValidation from '../../../hooks/useAuthValidation';
 import Layout from "../../../components/Layout/Layout";
+import TabelaPaginada from "../../../components/Table/TabelaPaginada";
+import Loading from '../../../components/Loading/Loading';
 import './ConsultaOLT.css';
 
 const ConsultaOLT = () => {
@@ -42,8 +41,6 @@ const ConsultaOLT = () => {
   const [consultaDetalhada, setConsultaDetalhada] = useState(null);
   const [showDetalhesModal, setShowDetalhesModal] = useState(false);
   const [olts, setOlts] = useState([]);
-  const [paginaAtual, setPaginaAtual] = useState(1); // Página atual
-  const [itensPorPagina] = useState(25); // Itens por página 
   const [novaConsulta, setNovaConsulta] = useState({
     codigo: '',
     oltHostname: '', 
@@ -363,90 +360,37 @@ const ConsultaOLT = () => {
   });
 
 
-  // Calcular os índices dos itens da página atual
-  const indexUltimoItem = paginaAtual * itensPorPagina;
-  const indexPrimeiroItem = indexUltimoItem - itensPorPagina;
-  const itensPaginaAtual = consultasFiltradas.slice(indexPrimeiroItem, indexUltimoItem);
-
-  // Calcular o número total de páginas
-  const totalPaginas = Math.ceil(consultasFiltradas.length / itensPorPagina);
-
-  // Função para mudar de página
-  const mudarPagina = (numeroPagina) => {
-    setPaginaAtual(numeroPagina);
-  };
-
-  // Função para ir para a próxima página
-  const proximaPagina = () => {
-    if (paginaAtual < totalPaginas) {
-      setPaginaAtual(paginaAtual + 1);
-    }
-  };
-
-  // Função para voltar para a página anterior
-  const paginaAnterior = () => {
-    if (paginaAtual > 1) {
-      setPaginaAtual(paginaAtual - 1);
-    }
-  };
-
-  // Renderizar os números das páginas
-  const renderizarNumerosPaginas = () => {
-    const numerosPaginas = [];
-    const paginasVisiveis = 15; // Número de páginas visíveis ao redor da página atual
-  
-    // Calcular o intervalo de páginas visíveis
-    let inicio = Math.max(1, paginaAtual - Math.floor(paginasVisiveis / 2));
-    let fim = Math.min(totalPaginas, inicio + paginasVisiveis - 1);
-  
-    // Ajustar o início se o fim ultrapassar o total de páginas
-    if (fim - inicio + 1 < paginasVisiveis) {
-      inicio = Math.max(1, fim - paginasVisiveis + 1);
-    }
-  
-    // Botão para a primeira página
-    if (inicio > 1) {
-      numerosPaginas.push(
-        <Pagination.Item key={1} onClick={() => mudarPagina(1)}>
-          1
-        </Pagination.Item>
-      );
-      if (inicio > 2) {
-        numerosPaginas.push(<Pagination.Ellipsis key="ellipsis-start" disabled />);
-      }
-    }
-  
-    // Botões das páginas visíveis
-    for (let i = inicio; i <= fim; i++) {
-      numerosPaginas.push(
-        <Pagination.Item
-          key={i}
-          active={i === paginaAtual}
-          onClick={() => mudarPagina(i)}
-        >
-          {i}
-        </Pagination.Item>
-      );
-    }
-  
-    // Botão para a última página
-    if (fim < totalPaginas) {
-      if (fim < totalPaginas - 1) {
-        numerosPaginas.push(<Pagination.Ellipsis key="ellipsis-end" disabled />);
-      }
-      numerosPaginas.push(
-        <Pagination.Item key={totalPaginas} onClick={() => mudarPagina(totalPaginas)}>
-          {totalPaginas}
-        </Pagination.Item>
-      );
-    }
-  
-    return numerosPaginas;
-  };
+  const colunas = [
+    { chave: 'CODIGO', titulo: 'TA', formato: (valor) => <Badge bg="secondary">{valor || "N/A"}</Badge> },
+    { chave: 'OLT_HOSTNAME', titulo: 'OLT' },
+    { chave: 'CONTRATO', titulo: 'Contrato' },
+    { chave: 'DT_CRIACAO_FT', titulo: 'Criação' },
+    { chave: 'DT_ENCERRAMENTO_FT', titulo: 'Encerramento' },
+    { chave: 'RESUMO', titulo: 'Resumo' },
+    { chave: 'ABORDAGEM', titulo: 'Abordagem' },
+    {
+      chave: 'CONDOMINIO',
+      titulo: 'Condomínio',
+      formato: (valor) => (
+        <Badge bg={valor === 'SIM' ? 'success' : valor === 'NÃO' ? 'danger' : 'secondary'}>
+          {valor || "N/A"}
+        </Badge>
+      ),
+    },
+    {
+      chave: 'SITE',
+      titulo: 'Site',
+      formato: (valor) => (
+        <Badge bg={valor === 'SIM' ? 'success' : valor === 'NÃO' ? 'danger' : 'secondary'}>
+          {valor || "N/A"}
+        </Badge>
+      ),
+    },
+  ];
 
 
   if (loading) {
-    return <div>Carregando...</div>;
+    return <Loading />; 
   }
 
   if (!permissions.canRead) {
@@ -486,101 +430,20 @@ const ConsultaOLT = () => {
           </Row>
 
           <Row>
-            <Col>
-              <div className="table-responsive">
-                <Table striped hover>
-                  <thead>
-                    <tr>
-                      <th className="tabela-head">TA</th>
-                      <th className="tabela-head">OLT</th>
-                      <th className="tabela-head">Contrato</th>
-                      <th className="tabela-head">Criação</th>
-                      <th className="tabela-head">Encerramento</th>
-                      <th className="tabela-head">Resumo</th>
-                      <th className="tabela-head">Abordagem</th>
-                      <th className="tabela-head">Condomínio</th>
-                      <th className="tabela-head">Site</th>
-                      <th className="tabela-head">Ações</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {itensPaginaAtual.map(consulta => (
-                      <tr key={consulta.CODIGO}>
-                        <td className="tabela-dados">
-                          <Badge bg="secondary">{consulta.CODIGO || "N/A"}</Badge>
-                        </td>
-                        <td className="tabela-dados">{consulta.OLT_HOSTNAME || "N/A"}</td>
-                        <td className="tabela-dados">{consulta.CONTRATO || "N/A"}</td>
-                        <td className="tabela-dados">{consulta.DT_CRIACAO_FT || "N/A"}</td>
-                        <td className="tabela-dados">{consulta.DT_ENCERRAMENTO_FT || "N/A"}</td>
-                        <td className="tabela-dados">{consulta.RESUMO || "N/A"}</td>
-                        <td className="tabela-dados">{consulta.ABORDAGEM || "N/A"}</td>
-                        <td className="tabela-dados">
-                          <Badge bg={
-                              consulta.CONDOMINIO === 'SIM' ? 'success' : 
-                              consulta.CONDOMINIO === 'NÃO' ? 'danger' : 'secondary'
-                          }>
-                              {consulta.CONDOMINIO || "N/A"}
-                          </Badge>    
-                        </td>
-                        <td className="tabela-dados">
-                          <Badge bg={
-                              consulta.SITE  === 'SIM' ? 'success' : 
-                              consulta.SITE  === 'NÃO' ? 'danger' : 'secondary'
-                          }>
-                              {consulta.SITE  || "N/A"}
-                          </Badge>    
-                        </td>
-                        <td className="tabela-dados">
-                          <Button
-                            variant="outline-info"
-                            size="sm"
-                            onClick={() => {
-                              setConsultaDetalhada(consulta); // Define a consulta detalhada
-                              setShowDetalhesModal(true); // Abre o modal
-                            }}
-                          >
-                            <FontAwesomeIcon icon={faSearch} />
-                          </Button>
-                          {permissions.canEdit && (
-                            <Button
-                              variant="outline-primary"
-                              size="sm"
-                              className="ms-2"
-                              onClick={() => abrirModalEdicao(consulta)}
-                            >
-                              <FontAwesomeIcon icon={faEdit} />
-                            </Button>
-                          )}
-                          {permissions.canDelete && (
-                            <Button
-                              variant="outline-danger"
-                              size="sm"
-                              className="ms-2"
-                              onClick={() => handleExcluirConsulta(consulta.CODIGO)}
-                            >
-                              <FontAwesomeIcon icon={faTrash} />
-                            </Button>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </div>
-
-              {/* Controles de Paginação */}
-              <Row className="paginacao-container">
-                <Col className="d-flex justify-content-center">
-                    <Pagination>
-                    <Pagination.Prev onClick={paginaAnterior} disabled={paginaAtual === 1} />
-                    {renderizarNumerosPaginas()}
-                    <Pagination.Next onClick={proximaPagina} disabled={paginaAtual === totalPaginas} />
-                    </Pagination>
-                </Col>
-               </Row>
-            </Col>
-          </Row>
+          <Col>
+            <TabelaPaginada
+              dados={consultasFiltradas}
+              colunas={colunas}
+              onEditar={abrirModalEdicao}
+              onExcluir={(item) => handleExcluirConsulta(item.CODIGO)}
+              onDetalhes={(item) => {
+                setConsultaDetalhada(item);
+                setShowDetalhesModal(true);
+              }}
+              permissoes={permissions}
+            />
+          </Col>
+        </Row>
 
           {/* Modal Detalhes */}
 

@@ -25,6 +25,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import useAuthValidation from '../../hooks/useAuthValidation';
 import Layout from "../../components/Layout/Layout";
+import Loading from '../../components/Loading/Loading';
 import './EscalaPlantao.css';
 
 // Dados mockados
@@ -75,7 +76,7 @@ const EscalaPlantao = () => {
   const { loading, user, permissions } = useAuthValidation(6, null, 1);
 
   if (loading) {
-    return <div>Carregando...</div>;
+    return <Loading />; 
   }
 
   if (!permissions.canRead) {
