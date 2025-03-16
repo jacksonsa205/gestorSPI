@@ -61,7 +61,7 @@ const OltUplink = () => {
   const [showGraficoModal, setShowGraficoModal] = useState(false);
 
   // Validações: módulo 3 (Núcleo Técnico), sem submodulo, ação de leitura (1)
-  const { loading, user, permissions } = useAuthValidation(3, 6, 1);
+  const { loading, user, permissions } = useAuthValidation(3, 5, 1);
 
   // Carregar OLTs disponíveis
   useEffect(() => {
