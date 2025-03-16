@@ -9,8 +9,11 @@ import Acesso from './pages/Acesso/Acesso';
 import LogAplicacao from './pages/LogAplicacao/LogAplicacao';
 import EscalaPlantao from './pages/EscalaPlantao/EscalaPlantao';
 import ConsultaOLT from './pages/NucleoTecnico/ConsultaOLT/ConsultaOLT';
+import OltIsolada from './pages/NucleoTecnico/OltIsolada/OltIsolada';
+import OltUplink from './pages/NucleoTecnico/OltUplink/OltUplink';
 import ReporteREM from './pages/GestaoObras/ReporteREM/ReporteREM';
 import MapaREM from './pages/GestaoObras/Mapa/MapaREM';
+
 
 function App() {
   return (
@@ -21,6 +24,8 @@ function App() {
         <Route path="/gestao-obras/reporteREM" element={<ReporteREM />} />
         <Route path="/gestao-obras/mapaREM" element={<MapaREM />} />
         <Route path="/nucleo-tecnico/consultaOLT" element={<ConsultaOLT />} />
+        <Route path="/nucleo-tecnico/olt-isolada" element={<OltIsolada />} />
+        <Route path="/nucleo-tecnico/olt-uplink" element={<OltUplink />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Usuario/>} />
         <Route path="/acesso" element={<Acesso />} />

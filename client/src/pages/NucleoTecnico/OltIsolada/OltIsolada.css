@@ -1,0 +1,145 @@
+/* Arquivo ConsultaOLT.css */
+.tabela-dados {
+    font-size: 12px; /* Ajuste o tamanho da fonte conforme necessário */
+    text-align: center;
+  }
+
+.tabela-head{
+    text-align: center;
+    font-size: 13px;
+}
+
+ /* Estilo para a seção de Causa e Solução */
+.causa-solucao {
+    
+    padding: 1rem;
+    background-color: #f8f9fa; /* Fundo cinza claro */
+    border-radius: 0.5rem; /* Bordas arredondadas */
+  }
+  
+  .causa-title {
+    font-size: 18px;
+    font-weight: 600;
+    
+    color: red;
+  }
+  
+  .solucao-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: green;
+  }
+  .descricao {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #555;
+  }
+  
+  .paginacao-container {
+    margin-top: 5px; /* Espaçamento superior */
+    width: 100%; /* Ocupa toda a largura disponível */
+  }
+
+  .filtros-section .btn {
+    margin-left: 8px; /* Espaçamento entre os botões */
+  }
+
+  .recharts-wrapper {
+    margin: 0 auto;
+  }
+  
+  .recharts-legend-wrapper {
+    bottom: 0 !important;
+  }
+
+  .input-pequeno {
+    width: 100%; /* Ajuste o tamanho conforme necessário */
+    max-width: 200px; /* Define um tamanho máximo para os inputs */
+  }
+
+
+  /* Estilo para o modal de gráficos */
+  
+  .grafico-modal .modal-content {
+    border-radius: 12px; /* Bordas arredondadas para o modal */
+    overflow: hidden; /* Garante que o conteúdo respeite as bordas arredondadas */
+  }
+  
+  .grafico-modal .modal-title {
+    font-size: 1.25rem; /* Tamanho do título */
+    font-weight: bold; /* Negrito */
+    margin: 0; /* Remove margens padrão */
+  }
+  
+  .grafico-modal .modal-body {
+    padding: 20px; /* Espaçamento interno */
+    background-color: #f8f9fa; /* Fundo claro para o corpo do modal */
+  }
+  
+  .grafico-modal .grafico-container {
+    background-color: white; /* Fundo branco para os gráficos */
+    padding: 20px; /* Espaçamento interno */
+    border-radius: 8px; /* Bordas arredondadas */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    margin-bottom: 20px; /* Espaçamento entre os gráficos */
+  }
+  
+  .grafico-modal h5 {
+    font-size: 1.1rem; /* Tamanho dos títulos dos gráficos */
+    font-weight: bold; /* Negrito */
+    color: white; /* Cor do texto */
+    background-color: #0066ff; /* Fundo azul */
+    padding: 10px; /* Espaçamento interno */
+    border-radius: 8px; /* Bordas arredondadas */
+    margin-bottom: 15px; /* Espaçamento abaixo do título */
+  }
+  
+  .grafico-modal .recharts-wrapper {
+    margin: 0 auto; /* Centraliza os gráficos */
+  }
+  
+  .grafico-modal .recharts-legend-wrapper {
+    bottom: 0 !important; /* Ajusta a posição da legenda */
+    text-align: center; /* Centraliza a legenda */
+  }
+  
+  .grafico-modal .recharts-legend-item {
+    display: inline-flex; /* Alinha os itens da legenda */
+    align-items: center; /* Centraliza verticalmente */
+    margin-right: 15px; /* Espaçamento entre os itens */
+  }
+  
+  .grafico-modal .recharts-legend-item-text {
+    margin-left: 5px; /* Espaçamento entre o ícone e o texto */
+    font-size: 0.9rem; /* Tamanho do texto da legenda */
+    color: #333; /* Cor do texto */
+  }
+  
+  .grafico-modal .recharts-tooltip {
+    background-color: #fff; /* Fundo do tooltip */
+    border: 1px solid #ddd; /* Borda do tooltip */
+    border-radius: 4px; /* Bordas arredondadas */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    padding: 8px; /* Espaçamento interno */
+  }
+  
+  .grafico-modal .recharts-tooltip-label {
+    font-weight: bold; /* Negrito para o rótulo do tooltip */
+    color: #333; /* Cor do texto */
+  }
+  
+  .grafico-modal .recharts-tooltip-item {
+    color: #555; /* Cor do texto dos itens do tooltip */
+  }
+
+  /* Estilo para a data de atualização */
+.data-atualizacao {
+    color: #0066ff; /* Cor azul para destacar */
+    font-weight: bold; /* Texto em negrito */
+    margin-left: 8px; /* Espaçamento à esquerda */
+    padding: 4px 8px; /* Espaçamento interno */
+    background-color: #e6f0ff; /* Fundo suave */
+    border-radius: 4px; /* Bordas arredondadas */
+    display: inline-block; /* Garante que o fundo cubra apenas o texto */
+  }
+ 
