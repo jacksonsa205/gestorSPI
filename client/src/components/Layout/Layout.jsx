@@ -21,15 +21,14 @@ const Layout = ({ title, content }) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0); // Chave de atualização
+  const [firstName, setFirstName] = useState('Usuário'); // Estado para o primeiro nome
   const menuRef = useRef(null);
   const navigate = useNavigate();
 
   // Força a atualização das permissões quando o menu é aberto
   const { permissoesModulo, user } = useAuthValidation(null, null, null, refreshKey);
 
-  // Extrai o primeiro nome do usuário
-  const firstName = user?.NOME?.split(' ')[0] || 'Usuário';
-
+  
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -40,6 +39,18 @@ const Layout = ({ title, content }) => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    if (user?.NOME) {
+      // Extrai o primeiro nome do usuário
+      const nomeCompleto = user.NOME;
+      const primeiroNome = nomeCompleto.split(' ')[0];
+      setFirstName(primeiroNome);
+    } else {
+      // Se não houver nome, define como 'Usuário'
+      setFirstName('Usuário');
+    }
+  }, [user]); // Executa sempre que o objeto `user` mudar
 
   const handleMenuToggle = () => {
     if (!showUserMenu) {
@@ -66,7 +77,7 @@ const Layout = ({ title, content }) => {
       const token = localStorage.getItem('token');
       
       // Envia requisição de logout para o servidor
-      await axios.post('http://localhost:3000/usuario/logout', null, {
+      await axios.post(`${import.meta.env.VITE_API_URL}/usuario/logout`, null, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -81,6 +92,7 @@ const Layout = ({ title, content }) => {
       navigate('/');
     }
   };
+
 
   return (
     <div className="dashboard-wrapper">
