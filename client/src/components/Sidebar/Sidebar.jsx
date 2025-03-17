@@ -51,7 +51,7 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
       subItems: [
         { id: 3, text: 'Carimbos', link: '' }, 
         { id: 4, text: 'Consulta OLT', link: '/nucleo-tecnico/consultaOLT' }, 
-        { id: 4, text: 'Consulta Prioridade', link: '/nucleo-tecnico/consultaOLT' },
+        { id: 7, text: 'Consulta Prioritária', link: '' },
         { id: 5, text: 'OLT UPLINK', link: '/nucleo-tecnico/olt-uplink' }, 
         { id: 6, text: 'OLT Isolada', link: '/nucleo-tecnico/olt-isolada' } 
       ]
