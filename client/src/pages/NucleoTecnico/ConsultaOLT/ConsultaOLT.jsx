@@ -418,10 +418,12 @@ const ConsultaOLT = () => {
               </InputGroup>
             </Col>
             <Col md={4} className="d-flex justify-content-end">
-              <Button variant="primary" onClick={() => setShowNovoModal(true)}>
-                <FontAwesomeIcon icon={faPlus} className="me-2" />
-                Cadastrar
-              </Button>
+            {permissions.canEdit && (
+                <Button variant="primary" onClick={() => setShowNovoModal(true)}>
+                  <FontAwesomeIcon icon={faPlus} className="me-2" />
+                  Cadastrar
+                </Button>
+              )}
               <Button variant="success" onClick={handleDownloadCSV}>
                 <FontAwesomeIcon icon={faDownload} className="me-2" />
                 Baixar CSV
