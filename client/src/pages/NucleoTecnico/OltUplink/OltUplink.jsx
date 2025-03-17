@@ -405,7 +405,7 @@ const OltUplink = () => {
                     onChange={(e) => {
                     const value = parseInt(e.target.value, 10);
                     setOltNok(value);
-                    setOltOk(715 - value);
+                    setOltOk(165 - value);
                     }}
                     className="input-pequeno"
                 />
