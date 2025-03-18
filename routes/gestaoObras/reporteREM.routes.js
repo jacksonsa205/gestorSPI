@@ -1,6 +1,9 @@
 const express = require('express');
 const controller = require('../../controllers/gestaoObras/reporteREM');
 const router = express.Router();
+const blockBrowserAccess = require('../../middleware/blockBrowserAccess');
+
+router.use(blockBrowserAccess);
 
 // Rotas CRUD completas
 router.post('/cadastrar', controller.post);

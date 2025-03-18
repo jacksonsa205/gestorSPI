@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Navbar, Button, Col, Row } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faBars, 
@@ -200,6 +201,11 @@ const Layout = ({ title, content }) => {
       </div>
     </div>
   );
+};
+
+Layout.propTypes = {
+  title: PropTypes.string.isRequired, // title é uma string obrigatória
+  content: PropTypes.node.isRequired, // content pode ser qualquer nó React (string, número, elemento, etc.)
 };
 
 export default Layout;

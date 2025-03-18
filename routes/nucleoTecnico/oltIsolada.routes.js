@@ -1,6 +1,9 @@
 const express = require('express');
 const controller = require('../../controllers/nucleoTecnico/oltIsolada');
 const router = express.Router();
+const blockBrowserAccess = require('../../middleware/blockBrowserAccess');
+
+router.use(blockBrowserAccess);
 
 // Rotas CRUD completas
 router.post('/olt-isolada/cadastrar', controller.post); // Cadastrar uma nova OLT Isolada

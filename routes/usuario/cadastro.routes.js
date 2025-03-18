@@ -1,10 +1,18 @@
 const express = require('express');
-const controller = require('../../controllers/usuario/cadastro');
 const router = express.Router();
+const authMiddleware = require('../../middleware/authMiddleware');
+const validateOrigin = require('../../middleware/blockBrowserAccess');
+const blockBrowserAccess = require('../../middleware/blockBrowserAccess'); // Importe o middleware
+const controller = require('../../controllers/usuario/cadastro');
 
-// Rotas CRUD completas
-router.post('/cadastrar', controller.post);
+// Aplica os middlewares
+router.use(blockBrowserAccess);
+// router.use(validateOrigin);
+// router.use(authMiddleware());
+
+// Rotas protegidas
 router.get('/buscar', controller.get);
+router.post('/cadastrar', controller.post);
 router.put('/editar/:id', controller.put);
 router.delete('/excluir/:id', controller.delete);
 

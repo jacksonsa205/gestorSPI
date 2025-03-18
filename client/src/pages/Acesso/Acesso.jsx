@@ -3,7 +3,6 @@ import {
   Container, 
   Row, 
   Col, 
-  Table, 
   Button, 
   Form, 
   InputGroup, 
@@ -14,7 +13,6 @@ import {
 import { 
   faSearch,
   faEdit,
-  faTrash,
   faUserPlus,
   faSave
 } from '@fortawesome/free-solid-svg-icons';
@@ -56,6 +54,7 @@ const Acesso = () => {
     permissoes_submodulo: []
   });
   const [erro, setErro] = useState('');
+ 
   const [carregando, setCarregando] = useState(true);
 
   
