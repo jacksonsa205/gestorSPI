@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const authMiddleware = require('../../middleware/authMiddleware');
+
 const validateOrigin = require('../../middleware/blockBrowserAccess');
 const blockBrowserAccess = require('../../middleware/blockBrowserAccess'); // Importe o middleware
 const controller = require('../../controllers/usuario/cadastro');
@@ -8,7 +8,7 @@ const controller = require('../../controllers/usuario/cadastro');
 // Aplica os middlewares
 router.use(blockBrowserAccess);
 // router.use(validateOrigin);
-// router.use(authMiddleware());
+
 
 // Rotas protegidas
 router.get('/buscar', controller.get);
