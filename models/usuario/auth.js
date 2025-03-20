@@ -11,7 +11,7 @@ const buscarUsuarioPorEmail = async (email) => {
 
 // Atualiza o token do usuário no banco de dados
 const atualizarTokenUsuario = async (userId, token) => {
-  const query = 'UPDATE TB_GSPI_Usuarios SET TOKEN = ? WHERE ID = ?';
+  const query = 'UPDATE TB_GSPI_Usuarios SET TOKEN = ?, ULTIMO_ACESSO = NOW() WHERE ID = ?';
   await pool.execute(query, [token, userId]);
 };
 

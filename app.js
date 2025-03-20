@@ -7,7 +7,7 @@ const session = require('express-session');
 const path = require('path');
 const { redisClient } = require('./config/redis');
 const RedisStore = require('connect-redis').default;
-const { auth,permissoes, sessao,cadastro,reporteREM,consultaOLT,oltIsolada,oltUplink,olt } = require('./routes/index.routes');
+const { auth,permissoes, sessao,cadastro,reporteREM,consultaOLT,consultaPrioritaria,oltIsolada,oltUplink,olt } = require('./routes/index.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -40,7 +40,7 @@ app.use(bodyParser.json());
 if (process.env.NODE_ENV === 'production') {
   app.use('/usuario', auth, permissoes, sessao,cadastro);
   app.use('/gestao-obra', reporteREM);
-  app.use('/nucleo-tecnico', consultaOLT,oltIsolada,oltUplink);
+  app.use('/nucleo-tecnico', consultaOLT,consultaPrioritaria,oltIsolada,oltUplink);
   app.use('/olt', olt);
   app.use(express.static(path.join(__dirname, 'client', 'dist')));
   app.get('*', (req, res) => {

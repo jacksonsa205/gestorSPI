@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 const Model = require('../../models/usuario/auth');
 const { generateToken, comparePassword, hashPassword } = require('../../helpers/auth');
 const { redisClient } = require('../../config/redis');
+const logMiddleware = require('../../middleware/logMiddleware');
+const { getClientIP } = require('../../helpers/ipUtils'); 
 
 // Centralização de erros
 const handleDatabaseError = (res, error) => {
@@ -13,6 +15,7 @@ const handleDatabaseError = (res, error) => {
 // Operação de login
 const login = async (req, res) => {
   const { email, senha } = req.body;
+  const ip = getClientIP(req);
 
   try {
     // Verifica se o usuário existe
@@ -34,6 +37,9 @@ const login = async (req, res) => {
 
     // Salva o token no banco de dados
     await Model.atualizarTokenUsuario(user.ID, token);
+
+    // Registra o log de login
+    await logMiddleware(user.RE, 'Login', `Usuário fez login`, ip)(req, res, () => {});
 
     // Retorna o token e os dados do usuário (sem a senha)
     const { SENHA, ...userWithoutPassword } = user;

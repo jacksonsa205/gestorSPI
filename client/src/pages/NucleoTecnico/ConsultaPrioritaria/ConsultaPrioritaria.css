@@ -1,0 +1,45 @@
+/* Arquivo ConsultaOLT.css */
+.tabela-dados {
+    font-size: 12px; /* Ajuste o tamanho da fonte conforme necessário */
+    text-align: center;
+  }
+
+.tabela-head{
+    text-align: center;
+    font-size: 13px;
+}
+
+ /* Estilo para a seção de Causa e Solução */
+.causa-solucao {
+    
+    padding: 1rem;
+    background-color: #f8f9fa; /* Fundo cinza claro */
+    border-radius: 0.5rem; /* Bordas arredondadas */
+  }
+  
+  .causa-title {
+    font-size: 18px;
+    font-weight: 600;
+    
+    color: red;
+  }
+  
+  .solucao-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: green;
+  }
+  .descricao {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #555;
+  }
+  
+  .paginacao-container {
+    margin-top: 5px; /* Espaçamento superior */
+    width: 100%; /* Ocupa toda a largura disponível */
+  }
+
+  .filtros-section .btn {
+    margin-left: 8px; /* Espaçamento entre os botões */
+  }
