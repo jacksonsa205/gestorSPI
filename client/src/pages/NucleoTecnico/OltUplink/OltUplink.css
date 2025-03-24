@@ -142,4 +142,28 @@
     border-radius: 4px; /* Bordas arredondadas */
     display: inline-block; /* Garante que o fundo cubra apenas o texto */
   }
+
+
+  /* Adicione ao seu arquivo CSS */
+.modal-header {
+  padding: 1rem 1rem;
+}
+
+.modal-header .btn-link {
+  color: #6c757d;
+  transition: all 0.2s;
+  font-size: 20px;
+}
+
+.modal-header .btn-link:hover {
+  color: #495057;
+  background-color: rgba(0, 0, 0, 0.05);
+  
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  margin-right: auto;
+}
  
+  

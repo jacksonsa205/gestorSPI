@@ -18,7 +18,8 @@ import {
   faExclamationTriangle,
   faCheckCircle,
   faDownload,
-  faPaperPlane
+  faPaperPlane,
+  faTimes
 } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
 import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
@@ -367,7 +368,7 @@ const OltUplink = () => {
       // 4. Criar FormData para enviar
       const formData = new FormData();
       formData.append('image', blob, 'relatorio_olts.png');
-      formData.append('caption', `Relatório OLTs - ${formatarDataHoraAtual()}`);
+      formData.append('caption', `Relatório Gestão OLT Uplink - ${formatarDataHoraAtual()}`);
   
       // 5. Enviar para o backend
       const response = await axios.post(
@@ -384,6 +385,48 @@ const OltUplink = () => {
     } catch (error) {
       console.error('Erro ao enviar relatório:', error);
       alert('Erro ao enviar relatório. Verifique o console.');
+    }
+  };
+
+  const enviarDetalheTelegram = async () => {
+    try {
+      // 1. Capturar o elemento do modal de detalhes
+      const modalElement = document.querySelector('.modal-detalhes');
+      
+      if (!modalElement) {
+        throw new Error('Modal de detalhes não encontrado');
+      }
+  
+      // 2. Converter para imagem PNG
+      const dataUrl = await toPng(modalElement, {
+        quality: 0.95,
+        pixelRatio: 2,
+        backgroundColor: '#fff' // Fundo branco para melhor legibilidade
+      });
+  
+      // 3. Converter Data URL para Blob
+      const blob = await fetch(dataUrl).then(res => res.blob());
+      
+      // 4. Criar FormData para enviar
+      const formData = new FormData();
+      formData.append('image', blob, `detalhe_ta_${oltDetalhada?.TA || 'desconhecida'}.png`);
+      formData.append('caption', `Detalhes da TA ${oltDetalhada?.TA || ''} - ${formatarDataHoraAtual()}`);
+  
+      // 5. Enviar para o backend
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/telegram/enviar-imagem`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      );
+  
+      alert('Detalhes da TA enviados com sucesso para o Telegram!');
+    } catch (error) {
+      console.error('Erro ao enviar detalhes:', error);
+      alert(`Erro ao enviar detalhes: ${error.message}`);
     }
   };
 
@@ -515,6 +558,14 @@ const OltUplink = () => {
                     NT - Gestão de Uplinks e OLTs Remotas - 
                     <span className="data-atualizacao">Atualização:{" "}{formatarDataHoraAtual()}</span>
                 </Modal.Title>
+                <Button 
+                  variant="link" 
+                  onClick={enviarGraficoTelegram}
+                  title="Enviar relatório para Telegram"
+                  className="text-secondary"
+                >
+                  <FontAwesomeIcon icon={faPaperPlane} />
+                </Button>
             </Modal.Header>
             <Modal.Body>
                 <Row>
@@ -577,24 +628,36 @@ const OltUplink = () => {
                     </div>
                 </Col>
                 </Row>
-                <Modal.Footer>
-                  
-                  <Button variant="success" onClick={enviarGraficoTelegram}>
-                    <FontAwesomeIcon icon={faPaperPlane} className="me-2" />
-                    Enviar para Telegram
-                  </Button>
-                </Modal.Footer>
             </Modal.Body>
             </Modal>
 
 
           {/* Modal Detalhes */}
-          <Modal show={showDetalhesModal} onHide={() => setShowDetalhesModal(false)} size="lg">
-            <Modal.Header closeButton>
-                <Modal.Title>
-                <FontAwesomeIcon icon={faSearch} className="me-2" />
-                Detalhes da OLT Isolada - {oltDetalhada ? oltDetalhada.TA : "N/A"}
+          <Modal show={showDetalhesModal} onHide={() => setShowDetalhesModal(false)} size="lg" className="modal-detalhes">
+            <Modal.Header>
+              <div className="d-flex justify-content-between w-100 align-items-center">
+                <Modal.Title className="m-0">
+                  <FontAwesomeIcon icon={faSearch} className="me-2" />
+                  Detalhes da OLT Isolada - {oltDetalhada ? oltDetalhada.TA : "N/A"}
                 </Modal.Title>
+                <div className="d-flex align-items-center">
+                  <Button 
+                    variant="link" 
+                    onClick={enviarDetalheTelegram}
+                    title="Enviar detalhes para Telegram"
+                    className="text-secondary p-1 me-2"
+                  >
+                    <FontAwesomeIcon icon={faPaperPlane} />
+                  </Button>
+                  <Button 
+                    variant="link" 
+                    onClick={() => setShowDetalhesModal(false)}
+                    className="p-1"
+                  >
+                    <FontAwesomeIcon icon={faTimes} />
+                  </Button>
+                </div>
+              </div>
             </Modal.Header>
             <Modal.Body>
                 {oltDetalhada ? (

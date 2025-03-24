@@ -97,7 +97,9 @@ const useAuthValidation = (moduloId, submoduloId, acaoId, refreshKey = 0) => {
       permissions: {
         canRead: hasPermission(permissoes, 1),
         canEdit: hasPermission(permissoes, 2),
-        canDelete: hasPermission(permissoes, 3)
+        canDelete: hasPermission(permissoes, 3),
+        canCadastro: hasPermission(permissoes, 4),
+        canEnviar: hasPermission(permissoes, 5),
       }
     }));
     
