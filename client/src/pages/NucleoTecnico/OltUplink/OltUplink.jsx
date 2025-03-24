@@ -17,7 +17,8 @@ import {
   faSave,
   faExclamationTriangle,
   faCheckCircle,
-  faDownload
+  faDownload,
+  faPaperPlane
 } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
 import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
@@ -27,6 +28,8 @@ import useAuthValidation from '../../../hooks/useAuthValidation';
 import Layout from "../../../components/Layout/Layout";
 import TabelaPaginada from "../../../components/Table/TabelaPaginada";
 import Loading from '../../../components/Loading/Loading';
+import { toPng } from 'html-to-image';
+import axios from 'axios';
 import './OltUplink.css';
 
 const OltUplink = () => {
@@ -342,6 +345,48 @@ const OltUplink = () => {
     { value: 'FECHADO', label: 'FECHADO' }
   ];
 
+
+  const enviarGraficoTelegram = async () => {
+    try {
+      // 1. Capturar o elemento do gráfico
+      const graficoElement = document.querySelector('.grafico-modal .modal-content');
+      
+      if (!graficoElement) {
+        throw new Error('Elemento do gráfico não encontrado');
+      }
+  
+      // 2. Converter para imagem PNG
+      const dataUrl = await toPng(graficoElement, {
+        quality: 0.95,
+        pixelRatio: 2 // Melhora a qualidade em telas HiDPI
+      });
+  
+      // 3. Converter Data URL para Blob
+      const blob = await fetch(dataUrl).then(res => res.blob());
+      
+      // 4. Criar FormData para enviar
+      const formData = new FormData();
+      formData.append('image', blob, 'relatorio_olts.png');
+      formData.append('caption', `Relatório OLTs - ${formatarDataHoraAtual()}`);
+  
+      // 5. Enviar para o backend
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/telegram/enviar-imagem`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      );
+  
+      alert('Relatório enviado com sucesso para o Telegram!');
+    } catch (error) {
+      console.error('Erro ao enviar relatório:', error);
+      alert('Erro ao enviar relatório. Verifique o console.');
+    }
+  };
+
   if (loading) {
     return <Loading />; 
   }
@@ -532,6 +577,15 @@ const OltUplink = () => {
                     </div>
                 </Col>
                 </Row>
+                <Modal.Footer>
+                  <Button variant="secondary" onClick={() => setShowGraficoModal(false)}>
+                    Fechar
+                  </Button>
+                  <Button variant="success" onClick={enviarGraficoTelegram}>
+                    <FontAwesomeIcon icon={faPaperPlane} className="me-2" />
+                    Enviar para Telegram
+                  </Button>
+                </Modal.Footer>
             </Modal.Body>
             </Modal>
 
