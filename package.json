@@ -15,6 +15,7 @@
     "dev-client": "cd client && npm start"
   },
   "dependencies": {
+    "axios": "^1.8.4",
     "bcryptjs": "^3.0.2",
     "connect-redis": "^7.0.0",
     "cors": "^2.8.5",
@@ -23,6 +24,7 @@
     "express-session": "^1.18.1",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.13.0",
+    "node-telegram-bot-api": "^0.66.0",
     "redis": "^4.7.0"
   },
   "devDependencies": {

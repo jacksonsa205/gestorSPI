@@ -14,6 +14,7 @@ import OltIsolada from './pages/NucleoTecnico/OltIsolada/OltIsolada';
 import OltUplink from './pages/NucleoTecnico/OltUplink/OltUplink';
 import ReporteREM from './pages/GestaoObras/ReporteREM/ReporteREM';
 import MapaREM from './pages/GestaoObras/Mapa/MapaREM';
+import Telegram from './pages/Telegram/Telegram';
 
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
         <Route path="/acesso" element={<Acesso />} />
         <Route path="/log-aplicacao" element={<LogAplicacao />} />
         <Route path="/escala-plantao" element={<EscalaPlantao />} />
+        <Route path="/Telegram" element={<Telegram />} />
       </Routes>
     </Router>
   );

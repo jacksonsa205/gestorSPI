@@ -8,6 +8,7 @@ const oltIsolada = require('./nucleoTecnico/oltIsolada.routes');
 const oltUplink = require('./nucleoTecnico/oltUplink.routes');
 const reporteREM = require('./gestaoObras/reporteREM.routes');
 const olt = require('./olt/olt.routes');
+const telegram = require('./telegram/telegram.routes');
 
 module.exports = {
   auth,
@@ -19,5 +20,6 @@ module.exports = {
   oltIsolada,
   oltUplink,
   reporteREM,
-  olt
+  olt,
+  telegram,
 };

@@ -1,0 +1,80 @@
+.resumo-obras-title {
+    margin-bottom: 4px !important ;
+}
+
+/* Container principal */
+
+.container-subtitle {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    position: relative;
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+  }
+  
+  /* Linha azul */
+  .linha-azul {
+    position: absolute;
+    left: 250px;
+    right: 55px; /* Ajuste conforme o tamanho do botão */
+    top: 50%;
+    height: 1px;
+    background: #0066ff;
+    transform: translateY(-50%);
+    z-index: 1;
+  }
+  
+  /* Botão */
+  .botao-toggle {
+    background: #0066ff !important;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    position: relative; /* Garante que fique acima da linha */
+  }
+  
+  .botao-toggle:hover {
+    background: #0051d4 !important;
+  }
+  
+  /* Ícone */
+  .botao-toggle .text-white {
+    font-size: 16px;
+  }
+
+
+  .chart-row {
+    margin-left: -15px; 
+    margin-right: -15px;
+    padding: 15px; 
+  }
+  
+
+/* Fundo Chart */
+
+.chart-container {
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(145deg, #f6f9ff 0%, #ffffff 100%);
+    box-shadow: 0 3px 12px rgba(0, 102, 255, 0.08);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+    padding: 1rem; /* Adiciona um espaçamento interno */
+    margin-bottom: 1rem; /* Espaçamento entre os gráficos */
+}
+
+/* Efeito hover suave */
+.chart-container:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 102, 255, 0.12);
+}
+

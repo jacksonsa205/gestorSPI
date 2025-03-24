@@ -45,26 +45,30 @@ const ConsultaPrioritaria = () => {
   useEffect(() => {
     const carregarConsultas = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/consulta-prioritaria/buscar`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/consulta-prioritaria/buscar?limit=5000`);
         if (!response.ok) throw new Error('Erro ao carregar consultas');
         
         const data = await response.json();
         setConsultas(data);
-        setConsultasIniciais(data); // Armazena os dados iniciais
+        setConsultasIniciais(data);
       } catch (error) {
         setErro(error.message);
       } finally {
         setCarregando(false);
       }
     };
-  
+    
     carregarConsultas();
   }, []);
 
   const handlePesquisar = async () => {
-    setPesquisando(true); // Ativa o indicativo de carregamento
+    setPesquisando(true);
     try {
-      const queryParams = new URLSearchParams({ pesquisa: filtro.pesquisa }).toString();
+      const queryParams = new URLSearchParams({ 
+        pesquisa: filtro.pesquisa,
+        isSearch: true // Adiciona flag para indicar que é uma pesquisa
+      }).toString();
+      
       const response = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/consulta-prioritaria/buscar?${queryParams}`);
       if (!response.ok) throw new Error('Erro ao carregar consultas');
       
@@ -73,13 +77,13 @@ const ConsultaPrioritaria = () => {
     } catch (error) {
       setErro(error.message);
     } finally {
-      setPesquisando(false); // Desativa o indicativo de carregamento
+      setPesquisando(false);
     }
   };
 
   const handleLimparPesquisa = () => {
-    setFiltro({ pesquisa: '' }); // Limpa o campo de pesquisa
-    setConsultas(consultasIniciais); // Volta aos dados iniciais
+    setFiltro({ pesquisa: '' });
+    setConsultas(consultasIniciais);
   };
 
   const abrirModalEdicao = async (consulta) => {

@@ -8,8 +8,10 @@ import {
   faChevronUp,
   faPersonDigging,
   faCircle,
-  faScrewdriverWrench
+  faScrewdriverWrench,
+
 } from '@fortawesome/free-solid-svg-icons';
+import { faTelegram } from '@fortawesome/free-brands-svg-icons'; // Ícone de marcas (WhatsApp)
 import logo from "../../assets/imagens/sidebar.png";
 import logoClosed from "../../assets/imagens/sidebarClosed.png";
 import useAuthValidation from '../../hooks/useAuthValidation'; // Importe o hook
@@ -55,6 +57,12 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
         { id: 5, text: 'OLT UPLINK', link: '/nucleo-tecnico/olt-uplink' }, 
         { id: 6, text: 'OLT Isolada', link: '/nucleo-tecnico/olt-isolada' } 
       ]
+    },
+    {
+      id: 8, // ID do módulo
+      icon: faTelegram,
+      text: 'Telegram',
+      link: '/Telegram'
     },
   ];
 

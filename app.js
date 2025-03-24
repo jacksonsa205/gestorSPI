@@ -7,7 +7,7 @@ const session = require('express-session');
 const path = require('path');
 const { redisClient } = require('./config/redis');
 const RedisStore = require('connect-redis').default;
-const { auth,permissoes, sessao,cadastro,reporteREM,consultaOLT,consultaPrioritaria,oltIsolada,oltUplink,olt } = require('./routes/index.routes');
+const { auth,permissoes, sessao,cadastro,reporteREM,consultaOLT,consultaPrioritaria,oltIsolada,oltUplink,olt,telegram } = require('./routes/index.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -42,6 +42,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use('/gestao-obra', reporteREM);
   app.use('/nucleo-tecnico', consultaOLT,consultaPrioritaria,oltIsolada,oltUplink);
   app.use('/olt', olt);
+  app.use('/telegram', telegram);
   app.use(express.static(path.join(__dirname, 'client', 'dist')));
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));

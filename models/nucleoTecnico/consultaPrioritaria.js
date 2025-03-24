@@ -23,7 +23,7 @@ const cadastrarConsultaPrioritaria = async (dados) => {
 };
 
 // Listar todas as consultas
-const listarConsultasPrioritarias = async ({ pesquisa, limite = 5000 }) => {
+const listarConsultasPrioritarias = async ({ pesquisa, limite = null }) => {
   let query = `
     SELECT 
         ID,
@@ -53,11 +53,14 @@ const listarConsultasPrioritarias = async ({ pesquisa, limite = 5000 }) => {
       )
     `;
     const searchTerm = `%${pesquisa}%`;
-    params.push(searchTerm, searchTerm, searchTerm, searchTerm, searchTerm, searchTerm); // 6 termos de pesquisa
+    params.push(searchTerm, searchTerm, searchTerm, searchTerm, searchTerm, searchTerm);
   }
 
-  query += ' LIMIT ?';
-  params.push(limite.toString()); // Garantir que o limite seja uma string
+  // Aplica limite apenas se especificado
+  if (limite !== null) {
+    query += ' LIMIT ?';
+    params.push(limite.toString());
+  }
 
   const [rows] = await pool.execute(query, params);
   return rows;
