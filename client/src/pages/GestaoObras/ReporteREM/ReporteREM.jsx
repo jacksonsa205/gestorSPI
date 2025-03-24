@@ -146,6 +146,7 @@ const ReporteREM = () => {
     { value: 'PREFEITURA', label: 'PREFEITURA' },
     { value: 'PREFEITURA - P.O.P', label: 'PREFEITURA - P.O PAGO' },
     { value: 'RODOVIA', label: 'RODOVIA' },
+    { value: 'RODOVIA_TIETE', label: 'RODOVIA TIETÊ' },
     { value: 'RODOVIA A.J', label: 'RODOVIA AÇÃO JUDICIAL' },
     { value: 'RUMO', label: 'RUMO' },
     { value: 'TERCEIROS', label: 'TERCEIROS' },

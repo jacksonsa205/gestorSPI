@@ -578,9 +578,7 @@ const OltUplink = () => {
                 </Col>
                 </Row>
                 <Modal.Footer>
-                  <Button variant="secondary" onClick={() => setShowGraficoModal(false)}>
-                    Fechar
-                  </Button>
+                  
                   <Button variant="success" onClick={enviarGraficoTelegram}>
                     <FontAwesomeIcon icon={faPaperPlane} className="me-2" />
                     Enviar para Telegram
