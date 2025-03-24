@@ -513,7 +513,7 @@ const ConsultaOLT = () => {
 
           {/* Modal Detalhes */}
 
-          <Modal show={showDetalhesModal} onHide={() => setShowDetalhesModal(false)} size="lg">
+          <Modal show={showDetalhesModal} onHide={() => setShowDetalhesModal(false)} size="lg" className="modal-detalhes">
             <Modal.Header closeButton>
                 <Modal.Title>
                 <FontAwesomeIcon icon={faSearch} className="me-2" />
