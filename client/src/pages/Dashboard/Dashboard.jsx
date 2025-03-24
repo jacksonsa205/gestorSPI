@@ -9,7 +9,9 @@ import {
   faHardHat,
   faCheckCircle,
   faChevronUp,
-  faChevronDown
+  faChevronDown,
+  faTimes,
+  faPaperPlane
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Importe o FontAwesomeIcon
 import Layout from "../../components/Layout/Layout";
@@ -17,6 +19,7 @@ import BarChartComponent from '../../components/Charts/BarChartComponent';
 import useAuthValidation from '../../hooks/useAuthValidation';
 import Loading from '../../components/Loading/Loading';
 import { useEffect, useState } from 'react';
+import { toPng } from 'html-to-image';
 import axios from 'axios';
 import './Dashboard.css'; 
 import CardObras from '../../components/Cards/CardObras/CardObras'; 
@@ -156,6 +159,60 @@ const Dashboard = () => {
     return acc;
   }, {});
 
+  const formatarDataHoraAtual = () => {
+    const agora = new Date();
+    return agora.toLocaleString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    });
+  };
+  
+  const enviarResumoObrasTelegram = async () => {
+    try {
+      // 1. Capturar o elemento da seção de resumo de obras
+      const resumoElement = document.querySelector('.container-subtitle + .container-fluid');
+      
+      if (!resumoElement) {
+        throw new Error('Seção de Resumo de Obras não encontrada');
+      }
+  
+      // 2. Converter para imagem PNG
+      const dataUrl = await toPng(resumoElement, {
+        quality: 0.95,
+        pixelRatio: 2,
+        backgroundColor: '#fff'
+      });
+  
+      // 3. Converter Data URL para Blob
+      const blob = await fetch(dataUrl).then(res => res.blob());
+      
+      // 4. Criar FormData para enviar
+      const formData = new FormData();
+      formData.append('image', blob, 'resumo_obras_spi.png');
+      formData.append('caption', `Resumo de Obras SPI - ${formatarDataHoraAtual()}`);
+  
+      // 5. Enviar para o backend
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/telegram/enviar-imagem`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      );
+  
+      alert('Resumo de Obras enviado com sucesso para o Telegram!');
+    } catch (error) {
+      console.error('Erro ao enviar resumo:', error);
+      alert('Erro ao enviar resumo. Verifique o console.');
+    }
+  };
+
   if (loading) {
     return <Loading />; 
   }
@@ -171,23 +228,34 @@ const Dashboard = () => {
     <div>
       {/* Resumo Obras */}
       <div className="container-subtitle d-flex align-items-center justify-content-between w-100 p-3 position-relative">
-        <h5 className="resumo-obras-title mb-0">Resumo da Obras SPI</h5>
+        <div className="d-flex align-items-center">
+          <h5 className="resumo-obras-title mb-0">Resumo da Obras SPI</h5>
+          {permissions.canEnviar && (
+            <Button 
+              variant="link" 
+              onClick={enviarResumoObrasTelegram}
+              title="Enviar resumo para Telegram"
+              className="text-secondary p-1 ms-2"
+            >
+              <FontAwesomeIcon icon={faPaperPlane} />
+            </Button>
+          )}
+        </div>
         
         {/* Linha fina que liga o subtítulo ao botão */}
         <div className="linha-azul" />
 
         {/* Botão redondo */}
-        
-          <button
-            onClick={() => setShowCardsObras(!showCardsObras)}
-            className="botao-toggle d-flex align-items-center justify-content-center"
-          >
-            <FontAwesomeIcon
-              icon={showCardsObras ? faChevronUp : faChevronDown}
-              size="sm"
-              className="text-white"
-            />
-          </button>
+        <button
+          onClick={() => setShowCardsObras(!showCardsObras)}
+          className="botao-toggle d-flex align-items-center justify-content-center"
+        >
+          <FontAwesomeIcon
+            icon={showCardsObras ? faChevronUp : faChevronDown}
+            size="sm"
+            className="text-white"
+          />
+        </button>
       </div>
 
       {/* Container dos cards (condicional) */}
