@@ -234,9 +234,7 @@ const ConsultaPrioritaria = () => {
       
       const formData = new FormData();
       formData.append('image', blob, `detalhe_consulta_${consultaDetalhada?.ID || 'desconhecida'}.png`);
-      formData.append('caption', `Consulta Prioritária - GBE ${consultaDetalhada?.GBE || ''}\n` +
-                                `SWO: ${consultaDetalhada?.SWO || 'N/A'}\n` +
-                                `Data: ${formatarDataHoraAtual()}`);
+      formData.append('caption', `Consulta Prioritária - GBE ${consultaDetalhada?.GBE || ''} - Data: ${formatarDataHoraAtual()}`);
   
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/telegram/enviar-imagem`,
