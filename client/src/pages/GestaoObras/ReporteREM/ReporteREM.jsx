@@ -560,7 +560,7 @@ const handleExcluirConsulta = async (rem) => {
               </InputGroup>
             </Col>
             <Col md={4} className="d-flex justify-content-end">
-            {permissions.canEdit && (
+            {permissions.canCadastro && (
               <Button variant="primary" onClick={() => setShowNovoModal(true)}>
                 <FontAwesomeIcon icon={faPlus} className="me-2" />
                 Cadastrar
