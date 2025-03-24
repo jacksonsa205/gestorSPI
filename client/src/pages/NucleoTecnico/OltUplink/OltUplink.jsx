@@ -440,7 +440,7 @@ const OltUplink = () => {
       alert(`Erro ao enviar detalhes: ${error.message}`);
     }
   };
-  
+
   if (loading) {
     return <Loading />; 
   }
@@ -470,7 +470,7 @@ const OltUplink = () => {
               </InputGroup>
             </Col>
             <Col md={4} className="d-flex justify-content-end">
-            {permissions.canEdit && (
+            {permissions.canCadastro && (
               <Button variant="primary" onClick={() => setShowNovoModal(true)}>
                 <FontAwesomeIcon icon={faPlus} className="me-2" />
                 Cadastrar
@@ -569,6 +569,7 @@ const OltUplink = () => {
                     NT - Gestão de Uplinks e OLTs Remotas - 
                     <span className="data-atualizacao">Atualização:{" "}{formatarDataHoraAtual()}</span>
                 </Modal.Title>
+                {permissions.canEnviar && (
                 <Button 
                   variant="link" 
                   onClick={enviarGraficoTelegram}
@@ -577,6 +578,7 @@ const OltUplink = () => {
                 >
                   <FontAwesomeIcon icon={faPaperPlane} />
                 </Button>
+                )}
             </Modal.Header>
             <Modal.Body>
                 <Row>
@@ -652,6 +654,7 @@ const OltUplink = () => {
                   Detalhes da OLT Isolada - {oltDetalhada ? oltDetalhada.TA : "N/A"}
                 </Modal.Title>
                 <div className="d-flex align-items-center">
+                {permissions.canEnviar && (
                   <Button 
                     variant="link" 
                     onClick={enviarDetalheTelegram}
@@ -660,6 +663,7 @@ const OltUplink = () => {
                   >
                     <FontAwesomeIcon icon={faPaperPlane} />
                   </Button>
+                )}
                   <Button 
                     variant="link" 
                     onClick={() => setShowDetalhesModal(false)}

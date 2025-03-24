@@ -17,7 +17,9 @@ import {
   faSave,
   faExclamationTriangle,
   faCheckCircle,
-  faDownload
+  faDownload,
+  faPaperPlane, 
+  faTimes 
 } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
 import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
@@ -27,6 +29,8 @@ import useAuthValidation from '../../../hooks/useAuthValidation';
 import Layout from "../../../components/Layout/Layout";
 import TabelaPaginada from "../../../components/Table/TabelaPaginada";
 import Loading from '../../../components/Loading/Loading';
+import { toPng } from 'html-to-image';
+import axios from 'axios';
 import './OltIsolada.css';
 
 const OltIsolada = () => {
@@ -342,6 +346,88 @@ const OltIsolada = () => {
     { value: 'FECHADO', label: 'FECHADO' }
   ];
 
+  const enviarGraficoTelegram = async () => {
+    try {
+      const graficoElement = document.querySelector('.grafico-modal .modal-content');
+      
+      if (!graficoElement) {
+        throw new Error('Elemento do gráfico não encontrado');
+      }
+  
+      const dataUrl = await toPng(graficoElement, {
+        quality: 0.95,
+        pixelRatio: 2
+      });
+  
+      const blob = await fetch(dataUrl).then(res => res.blob());
+      
+      const formData = new FormData();
+      formData.append('image', blob, 'relatorio_olts_isoladas.png');
+      formData.append('caption', `Relatório Gestão OLT Isolada - ${formatarDataHoraAtual()}`);
+  
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/telegram/enviar-imagem`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      );
+  
+      alert('Relatório enviado com sucesso para o Telegram!');
+    } catch (error) {
+      console.error('Erro ao enviar relatório:', error);
+      alert('Erro ao enviar relatório. Verifique o console.');
+    }
+  };
+  
+  const enviarDetalheTelegram = async () => {
+    try {
+      const modalElement = document.querySelector('.modal-detalhes .modal-content');
+      
+      if (!modalElement) {
+        throw new Error('Modal de detalhes não encontrado');
+      }
+  
+      const options = {
+        quality: 1,
+        pixelRatio: 2,
+        backgroundColor: '#fff',
+        width: modalElement.clientWidth * 2,
+        height: modalElement.clientHeight * 2,
+        style: {
+          transform: 'scale(2)',
+          transformOrigin: 'top left',
+          width: `${modalElement.clientWidth}px`,
+          height: `${modalElement.clientHeight}px`
+        }
+      };
+  
+      const dataUrl = await toPng(modalElement, options);
+      const blob = await fetch(dataUrl).then(res => res.blob());
+      
+      const formData = new FormData();
+      formData.append('image', blob, `detalhe_ta_${oltDetalhada?.TA || 'desconhecida'}.png`);
+      formData.append('caption', `Gestão OLT Isolada detalhes da TA ${oltDetalhada?.TA || ''} - ${formatarDataHoraAtual()}`);
+  
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/telegram/enviar-imagem`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      );
+  
+      alert('Detalhes da TA enviados com sucesso para o Telegram!');
+    } catch (error) {
+      console.error('Erro ao enviar detalhes:', error);
+      alert(`Erro ao enviar detalhes: ${error.message}`);
+    }
+  };
+
   if (loading) {
     return <Loading />; 
   }
@@ -371,7 +457,7 @@ const OltIsolada = () => {
               </InputGroup>
             </Col>
             <Col md={4} className="d-flex justify-content-end">
-            {permissions.canEdit && (
+            {permissions.canCadastro && (
               <Button variant="primary" onClick={() => setShowNovoModal(true)}>
                 <FontAwesomeIcon icon={faPlus} className="me-2" />
                 Cadastrar
@@ -470,6 +556,16 @@ const OltIsolada = () => {
                     NT - Gestão de OLTs Isoladas - 
                     <span className="data-atualizacao">Atualização:{" "}{formatarDataHoraAtual()}</span>
                 </Modal.Title>
+                {permissions.canEnviar && (
+                  <Button 
+                    variant="link" 
+                    onClick={enviarGraficoTelegram}
+                    title="Enviar relatório para Telegram"
+                    className="text-secondary"
+                  >
+                    <FontAwesomeIcon icon={faPaperPlane} />
+                  </Button>
+                )}
             </Modal.Header>
             <Modal.Body>
                 <Row>
@@ -537,13 +633,34 @@ const OltIsolada = () => {
 
 
           {/* Modal Detalhes */}
-          <Modal show={showDetalhesModal} onHide={() => setShowDetalhesModal(false)} size="lg">
-            <Modal.Header closeButton>
-                <Modal.Title>
+          <Modal show={showDetalhesModal} onHide={() => setShowDetalhesModal(false)} size="lg" className="modal-detalhes">
+          <Modal.Header>
+            <div className="d-flex justify-content-between w-100 align-items-center">
+              <Modal.Title className="m-0">
                 <FontAwesomeIcon icon={faSearch} className="me-2" />
                 Detalhes da OLT Isolada - {oltDetalhada ? oltDetalhada.TA : "N/A"}
-                </Modal.Title>
-            </Modal.Header>
+              </Modal.Title>
+              <div className="d-flex align-items-center">
+                {permissions.canEnviar && (
+                  <Button 
+                    variant="link" 
+                    onClick={enviarDetalheTelegram}
+                    title="Enviar detalhes para Telegram"
+                    className="text-secondary p-1 me-2"
+                  >
+                    <FontAwesomeIcon icon={faPaperPlane} />
+                  </Button>
+                )}
+                <Button 
+                  variant="link" 
+                  onClick={() => setShowDetalhesModal(false)}
+                  className="p-1"
+                >
+                  <FontAwesomeIcon icon={faTimes} />
+                </Button>
+              </div>
+            </div>
+          </Modal.Header>
             <Modal.Body>
                 {oltDetalhada ? (
                 <div>
