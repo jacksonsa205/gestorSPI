@@ -391,18 +391,29 @@ const OltUplink = () => {
   const enviarDetalheTelegram = async () => {
     try {
       // 1. Capturar o elemento do modal de detalhes
-      const modalElement = document.querySelector('.modal-detalhes');
+      const modalElement = document.querySelector('.modal-detalhes .modal-content');
       
       if (!modalElement) {
         throw new Error('Modal de detalhes não encontrado');
       }
   
-      // 2. Converter para imagem PNG
-      const dataUrl = await toPng(modalElement, {
-        quality: 0.95,
+      // Configurações para a imagem
+      const options = {
+        quality: 1,
         pixelRatio: 2,
-        backgroundColor: '#fff' // Fundo branco para melhor legibilidade
-      });
+        backgroundColor: '#fff',
+        width: modalElement.clientWidth * 2, // Dobrar a largura para melhor qualidade
+        height: modalElement.clientHeight * 2, // Dobrar a altura para melhor qualidade
+        style: {
+          transform: 'scale(2)', // Escala para melhorar a qualidade
+          transformOrigin: 'top left',
+          width: `${modalElement.clientWidth}px`,
+          height: `${modalElement.clientHeight}px`
+        }
+      };
+  
+      // 2. Converter para imagem PNG
+      const dataUrl = await toPng(modalElement, options);
   
       // 3. Converter Data URL para Blob
       const blob = await fetch(dataUrl).then(res => res.blob());
@@ -410,7 +421,7 @@ const OltUplink = () => {
       // 4. Criar FormData para enviar
       const formData = new FormData();
       formData.append('image', blob, `detalhe_ta_${oltDetalhada?.TA || 'desconhecida'}.png`);
-      formData.append('caption', `Detalhes da TA ${oltDetalhada?.TA || ''} - ${formatarDataHoraAtual()}`);
+      formData.append('caption', `Gestão OLT Uplink detalhes da TA ${oltDetalhada?.TA || ''} - ${formatarDataHoraAtual()}`);
   
       // 5. Enviar para o backend
       const response = await axios.post(
@@ -429,7 +440,7 @@ const OltUplink = () => {
       alert(`Erro ao enviar detalhes: ${error.message}`);
     }
   };
-
+  
   if (loading) {
     return <Loading />; 
   }
