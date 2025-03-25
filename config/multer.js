@@ -1,8 +1,13 @@
+// config/multer.js
 const multer = require('multer');
 
-module.exports = multer({
-  storage: multer.memoryStorage(),
+const storage = multer.memoryStorage(); // Usar memoryStorage em vez de diskStorage
+
+const upload = multer({ 
+  storage: storage,
   limits: {
-    fileSize: 5 * 1024 * 1024 // Limite de 5MB
+    fileSize: 10 * 1024 * 1024 // Limite de 10MB
   }
 });
+
+module.exports = upload;

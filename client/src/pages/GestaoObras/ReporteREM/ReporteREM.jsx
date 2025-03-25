@@ -25,6 +25,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useAuthValidation from '../../../hooks/useAuthValidation';
 import Layout from "../../../components/Layout/Layout";
 import TabelaPaginada from "../../../components/Table/TabelaPaginada";
+import WhatsAppSender from "../../../components/WhatsAppSender/WhatsAppSender";
 import Loading from '../../../components/Loading/Loading';
 import CardEtapas from '../../../components/Cards/CardEtapas/CardEtapas';
 import './ReporteREM.css';
@@ -531,6 +532,19 @@ const handleExcluirConsulta = async (rem) => {
     
   ];
 
+  const formatarDataHoraAtual = () => {
+    const agora = new Date();
+    return agora.toLocaleString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    });
+  };
+
+
   if (loading) {
     return <Loading />; 
   }
@@ -591,13 +605,26 @@ const handleExcluirConsulta = async (rem) => {
         </Row>
 
         {/* Modal Detalhes */}
-        <Modal show={showDetalhesModal} onHide={() => setShowDetalhesModal(false)} size="lg">
-            <Modal.Header closeButton>
-                <Modal.Title>
-                <FontAwesomeIcon icon={faSearch} className="me-2" />
-                Detalhes da Obra - {consultaDetalhada ? consultaDetalhada.REM : "N/A"}
-                </Modal.Title>
-            </Modal.Header>
+        <Modal show={showDetalhesModal} onHide={() => setShowDetalhesModal(false)} size="lg" className="modal-detalhes">
+        <Modal.Header closeButton>
+          <div className="d-flex justify-content-between w-100 align-items-center">
+            <Modal.Title className="m-0">
+              <FontAwesomeIcon icon={faSearch} className="me-2" />
+              Detalhes da Obra - {consultaDetalhada ? consultaDetalhada.REM : "N/A"}
+            </Modal.Title>
+            <div className="d-flex align-items-center">
+              {permissions.canEnviar && (
+                <WhatsAppSender
+                  elementSelector=".modal-detalhes .modal-content"
+                  fileName={`detalhe_obra_${consultaDetalhada?.REM || 'desconhecida'}.png`}
+                  caption={`Reporte REM - Detalhes da Obra: ${consultaDetalhada?.REM || 'N/A'} - Data: ${formatarDataHoraAtual()}`}
+                  variant="link"
+                  className="text-success p-1 me-2"
+                />
+              )}
+            </div>
+          </div>
+        </Modal.Header>
             <Modal.Body>
                 {consultaDetalhada ? (
                 <div>

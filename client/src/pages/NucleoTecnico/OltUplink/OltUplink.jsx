@@ -16,9 +16,7 @@ import {
   faPlus,
   faSave,
   faExclamationTriangle,
-  faCheckCircle,
   faDownload,
-  faPaperPlane,
   faTimes
 } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
@@ -28,9 +26,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useAuthValidation from '../../../hooks/useAuthValidation';
 import Layout from "../../../components/Layout/Layout";
 import TabelaPaginada from "../../../components/Table/TabelaPaginada";
+import WhatsAppSender from "../../../components/WhatsAppSender/WhatsAppSender";
 import Loading from '../../../components/Loading/Loading';
-import { toPng } from 'html-to-image';
-import axios from 'axios';
 import './OltUplink.css';
 
 const OltUplink = () => {
@@ -347,100 +344,6 @@ const OltUplink = () => {
   ];
 
 
-  const enviarGraficoTelegram = async () => {
-    try {
-      // 1. Capturar o elemento do gráfico
-      const graficoElement = document.querySelector('.grafico-modal .modal-content');
-      
-      if (!graficoElement) {
-        throw new Error('Elemento do gráfico não encontrado');
-      }
-  
-      // 2. Converter para imagem PNG
-      const dataUrl = await toPng(graficoElement, {
-        quality: 0.95,
-        pixelRatio: 2 // Melhora a qualidade em telas HiDPI
-      });
-  
-      // 3. Converter Data URL para Blob
-      const blob = await fetch(dataUrl).then(res => res.blob());
-      
-      // 4. Criar FormData para enviar
-      const formData = new FormData();
-      formData.append('image', blob, 'relatorio_olts.png');
-      formData.append('caption', `Relatório Gestão OLT Uplink - ${formatarDataHoraAtual()}`);
-  
-      // 5. Enviar para o backend
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/telegram/enviar-imagem`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-      );
-  
-      alert('Relatório enviado com sucesso para o Telegram!');
-    } catch (error) {
-      console.error('Erro ao enviar relatório:', error);
-      alert('Erro ao enviar relatório. Verifique o console.');
-    }
-  };
-
-  const enviarDetalheTelegram = async () => {
-    try {
-      // 1. Capturar o elemento do modal de detalhes
-      const modalElement = document.querySelector('.modal-detalhes .modal-content');
-      
-      if (!modalElement) {
-        throw new Error('Modal de detalhes não encontrado');
-      }
-  
-      // Configurações para a imagem
-      const options = {
-        quality: 1,
-        pixelRatio: 2,
-        backgroundColor: '#fff',
-        width: modalElement.clientWidth * 2, // Dobrar a largura para melhor qualidade
-        height: modalElement.clientHeight * 2, // Dobrar a altura para melhor qualidade
-        style: {
-          transform: 'scale(2)', // Escala para melhorar a qualidade
-          transformOrigin: 'top left',
-          width: `${modalElement.clientWidth}px`,
-          height: `${modalElement.clientHeight}px`
-        }
-      };
-  
-      // 2. Converter para imagem PNG
-      const dataUrl = await toPng(modalElement, options);
-  
-      // 3. Converter Data URL para Blob
-      const blob = await fetch(dataUrl).then(res => res.blob());
-      
-      // 4. Criar FormData para enviar
-      const formData = new FormData();
-      formData.append('image', blob, `detalhe_ta_${oltDetalhada?.TA || 'desconhecida'}.png`);
-      formData.append('caption', `Gestão OLT Uplink detalhes da TA ${oltDetalhada?.TA || ''} - ${formatarDataHoraAtual()}`);
-  
-      // 5. Enviar para o backend
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/telegram/enviar-imagem`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-      );
-  
-      alert('Detalhes da TA enviados com sucesso para o Telegram!');
-    } catch (error) {
-      console.error('Erro ao enviar detalhes:', error);
-      alert(`Erro ao enviar detalhes: ${error.message}`);
-    }
-  };
-
   if (loading) {
     return <Loading />; 
   }
@@ -565,20 +468,23 @@ const OltUplink = () => {
             className="grafico-modal" // Adiciona a classe personalizada
             >
             <Modal.Header closeButton>
+              <div className="d-flex justify-content-between w-100 align-items-center">
                 <Modal.Title>
-                    NT - Gestão de Uplinks e OLTs Remotas - 
-                    <span className="data-atualizacao">Atualização:{" "}{formatarDataHoraAtual()}</span>
+                  NT - Gestão de Uplinks e OLTs Remotas - 
+                  <span className="data-atualizacao">Atualização:{" "}{formatarDataHoraAtual()}</span>
                 </Modal.Title>
-                {permissions.canEnviar && (
-                <Button 
-                  variant="link" 
-                  onClick={enviarGraficoTelegram}
-                  title="Enviar relatório para Telegram"
-                  className="text-secondary"
-                >
-                  <FontAwesomeIcon icon={faPaperPlane} />
-                </Button>
-                )}
+                <div className="d-flex align-items-center">
+                  {permissions.canEnviar && (
+                    <WhatsAppSender
+                      elementSelector=".grafico-modal .modal-content"
+                      fileName="relatorio_olts.png"
+                      caption={`Relatório Gestão OLT Uplink - ${formatarDataHoraAtual()}`}
+                      variant="link"
+                      className="text-success p-1 me-2"
+                    />
+                  )}
+                </div>
+              </div>
             </Modal.Header>
             <Modal.Body>
                 <Row>
@@ -647,33 +553,25 @@ const OltUplink = () => {
 
           {/* Modal Detalhes */}
           <Modal show={showDetalhesModal} onHide={() => setShowDetalhesModal(false)} size="lg" className="modal-detalhes">
-            <Modal.Header>
-              <div className="d-flex justify-content-between w-100 align-items-center">
-                <Modal.Title className="m-0">
-                  <FontAwesomeIcon icon={faSearch} className="me-2" />
-                  Detalhes da OLT Isolada - {oltDetalhada ? oltDetalhada.TA : "N/A"}
-                </Modal.Title>
-                <div className="d-flex align-items-center">
+          <Modal.Header closeButton>
+            <div className="d-flex justify-content-between w-100 align-items-center">
+              <Modal.Title className="m-0">
+                <FontAwesomeIcon icon={faSearch} className="me-2" />
+                Detalhes da OLT Isolada - {oltDetalhada ? oltDetalhada.TA : "N/A"}
+              </Modal.Title>
+              <div className="d-flex align-items-center">
                 {permissions.canEnviar && (
-                  <Button 
-                    variant="link" 
-                    onClick={enviarDetalheTelegram}
-                    title="Enviar detalhes para Telegram"
-                    className="text-secondary p-1 me-2"
-                  >
-                    <FontAwesomeIcon icon={faPaperPlane} />
-                  </Button>
+                  <WhatsAppSender
+                    elementSelector=".modal-detalhes .modal-content"
+                    fileName={`detalhes_ta_${oltDetalhada?.TA || 'desconhecida'}.png`}
+                    caption={`Detalhes da TA ${oltDetalhada?.TA || ''} - ${formatarDataHoraAtual()}`}
+                    variant="link"
+                    className="text-success p-1 me-2"
+                  />
                 )}
-                  <Button 
-                    variant="link" 
-                    onClick={() => setShowDetalhesModal(false)}
-                    className="p-1"
-                  >
-                    <FontAwesomeIcon icon={faTimes} />
-                  </Button>
-                </div>
               </div>
-            </Modal.Header>
+            </div>
+          </Modal.Header>
             <Modal.Body>
                 {oltDetalhada ? (
                 <div>

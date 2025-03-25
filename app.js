@@ -7,7 +7,7 @@ const session = require('express-session');
 const path = require('path');
 const { redisClient } = require('./config/redis');
 const RedisStore = require('connect-redis').default;
-const { auth,permissoes, sessao,cadastro,reporteREM,consultaOLT,consultaPrioritaria,oltIsolada,oltUplink,olt,telegram } = require('./routes/index.routes');
+const { auth,permissoes, sessao,cadastro,reporteREM,consultaOLT,consultaPrioritaria,oltIsolada,oltUplink,olt,telegram,whatsapp } = require('./routes/index.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -35,6 +35,8 @@ const corsOption = {
 };
 app.use(cors(corsOption));
 app.use(bodyParser.json());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // Configuração do ambiente (produção/desenvolvimento)
 if (process.env.NODE_ENV === 'production') {
@@ -43,6 +45,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use('/nucleo-tecnico', consultaOLT,consultaPrioritaria,oltIsolada,oltUplink);
   app.use('/olt', olt);
   app.use('/telegram', telegram);
+  app.use('/whatsapp', whatsapp);
   app.use(express.static(path.join(__dirname, 'client', 'dist')));
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));

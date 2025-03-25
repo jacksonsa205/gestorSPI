@@ -179,3 +179,50 @@ text-align: center;
 font-size: 13px;
 color: #555;
 }
+
+
+/* Legenda Fixa */
+/* Legenda Fixa (inferior direito) */
+.leaflet-fixed-legend {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  background: white;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  max-width: 200px;
+}
+
+/* Legenda Interativa (superior direito) - mantida como estava */
+.leaflet-top.leaflet-right {
+  margin-top: 50px; /* Espaço para o botão do WhatsApp */
+}
+
+/* Mantenha o restante do CSS da legenda */
+.leaflet-fixed-legend h5 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.legend-items {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-color {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+}

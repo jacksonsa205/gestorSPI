@@ -7,24 +7,19 @@ import {
   Form,
   InputGroup,
   Modal,
-  Badge,
   Alert,
 } from 'react-bootstrap';
 import {
   faSearch,
   faEdit,
-  faExclamationTriangle,
-  faCheckCircle,
   faSync,
   faTimes,
-  faPaperPlane, 
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useAuthValidation from '../../../hooks/useAuthValidation';
 import Layout from "../../../components/Layout/Layout";
 import TabelaPaginada from "../../../components/Table/TabelaPaginada";
-import { toPng } from 'html-to-image';
-import axios from 'axios';
+import WhatsAppSender from "../../../components/WhatsAppSender/WhatsAppSender";
 import Loading from '../../../components/Loading/Loading';
 import './ConsultaPrioritaria.css';
 
@@ -194,7 +189,6 @@ const ConsultaPrioritaria = () => {
     },
   ];
 
-
   const formatarDataHoraAtual = () => {
     const agora = new Date();
     return agora.toLocaleString('pt-BR', {
@@ -207,53 +201,6 @@ const ConsultaPrioritaria = () => {
     });
   };
   
-  const enviarDetalheTelegram = async () => {
-    try {
-      const modalElement = document.querySelector('.modal-detalhes .modal-content');
-      
-      if (!modalElement) {
-        throw new Error('Modal de detalhes não encontrado');
-      }
-  
-      const options = {
-        quality: 1,
-        pixelRatio: 2,
-        backgroundColor: '#fff',
-        width: modalElement.clientWidth * 2,
-        height: modalElement.clientHeight * 2,
-        style: {
-          transform: 'scale(2)',
-          transformOrigin: 'top left',
-          width: `${modalElement.clientWidth}px`,
-          height: `${modalElement.clientHeight}px`
-        }
-      };
-  
-      const dataUrl = await toPng(modalElement, options);
-      const blob = await fetch(dataUrl).then(res => res.blob());
-      
-      const formData = new FormData();
-      formData.append('image', blob, `detalhe_consulta_${consultaDetalhada?.ID || 'desconhecida'}.png`);
-      formData.append('caption', `Consulta Prioritária - GBE ${consultaDetalhada?.GBE || ''} - Data: ${formatarDataHoraAtual()}`);
-  
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/telegram/enviar-imagem`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-      );
-  
-      alert('Detalhes da consulta enviados com sucesso para o Telegram!');
-    } catch (error) {
-      console.error('Erro ao enviar detalhes:', error);
-      alert(`Erro ao enviar detalhes: ${error.message}`);
-    }
-  };
-
-
   if (loading) {
     return <Loading />; 
   }
@@ -329,22 +276,25 @@ const ConsultaPrioritaria = () => {
 
           {/* Modal Detalhes */}
           <Modal show={showDetalhesModal} onHide={() => setShowDetalhesModal(false)} size="lg" className="modal-detalhes">
-            <Modal.Header closeButton>
-              <Modal.Title>
+          <Modal.Header closeButton>
+            <div className="d-flex justify-content-between w-100 align-items-center">
+              <Modal.Title className="m-0">
                 <FontAwesomeIcon icon={faSearch} className="me-2" />
                 Detalhes da Consulta - {consultaDetalhada ? consultaDetalhada.GBE : "N/A"}
               </Modal.Title>
-              {permissions.canEnviar && (
-                <Button 
-                  variant="link" 
-                  onClick={enviarDetalheTelegram}
-                  title="Enviar detalhes para Telegram"
-                  className="text-secondary p-1 me-2"
-                >
-                  <FontAwesomeIcon icon={faPaperPlane} />
-                </Button>
-              )}
-            </Modal.Header>
+              <div className="d-flex align-items-center">
+                {permissions.canEnviar && (
+                    <WhatsAppSender
+                      elementSelector=".modal-detalhes .modal-content"
+                      fileName={`detalhe_consulta_${consultaDetalhada?.ID || 'desconhecida'}.png`}
+                      caption={`Consulta Prioritária - GBE ${consultaDetalhada?.GBE || ''} - Data: ${formatarDataHoraAtual()}`}
+                      variant="link"
+                      className="text-success p-1 me-2"
+                    />
+                )}
+              </div>
+            </div>
+          </Modal.Header>
             <Modal.Body>
               {consultaDetalhada ? (
                 <div>

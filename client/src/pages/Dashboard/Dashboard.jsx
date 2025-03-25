@@ -10,16 +10,14 @@ import {
   faCheckCircle,
   faChevronUp,
   faChevronDown,
-  faTimes,
-  faPaperPlane
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Importe o FontAwesomeIcon
 import Layout from "../../components/Layout/Layout";
+import WhatsAppSender from "../../components/WhatsAppSender/WhatsAppSender";
 import BarChartComponent from '../../components/Charts/BarChartComponent';
 import useAuthValidation from '../../hooks/useAuthValidation';
 import Loading from '../../components/Loading/Loading';
 import { useEffect, useState } from 'react';
-import { toPng } from 'html-to-image';
 import axios from 'axios';
 import './Dashboard.css'; 
 import CardObras from '../../components/Cards/CardObras/CardObras'; 
@@ -171,47 +169,6 @@ const Dashboard = () => {
     });
   };
   
-  const enviarResumoObrasTelegram = async () => {
-    try {
-      // 1. Capturar o elemento da seção de resumo de obras
-      const resumoElement = document.querySelector('.container-subtitle + .container-fluid');
-      
-      if (!resumoElement) {
-        throw new Error('Seção de Resumo de Obras não encontrada');
-      }
-  
-      // 2. Converter para imagem PNG
-      const dataUrl = await toPng(resumoElement, {
-        quality: 0.95,
-        pixelRatio: 2,
-        backgroundColor: '#fff'
-      });
-  
-      // 3. Converter Data URL para Blob
-      const blob = await fetch(dataUrl).then(res => res.blob());
-      
-      // 4. Criar FormData para enviar
-      const formData = new FormData();
-      formData.append('image', blob, 'resumo_obras_spi.png');
-      formData.append('caption', `Resumo de Obras SPI - ${formatarDataHoraAtual()}`);
-  
-      // 5. Enviar para o backend
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/telegram/enviar-imagem`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-      );
-  
-      alert('Resumo de Obras enviado com sucesso para o Telegram!');
-    } catch (error) {
-      console.error('Erro ao enviar resumo:', error);
-      alert('Erro ao enviar resumo. Verifique o console.');
-    }
-  };
 
   if (loading) {
     return <Loading />; 
@@ -231,14 +188,12 @@ const Dashboard = () => {
         <div className="d-flex align-items-center">
           <h5 className="resumo-obras-title mb-0">Resumo da Obras SPI</h5>
           {permissions.canEnviar && (
-            <Button 
-              variant="link" 
-              onClick={enviarResumoObrasTelegram}
-              title="Enviar resumo para Telegram"
-              className="text-secondary p-1 ms-2"
-            >
-              <FontAwesomeIcon icon={faPaperPlane} />
-            </Button>
+            <WhatsAppSender
+              elementSelector=".container-subtitle + .container-fluid"
+              fileName={`resumo_obras_${formatarDataHoraAtual().replace(/[/,: ]/g, '_')}.png`}
+              caption={`Resumo de Obras SPI - ${formatarDataHoraAtual()}`}
+              className="text-success p-1 ms-2"
+            />
           )}
         </div>
         

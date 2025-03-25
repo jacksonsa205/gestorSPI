@@ -9,6 +9,7 @@ const oltUplink = require('./nucleoTecnico/oltUplink.routes');
 const reporteREM = require('./gestaoObras/reporteREM.routes');
 const olt = require('./olt/olt.routes');
 const telegram = require('./telegram/telegram.routes');
+const whatsapp = require('./whatsapp/whatsapp.routes');
 
 module.exports = {
   auth,
@@ -22,4 +23,5 @@ module.exports = {
   reporteREM,
   olt,
   telegram,
+  whatsapp,
 };
