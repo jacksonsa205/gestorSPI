@@ -10,7 +10,7 @@ const WhatsAppSender = ({
   elementSelector, 
   fileName, 
   caption,
-  groupId = import.meta.env.VITE_WHATSAPP_GROUP_ID,
+  groupIds = import.meta.env.VITE_WHATSAPP_GROUP_ID,
   variant = 'link',
   className = '',
   buttonText = '',
@@ -34,55 +34,89 @@ const WhatsAppSender = ({
         throw new Error('Elemento não encontrado');
       }
 
-      // 2. Converter para imagem PNG
-      const dataUrl = await toPng(element, {
-        quality: 0.95,
-        pixelRatio: 2,
-        backgroundColor: '#ffffff'
-      });
+      // Converter groupIds para array
+      const groupsArray = typeof groupIds === 'string' 
+        ? groupIds.split(',').map(id => id.trim()).filter(id => id) 
+        : Array.isArray(groupIds) 
+          ? groupIds 
+          : [groupIds];
 
-      // 3. Converter para blob
-      const blob = await fetch(dataUrl).then(res => {
-        if (!res.ok) throw new Error('Falha ao criar imagem');
-        return res.blob();
-      });
+      if (groupsArray.length === 0) {
+        throw new Error('Nenhum grupo especificado para envio');
+      }
 
-      // 4. Gerar nome de arquivo único
-      const uniqueFileName = generateUniqueFileName(fileName);
+      console.log('Grupos para enviar:', groupsArray); // Log para debug
 
-      // 5. Preparar e enviar formData
-      const formData = new FormData();
-      formData.append('image', blob, uniqueFileName);
-      formData.append('groupId', groupId);
-      formData.append('caption', caption);
+      // Enviar para cada grupo
+      const results = [];
+      for (const groupId of groupsArray) {
+        try {
+          console.log(`Processando grupo ${groupId}`); // Log para debug
+          
+          // 2. Converter para imagem PNG (para cada grupo)
+          const dataUrl = await toPng(element, {
+            quality: 0.95,
+            pixelRatio: 2,
+            backgroundColor: '#ffffff'
+          });
 
-      try {
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_URL}/whatsapp/send-file`,
-          formData,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            },
-            timeout: 30000
+          // 3. Converter para blob
+          const blob = await fetch(dataUrl).then(res => {
+            if (!res.ok) throw new Error('Falha ao criar imagem');
+            return res.blob();
+          });
+
+          // 4. Gerar nome de arquivo único
+          const uniqueFileName = generateUniqueFileName(fileName);
+
+          // 5. Preparar e enviar formData
+          const formData = new FormData();
+          formData.append('image', blob, uniqueFileName);
+          formData.append('groupId', groupId);
+          formData.append('caption', caption);
+
+          console.log(`Enviando para grupo ${groupId}`); // Log para debug
+          
+          const response = await axios.post(
+            `${import.meta.env.VITE_API_URL}/whatsapp/send-file`,
+            formData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              },
+              timeout: 30000
+            }
+          );
+
+          if (!response.data.success) {
+            throw new Error(response.data.error || `Erro ao enviar mensagem para o grupo ${groupId}`);
           }
-        );
 
-        if (!response.data.success) {
-          throw new Error(response.data.error || 'Erro ao enviar mensagem');
+          results.push({ groupId, success: true });
+          console.log(`Sucesso no envio para grupo ${groupId}`); // Log para debug
+        } catch (error) {
+          console.error(`Erro no grupo ${groupId}:`, error); // Log detalhado
+          results.push({ 
+            groupId, 
+            success: false, 
+            error: error.response?.data?.message || error.message 
+          });
         }
+      }
 
-        alert('Enviado com sucesso para o WhatsApp!');
-      } catch (error) {
-        if (error.response?.status === 409) {
-          // Se o erro for por arquivo existente, tentamos novamente com nome único
-          return handleSend();
-        }
-        throw error;
+      // Verificar resultados
+      const failedGroups = results.filter(r => !r.success);
+      if (failedGroups.length === 0) {
+        alert('Enviado com sucesso para todos os grupos do WhatsApp!');
+      } else if (failedGroups.length < results.length) {
+        alert(`Enviado com sucesso para alguns grupos, mas falhou para: ${failedGroups.map(g => g.groupId).join(', ')}`);
+      } else {
+        throw new Error('Falha ao enviar para todos os grupos: ' + 
+          failedGroups.map(g => `${g.groupId}: ${g.error}`).join('; '));
       }
     } catch (error) {
-      console.error('Erro ao enviar para WhatsApp:', error);
-      alert(`Erro ao enviar: ${error.response?.data?.message || error.message}`);
+      console.error('Erro geral no envio:', error);
+      alert(`Erro ao enviar: ${error.message}`);
     } finally {
       setSending(false);
     }
