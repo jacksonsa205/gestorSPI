@@ -23,7 +23,8 @@ const cadastrarConsultaPrioritaria = async (dados) => {
 };
 
 // Listar todas as consultas
-const listarConsultasPrioritarias = async ({ pesquisa, limite = null }) => {
+// Já está implementado corretamente para receber os filtros individuais
+const listarConsultasPrioritarias = async ({ pesquisa, gbe, swo, fibra, cabo, limite = null }) => {
   let query = `
     SELECT 
         ID,
@@ -41,22 +42,39 @@ const listarConsultasPrioritarias = async ({ pesquisa, limite = null }) => {
 
   const params = [];
 
+  // Filtros específicos
+  if (gbe) {
+    query += ' AND GBE = ?';
+    params.push(gbe);
+  }
+  
+  if (swo) {
+    query += ' AND SWO = ?';
+    params.push(swo);
+  }
+  
+  if (fibra) {
+    query += ' AND FIBRA = ?';
+    params.push(fibra);
+  }
+  
+  if (cabo) {
+    query += ' AND CABO = ?';
+    params.push(cabo);
+  }
+
+  // Pesquisa genérica apenas para fabricante e equipamento
   if (pesquisa) {
     query += `
       AND (
-        GBE LIKE ? OR
-        SWO LIKE ? OR
-        FIBRA LIKE ? OR
-        CABO LIKE ? OR
         FABRICANTE LIKE ? OR
         EQUIP LIKE ?
       )
     `;
     const searchTerm = `%${pesquisa}%`;
-    params.push(searchTerm, searchTerm, searchTerm, searchTerm, searchTerm, searchTerm);
+    params.push(searchTerm, searchTerm);
   }
 
-  // Aplica limite apenas se especificado
   if (limite !== null) {
     query += ' LIMIT ?';
     params.push(limite.toString());
@@ -101,6 +119,8 @@ const excluirConsultaPrioritaria = async (id) => {
   const query = 'DELETE FROM TB_GSPI_NT_Consulta_Prioritaria WHERE ID = ?';
   await pool.execute(query, [id]);
 };
+
+
 
 module.exports = {
   cadastrarConsultaPrioritaria,

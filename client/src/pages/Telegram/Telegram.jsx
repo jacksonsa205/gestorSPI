@@ -39,7 +39,7 @@ const Telegram = () => {
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/whatsapp/send-message`, {
         message: whatsappMessage,
-        groupId: '120363417407875888' // ID fixo do grupo como definido no backend
+        groupId: `${import.meta.env.VITE_WHATSAPP_GROUP_ID}`
       });
       
       if (response.data.success) {

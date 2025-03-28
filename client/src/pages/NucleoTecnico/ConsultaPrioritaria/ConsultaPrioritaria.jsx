@@ -5,7 +5,7 @@ import {
   Col,
   Button,
   Form,
-  InputGroup,
+
   Modal,
   Alert,
 } from 'react-bootstrap';
@@ -21,13 +21,30 @@ import Layout from "../../../components/Layout/Layout";
 import TabelaPaginada from "../../../components/Table/TabelaPaginada";
 import WhatsAppSender from "../../../components/WhatsAppSender/WhatsAppSender";
 import Loading from '../../../components/Loading/Loading';
+import Select from 'react-select';
 import './ConsultaPrioritaria.css';
 
 const ConsultaPrioritaria = () => {
+  // Estados principais
   const [consultas, setConsultas] = useState([]);
-  const [consultasIniciais, setConsultasIniciais] = useState([]); // Armazena os dados iniciais
+  const [consultasIniciais, setConsultasIniciais] = useState([]);
   const [filtro, setFiltro] = useState({
-    pesquisa: '', // Mantemos o campo de pesquisa único
+    gbe: '',
+    swo: '',
+    fibra: '',
+    cabo: ''
+  });
+  const [opcoesFiltro, setOpcoesFiltro] = useState({
+    gbe: [],
+    swo: [],
+    fibra: [],
+    cabo: []
+  });
+  const [buscaSelect, setBuscaSelect] = useState({
+    gbe: '',
+    swo: '',
+    fibra: '',
+    cabo: ''
   });
   const [showEditarModal, setShowEditarModal] = useState(false);
   const [consultaEditando, setConsultaEditando] = useState(null);
@@ -35,11 +52,12 @@ const ConsultaPrioritaria = () => {
   const [showDetalhesModal, setShowDetalhesModal] = useState(false);
   const [erro, setErro] = useState('');
   const [carregando, setCarregando] = useState(true);
-  const [pesquisando, setPesquisando] = useState(false); // Estado para indicar que está pesquisando
+  const [pesquisando, setPesquisando] = useState(false);
 
-  // Validações: módulo 3 (Núcleo Técnico), sem submodulo, ação de leitura (1)
+  // Validações de permissão
   const { loading, user, permissions } = useAuthValidation(3, 7, 1);
 
+  // Carrega os dados iniciais
   useEffect(() => {
     const carregarConsultas = async () => {
       try {
@@ -49,6 +67,16 @@ const ConsultaPrioritaria = () => {
         const data = await response.json();
         setConsultas(data);
         setConsultasIniciais(data);
+        
+        // Extrai opções únicas para os selects
+        const extrairOpcoesUnicas = (campo) => [...new Set(data.map(item => item[campo]).filter(Boolean))];
+        
+        setOpcoesFiltro({
+          gbe: extrairOpcoesUnicas('GBE'),
+          swo: extrairOpcoesUnicas('SWO'),
+          fibra: extrairOpcoesUnicas('FIBRA'),
+          cabo: extrairOpcoesUnicas('CABO')
+        });
       } catch (error) {
         setErro(error.message);
       } finally {
@@ -59,15 +87,48 @@ const ConsultaPrioritaria = () => {
     carregarConsultas();
   }, []);
 
+  // Atualiza as opções dos selects com base nos filtros aplicados
+  useEffect(() => {
+    const consultasFiltradas = consultasIniciais.filter(consulta => {
+      if (filtro.gbe && consulta.GBE !== filtro.gbe) return false;
+      if (filtro.swo && consulta.SWO !== filtro.swo) return false;
+      if (filtro.fibra && consulta.FIBRA !== filtro.fibra) return false;
+      if (filtro.cabo && consulta.CABO !== filtro.cabo) return false;
+      return true;
+    });
+
+    const extrairOpcoesUnicas = (campo) => [...new Set(consultasFiltradas.map(item => item[campo]).filter(Boolean))];
+    
+    setOpcoesFiltro({
+      gbe: filtro.gbe ? [filtro.gbe] : extrairOpcoesUnicas('GBE'),
+      swo: filtro.swo ? [filtro.swo] : extrairOpcoesUnicas('SWO'),
+      fibra: filtro.fibra ? [filtro.fibra] : extrairOpcoesUnicas('FIBRA'),
+      cabo: filtro.cabo ? [filtro.cabo] : extrairOpcoesUnicas('CABO')
+    });
+  }, [filtro, consultasIniciais]);
+
+  // Filtra as opções com base no texto de busca
+  const filtrarOpcoes = (campo) => {
+    return opcoesFiltro[campo]
+      .filter(opcao => opcao.toLowerCase().includes(buscaSelect[campo].toLowerCase()))
+      .sort((a, b) => a.localeCompare(b));
+  };
+
+  // Manipuladores de eventos
   const handlePesquisar = async () => {
     setPesquisando(true);
     try {
-      const queryParams = new URLSearchParams({ 
-        pesquisa: filtro.pesquisa,
-        isSearch: true // Adiciona flag para indicar que é uma pesquisa
-      }).toString();
-      
+      const params = {
+        gbe: filtro.gbe || '',
+        swo: filtro.swo || '',
+        fibra: filtro.fibra || '',
+        cabo: filtro.cabo || '',
+        isSearch: true
+      };
+
+      const queryParams = new URLSearchParams(params).toString();
       const response = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/consulta-prioritaria/buscar?${queryParams}`);
+      
       if (!response.ok) throw new Error('Erro ao carregar consultas');
       
       const data = await response.json();
@@ -80,13 +141,43 @@ const ConsultaPrioritaria = () => {
   };
 
   const handleLimparPesquisa = () => {
-    setFiltro({ pesquisa: '' });
+    setFiltro({
+      gbe: '',
+      swo: '',
+      fibra: '',
+      cabo: ''
+    });
+    setBuscaSelect({
+      gbe: '',
+      swo: '',
+      fibra: '',
+      cabo: ''
+    });
     setConsultas(consultasIniciais);
+  };
+
+  const handleFiltroChange = (campo, valor) => {
+    setFiltro(prev => ({
+      ...prev,
+      [campo]: valor
+    }));
+    // Limpa a busca quando seleciona um valor
+    setBuscaSelect(prev => ({
+      ...prev,
+      [campo]: ''
+    }));
+  };
+
+  const handleBuscaSelectChange = (campo, valor) => {
+    setBuscaSelect(prev => ({
+      ...prev,
+      [campo]: valor
+    }));
   };
 
   const abrirModalEdicao = async (consulta) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/consulta-prioritaria/buscar/${consulta.ID}`); // Usando ID
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/consulta-prioritaria/buscar/${consulta.ID}`);
       if (!response.ok) throw new Error('Erro ao carregar consulta para edição');
       
       const dadosConsulta = await response.json();
@@ -99,7 +190,7 @@ const ConsultaPrioritaria = () => {
 
   const handleSalvarEdicao = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/consulta-prioritaria/editar/${consultaEditando.ID}`, { // Usando ID
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/consulta-prioritaria/editar/${consultaEditando.ID}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -114,17 +205,18 @@ const ConsultaPrioritaria = () => {
   
       const consultasAtualizadas = await responseConsultas.json();
       setConsultas(consultasAtualizadas);
+      setConsultasIniciais(consultasAtualizadas);
       setShowEditarModal(false);
     } catch (error) {
       setErro(error.message);
     }
   };
 
-  const handleExcluirConsulta = async (id) => { // Usando ID
+  const handleExcluirConsulta = async (id) => {
     if (!window.confirm('Tem certeza que deseja excluir esta consulta?')) return;
     
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/consulta-prioritaria/excluir/${id}`, { // Usando ID
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/consulta-prioritaria/excluir/${id}`, {
         method: 'DELETE',
       });
       
@@ -135,58 +227,20 @@ const ConsultaPrioritaria = () => {
   
       const consultasAtualizadas = await responseConsultas.json();
       setConsultas(consultasAtualizadas);
+      setConsultasIniciais(consultasAtualizadas);
     } catch (error) {
       setErro(error.message);
     }
   };
 
-  const consultasFiltradas = consultas.filter(consulta => {
-    // Verifica se o objeto consulta é válido
-    if (!consulta) return false;
-  
-    // Cria campos seguros (trata null/undefined)
-    const camposPesquisa = [
-      consulta.GBE || '', // Converte null para string vazia
-      consulta.SWO || '',
-      consulta.FIBRA || '',
-      consulta.CABO || '',
-      consulta.FABRICANTE || '',
-      consulta.EQUIP || '',
-    ];
-  
-    // Converte o termo de pesquisa para minúsculas uma única vez
-    const termoPesquisa = filtro.pesquisa.toLowerCase();
-  
-    return camposPesquisa.some(campo => 
-      campo.toLowerCase().includes(termoPesquisa)
-    );
-  });
-
+  // Configuração da tabela
   const colunas = [
-    { 
-      chave: 'GBE', 
-      titulo: 'GBE',
-    },
-    { 
-      chave: 'SWO', 
-      titulo: 'SWO',
-    },
-    { 
-      chave: 'FIBRA', 
-      titulo: 'Fibra',
-    },
-    { 
-      chave: 'CABO', 
-      titulo: 'Cabo',
-    },
-    { 
-      chave: 'FABRICANTE', 
-      titulo: 'Fabricante',
-    },
-    { 
-      chave: 'EQUIP', 
-      titulo: 'Equipamento',
-    },
+    { chave: 'GBE', titulo: 'GBE' },
+    { chave: 'SWO', titulo: 'SWO' },
+    { chave: 'FIBRA', titulo: 'Fibra' },
+    { chave: 'CABO', titulo: 'Cabo' },
+    { chave: 'FABRICANTE', titulo: 'Fabricante' },
+    { chave: 'EQUIP', titulo: 'Equipamento' },
   ];
 
   const formatarDataHoraAtual = () => {
@@ -200,7 +254,14 @@ const ConsultaPrioritaria = () => {
       hour12: false,
     });
   };
-  
+
+  const formatOptions = (options) => {
+    return options.map(option => ({
+      value: option,
+      label: option
+    }));
+  };
+
   if (loading) {
     return <Loading />; 
   }
@@ -211,79 +272,151 @@ const ConsultaPrioritaria = () => {
 
   return (
     <Layout
-      title="Consultas Prioritárias"
+      title="Consulta Prioritária"
       content={
         <Container fluid className="consulta-prioritaria-container">
           {erro && <Alert variant="danger">{erro}</Alert>}
 
+          {/* Seção de Filtros */}
           <Row className="mb-4 filtros-section">
-            <Col md={8}>
-              <InputGroup>
-                <InputGroup.Text>
-                  <FontAwesomeIcon icon={faSearch} />
-                </InputGroup.Text>
-                <Form.Control
-                  placeholder="Pesquisar por GBE, SWO, Fibra, Cabo, Fabricante ou Equipamento"
-                  value={filtro.pesquisa}
-                  onChange={(e) => setFiltro({...filtro, pesquisa: e.target.value})}
-                />
-              </InputGroup>
-            </Col>
-            <Col md={4} className="d-flex justify-content-end">
-              <Button
-                variant="primary"
-                onClick={handlePesquisar}
-                disabled={pesquisando} // Desabilita o botão durante a pesquisa
-              >
-                {pesquisando ? (
-                  <>
-                    <FontAwesomeIcon icon={faSync} spin className="me-2" /> {/* Ícone de carregamento */}
-                    Pesquisando...
-                  </>
-                ) : (
-                  <>
-                    <FontAwesomeIcon icon={faSearch} className="me-2" />
-                    Pesquisar
-                  </>
-                )}
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={handleLimparPesquisa}
-                className="ms-2"
-              >
-                <FontAwesomeIcon icon={faTimes} className="me-2" /> {/* Novo ícone */}
-                Limpar
-              </Button>
+            <Col md={12}>
+              <Row>
+                {/* Filtro GBE */}
+                <Col md={3}>
+                  <Form.Group>
+                    <Form.Label>GBE</Form.Label>
+                    <Select
+                      options={formatOptions(opcoesFiltro.gbe)}
+                      value={filtro.gbe ? { value: filtro.gbe, label: filtro.gbe } : null}
+                      onChange={(selected) => handleFiltroChange('gbe', selected ? selected.value : '')}
+                      onInputChange={(input) => handleBuscaSelectChange('gbe', input)}
+                      placeholder="Todos"
+                      isClearable
+                      isSearchable
+                      className="react-select-container"
+                      classNamePrefix="react-select"
+                    />
+                  </Form.Group>
+                </Col>
+
+                {/* Filtro SWO */}
+                <Col md={3}>
+                  <Form.Group>
+                    <Form.Label>SWO</Form.Label>
+                    <Select
+                      options={formatOptions(opcoesFiltro.swo)}
+                      value={filtro.swo ? { value: filtro.swo, label: filtro.swo } : null}
+                      onChange={(selected) => handleFiltroChange('swo', selected ? selected.value : '')}
+                      onInputChange={(input) => handleBuscaSelectChange('swo', input)}
+                      placeholder="Todos"
+                      isClearable
+                      isSearchable
+                      className="react-select-container"
+                      classNamePrefix="react-select"
+                    />
+                  </Form.Group>
+                </Col>
+
+                {/* Filtro Fibra */}
+                <Col md={3}>
+                  <Form.Group>
+                    <Form.Label>Fibra</Form.Label>
+                    <Select
+                      options={formatOptions(opcoesFiltro.fibra)}
+                      value={filtro.fibra ? { value: filtro.fibra, label: filtro.fibra } : null}
+                      onChange={(selected) => handleFiltroChange('fibra', selected ? selected.value : '')}
+                      onInputChange={(input) => handleBuscaSelectChange('fibra', input)}
+                      placeholder="Todos"
+                      isClearable
+                      isSearchable
+                      className="react-select-container"
+                      classNamePrefix="react-select"
+                    />
+                  </Form.Group>
+                </Col>
+
+                {/* Filtro Cabo */}
+                <Col md={3}>
+                  <Form.Group>
+                    <Form.Label>Cabo</Form.Label>
+                    <Select
+                      options={formatOptions(opcoesFiltro.cabo)}
+                      value={filtro.cabo ? { value: filtro.cabo, label: filtro.cabo } : null}
+                      onChange={(selected) => handleFiltroChange('cabo', selected ? selected.value : '')}
+                      onInputChange={(input) => handleBuscaSelectChange('cabo', input)}
+                      placeholder="Todos"
+                      isClearable
+                      isSearchable
+                      className="react-select-container"
+                      classNamePrefix="react-select"
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              {/* Botões de ação - Agora centralizados */}
+              <Row className="mt-3">
+                <Col className="d-flex justify-content-center">
+                  <Button
+                    variant="primary"
+                    onClick={handlePesquisar}
+                    disabled={pesquisando}
+                    className="me-2"
+                    style={{ minWidth: '180px' }}  // Largura mínima aumentada
+                  >
+                    {pesquisando ? (
+                      <>
+                        <FontAwesomeIcon icon={faSync} spin className="me-2" />
+                        Pesquisando...
+                      </>
+                    ) : (
+                      'Pesquisar'
+                    )}
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={handleLimparPesquisa}
+                    style={{ minWidth: '180px' }}  // Largura mínima aumentada
+                  >
+                    <FontAwesomeIcon icon={faTimes} className="me-2" />
+                    Limpar
+                  </Button>
+                </Col>
+              </Row>
             </Col>
           </Row>
 
+          {/* Tabela de resultados */}
           <Row>
             <Col>
-              <TabelaPaginada
-                dados={consultasFiltradas}
-                colunas={colunas}
-                onEditar={abrirModalEdicao}
-                onExcluir={(item) => handleExcluirConsulta(item.ID)} // Usando ID
-                onDetalhes={(item) => {
-                  setConsultaDetalhada(item);
-                  setShowDetalhesModal(true);
-                }}
-                permissoes={permissions}
-              />
+              {carregando ? (
+                <Loading />
+              ) : (
+                <TabelaPaginada
+                  dados={consultas}
+                  colunas={colunas}
+                  onEditar={abrirModalEdicao}
+                  onExcluir={(item) => handleExcluirConsulta(item.ID)}
+                  onDetalhes={(item) => {
+                    setConsultaDetalhada(item);
+                    setShowDetalhesModal(true);
+                  }}
+                  permissoes={permissions}
+                />
+              )}
             </Col>
           </Row>
 
           {/* Modal Detalhes */}
           <Modal show={showDetalhesModal} onHide={() => setShowDetalhesModal(false)} size="lg" className="modal-detalhes">
-          <Modal.Header closeButton>
-            <div className="d-flex justify-content-between w-100 align-items-center">
-              <Modal.Title className="m-0">
-                <FontAwesomeIcon icon={faSearch} className="me-2" />
-                Detalhes da Consulta - {consultaDetalhada ? consultaDetalhada.GBE : "N/A"}
-              </Modal.Title>
-              <div className="d-flex align-items-center">
-                {permissions.canEnviar && (
+            <Modal.Header closeButton>
+              <div className="d-flex justify-content-between w-100 align-items-center">
+                <Modal.Title className="m-0">
+                  <FontAwesomeIcon icon={faSearch} className="me-2" />
+                  Detalhes da Consulta - {consultaDetalhada ? consultaDetalhada.GBE : "N/A"}
+                </Modal.Title>
+                <div className="d-flex align-items-center">
+                  {permissions.canEnviar && (
                     <WhatsAppSender
                       elementSelector=".modal-detalhes .modal-content"
                       fileName={`detalhe_consulta_${consultaDetalhada?.ID || 'desconhecida'}.png`}
@@ -291,10 +424,10 @@ const ConsultaPrioritaria = () => {
                       variant="link"
                       className="text-success p-1 me-2"
                     />
-                )}
+                  )}
+                </div>
               </div>
-            </div>
-          </Modal.Header>
+            </Modal.Header>
             <Modal.Body>
               {consultaDetalhada ? (
                 <div>

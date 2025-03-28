@@ -26,32 +26,22 @@ const post = async (req, res) => {
   }
 };
 
+
 // Operação de listagem
+// No método get do controller, já estamos recebendo os parâmetros corretamente
 const get = async (req, res) => {
-  const { pesquisa, isSearch } = req.query; // Adicionamos um flag para identificar se é uma pesquisa
-  const cacheKey = pesquisa ? `consulta_search_${pesquisa}` : 'consultas_prioritarias_lista';
+  const { pesquisa, gbe, swo, fibra, cabo, isSearch } = req.query;
+  const cacheKey = `consultas_${JSON.stringify(req.query)}`;
 
   try {
-    // Se não for uma pesquisa específica, aplicamos o limite de 5000
-    const limite = !isSearch ? 5000 : null;
-    
-    // Verifica cache apenas para consultas iniciais (não pesquisas)
-    if (!pesquisa) {
-      const cachedData = await redisClient.get(cacheKey);
-      if (cachedData) {
-        console.log('Dados de consultas prioritárias retornados do cache');
-        return res.json(JSON.parse(cachedData));
-      }
-    }
-
-    // Busca no banco com ou sem limite
-    const consultas = await Model.listarConsultasPrioritarias({ pesquisa, limite });
-
-    // Armazena no cache apenas as consultas iniciais (1 hora)
-    if (!pesquisa) {
-      await redisClient.setEx(cacheKey, 3600, JSON.stringify(consultas));
-      console.log('Dados de consultas prioritárias retornados do banco e armazenados no cache');
-    }
+    const consultas = await Model.listarConsultasPrioritarias({ 
+      pesquisa, 
+      gbe, 
+      swo, 
+      fibra, 
+      cabo,
+      limite: isSearch ? null : 5000
+    });
 
     res.json(consultas);
   } catch (error) {
