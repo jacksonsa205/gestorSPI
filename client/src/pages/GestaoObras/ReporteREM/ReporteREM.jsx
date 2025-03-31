@@ -221,6 +221,7 @@ const ReporteREM = () => {
     { value: 'Jacareí', label: 'Jacareí', lat: -23.3050, long: -45.9658 },
     { value: 'Jaguariúna', label: 'Jaguariúna', lat: -22.7058, long: -46.9858 },
     { value: 'Laranjal Paulista', label: 'Laranjal Paulista', lat: -23.0506, long: -47.8367 },
+    { value: 'Lindóia', label: 'Lindóia', lat: -22.5225, long: -46.6500 },
     { value: 'Limeira', label: 'Limeira', lat: -22.5647, long: -47.4017 },
     { value: 'Mairinque', label: 'Mairinque', lat: -23.5469, long: -47.1839 },
     { value: 'Mairiporã', label: 'Mairiporã', lat: -23.3189, long: -46.5869 },
