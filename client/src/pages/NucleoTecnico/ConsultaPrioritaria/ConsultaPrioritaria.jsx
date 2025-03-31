@@ -61,7 +61,7 @@ const ConsultaPrioritaria = () => {
   useEffect(() => {
     const carregarConsultas = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/consulta-prioritaria/buscar?limit=5000`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/consulta-prioritaria/buscar?limit=30000`);
         if (!response.ok) throw new Error('Erro ao carregar consultas');
         
         const data = await response.json();

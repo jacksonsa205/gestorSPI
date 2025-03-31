@@ -40,7 +40,7 @@ const get = async (req, res) => {
       swo, 
       fibra, 
       cabo,
-      limite: isSearch ? null : 5000
+      limite: isSearch ? null : 40000
     });
 
     res.json(consultas);
