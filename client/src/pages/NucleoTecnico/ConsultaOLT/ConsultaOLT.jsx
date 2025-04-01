@@ -27,6 +27,7 @@ import Layout from "../../../components/Layout/Layout";
 import TabelaPaginada from "../../../components/Table/TabelaPaginada";
 import WhatsAppSender from "../../../components/WhatsAppSender/WhatsAppSender";
 import Loading from '../../../components/Loading/Loading';
+import { registrarLog } from '../../../hooks/logs';
 import './ConsultaOLT.css';
 
 const ConsultaOLT = () => {
@@ -58,6 +59,7 @@ const ConsultaOLT = () => {
   });
   const [erro, setErro] = useState('');
   const [carregando, setCarregando] = useState(true);
+  const token = localStorage.getItem('token'); 
 
   // Validações: módulo 3 (Núcleo Técnico), sem submodulo, ação de leitura (1)
   const { loading, user, permissions } = useAuthValidation(3, 4, 1);
@@ -65,9 +67,16 @@ const ConsultaOLT = () => {
   useEffect(() => {
     const carregarConsultas = async () => {
       try {
+
+        await registrarLog(
+          token,
+          'Consulta',
+          'Núcleo Técnico - Consulta OLT - Página carregada com sucesso'
+        );
+
         const response = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/buscar`);
         if (!response.ok) throw new Error('Erro ao carregar consultas');
-        
+        console.log('DADOS DO USUARIO: ', user);
         const data = await response.json();
 
         setConsultas(data);
@@ -84,6 +93,13 @@ const ConsultaOLT = () => {
   useEffect(() => {
     const carregarOLTs = async () => {
       try {
+
+        await registrarLog(
+          token,
+          'Consulta',
+          'Núcleo Técnico - Consulta OLT - Carregando lista de OLTs'
+        );
+
         const response = await fetch(`${import.meta.env.VITE_API_URL}/olt/buscar`);
         if (!response.ok) throw new Error('Erro ao carregar OLTs');
         const data = await response.json();
@@ -169,6 +185,12 @@ const ConsultaOLT = () => {
       });
   
       if (!response.ok) throw new Error('Erro ao cadastrar consulta');
+
+      await registrarLog(
+        token,
+        'Cadastrar',
+        `Núcleo Técnico - Consulta OLT - TA cadastrada com sucesso: ${novaConsulta.codigo}`
+      );
       
       const responseConsultas = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/buscar`);
       if (!responseConsultas.ok) throw new Error('Erro ao carregar consultas');
@@ -208,6 +230,12 @@ const ConsultaOLT = () => {
       });
   
       if (!response.ok) throw new Error('Erro ao salvar edição');
+
+      await registrarLog(
+        token,
+        'Editar',
+        `Núcleo Técnico - Consulta OLT - TA editada com sucesso: ${consultaEditando.codigo}`
+      );
   
       // 2. Recarrega a lista de consultas do backend
       const responseConsultas = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/buscar`);
@@ -226,6 +254,12 @@ const ConsultaOLT = () => {
   const abrirModalEdicao = async (consulta) => {
     try {
       const codigo = consulta.CODIGO; // Extrai o código da consulta
+
+      await registrarLog(
+        token,
+        'Consulta',
+        `Núcleo Técnico - Consulta OLT - Acessando detalhes da TA para edição: ${codigo}`
+      );
       const response = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/buscar/${codigo}`);
       
       if (!response.ok) throw new Error('Erro ao carregar consulta para edição');
@@ -251,6 +285,11 @@ const ConsultaOLT = () => {
       setShowEditarModal(true);
     } catch (error) {
       setErro(error.message);
+      await registrarLog(
+        token,
+        'Erro',
+        `Núcleo Técnico - Consulta OLT - Erro ao acessar TA para edição: ${error.message}`
+      );
     }
   };
 
@@ -263,6 +302,12 @@ const ConsultaOLT = () => {
       });
       
       if (!response.ok) throw new Error('Erro ao excluir consulta');
+
+      await registrarLog(
+        token,
+        'Excluir',
+        `Núcleo Técnico - Consulta OLT - TA excluída com sucesso: ${codigo}`
+      );
 
       const responseConsultas = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/buscar`);
       if (!responseConsultas.ok) throw new Error('Erro ao carregar consultas');
@@ -314,6 +359,12 @@ const ConsultaOLT = () => {
   
       // Libera o objeto URL
       URL.revokeObjectURL(link.href);
+
+      await registrarLog(
+        token,
+        'Download',
+        'Núcleo Técnico - Consulta OLT - CSV baixado com sucesso'
+      );
     } catch (error) {
       setErro(error.message);
     }

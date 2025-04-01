@@ -27,6 +27,7 @@ import Layout from "../../../components/Layout/Layout";
 import TabelaPaginada from "../../../components/Table/TabelaPaginada";
 import WhatsAppSender from "../../../components/WhatsAppSender/WhatsAppSender";
 import Loading from '../../../components/Loading/Loading';
+import { registrarLog } from '../../../hooks/logs';
 import './OltIsolada.css';
 
 const OltIsolada = () => {
@@ -59,6 +60,7 @@ const OltIsolada = () => {
   const [menosDe8Hrs, setMenosDe8Hrs] = useState(0);
   const [maisDe8Hrs, setMaisDe8Hrs] = useState(0);
   const [showGraficoModal, setShowGraficoModal] = useState(false);
+  const token = localStorage.getItem('token'); 
 
   // Validações: módulo 3 (Núcleo Técnico), sem submodulo, ação de leitura (1)
   const { loading, user, permissions } = useAuthValidation(3, 6, 1);
@@ -73,6 +75,7 @@ const OltIsolada = () => {
         setOlts(data);
       } catch (error) {
         setErro(error.message);
+        
       }
     };
 
@@ -85,13 +88,26 @@ const OltIsolada = () => {
   useEffect(() => {
     const carregarOltsIsoladas = async () => {
       try {
+        await registrarLog(
+          token,
+          'Consulta',
+          'Núcleo Técnico - OLT Isolada - Página carregada com sucesso'
+        );
+        
         const response = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/olt-isolada/buscar`);
         if (!response.ok) throw new Error('Erro ao carregar OLTs Isoladas');
-        
+
+               
         const data = await response.json();
         setOltsIsoladas(data);
       } catch (error) {
         setErro(error.message);
+        await registrarLog(
+          token,
+          'Erro',
+          `Núcleo Técnico - OLT Isolada - Erro ao carregar dados: ${error.message}`
+        );
+        
       } finally {
         setCarregando(false);
       }
@@ -131,9 +147,14 @@ const OltIsolada = () => {
 
   const handleCriarOltIsolada = async () => {
     try {
+
+      await registrarLog(
+        token,
+        'Cadastrar',
+        `Núcleo Técnico - OLT Isolada - Tentativa de cadastro TA: ${novaOltIsolada.TA}`
+      );
       // Ajustar a data para o formato ISO (UTC)
       const dataFormatada = new Date(novaOltIsolada.DATA_CRIACAO).toISOString().slice(0, 16);
-  
       const dadosParaEnviar = {
         ...novaOltIsolada,
         DATA_CRIACAO: dataFormatada
@@ -148,6 +169,12 @@ const OltIsolada = () => {
       });
   
       if (!response.ok) throw new Error('Erro ao cadastrar OLT Isolada');
+
+      await registrarLog(
+        token,
+        'Cadastrar',
+        `Núcleo Técnico - OLT Isolada - Cadastro realizado com sucesso TA: ${novaOltIsolada.TA}`
+      );
   
       const responseOlts = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/olt-isolada/buscar`);
       if (!responseOlts.ok) throw new Error('Erro ao carregar OLTs Isoladas');
@@ -158,11 +185,22 @@ const OltIsolada = () => {
       limparFormulario();
     } catch (error) {
       setErro(error.message);
+      await registrarLog(
+        token,
+        'Erro',
+        `Núcleo Técnico - OLT Isolada - Erro ao cadastrar: ${error.message}`
+      );
     }
   };
 
   const handleSalvarEdicao = async () => {
     try {
+
+      await registrarLog(
+        token,
+        'Editar',
+        `Núcleo Técnico - OLT Isolada - Tentativa de edição TA: ${oltEditando.TA}`
+      );
       // Ajustar o formato da data para o fuso horário local
       const dataLocal = new Date(oltEditando.DATA_CRIACAO);
       const dataFormatada = new Date(dataLocal.getTime() - dataLocal.getTimezoneOffset() * 60000).toISOString().slice(0, 19).replace('T', ' ');
@@ -181,6 +219,12 @@ const OltIsolada = () => {
       });
   
       if (!response.ok) throw new Error('Erro ao salvar edição');
+
+      await registrarLog(
+        token,
+        'Editar',
+        `Núcleo Técnico - OLT Isolada - Edição realizada com sucesso TA: ${oltEditando.TA}`
+      );
   
       const responseOlts = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/olt-isolada/buscar`);
       if (!responseOlts.ok) throw new Error('Erro ao carregar OLTs Isoladas');
@@ -190,11 +234,21 @@ const OltIsolada = () => {
       setShowEditarModal(false);
     } catch (error) {
       setErro(error.message);
+      await registrarLog(
+        token,
+        'Erro',
+        `Núcleo Técnico - OLT Isolada - Erro ao editar: ${error.message}`
+      );
     }
   };
 
   const abrirModalEdicao = async (olt) => {
     try {
+      await registrarLog(
+        token,
+        'Consulta',
+        `Núcleo Técnico - OLT Isolada - Acessando detalhes para edição TA: ${olt.TA}`
+      );
       const response = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/olt-isolada/buscar/${olt.TA}`);
       if (!response.ok) throw new Error('Erro ao carregar OLT Isolada para edição');
       
@@ -209,6 +263,11 @@ const OltIsolada = () => {
       setShowEditarModal(true);
     } catch (error) {
       setErro(error.message);
+      await registrarLog(
+        token,
+        'Erro',
+        `Núcleo Técnico - OLT Isolada - Erro ao carregar para edição: ${error.message}`
+      );
     }
   };
 
@@ -216,11 +275,22 @@ const OltIsolada = () => {
     if (!window.confirm('Tem certeza que deseja excluir esta OLT Isolada?')) return;
     
     try {
+      await registrarLog(
+        token,
+        'Excluir',
+        `Núcleo Técnico - OLT Isolada - Tentativa de exclusão TA: ${TA}`
+      );
       const response = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/olt-isolada/excluir/${TA}`, {
         method: 'DELETE',
       });
       
       if (!response.ok) throw new Error('Erro ao excluir OLT Isolada');
+
+      await registrarLog(
+        token,
+        'Excluir',
+        `Núcleo Técnico - OLT Isolada - Exclusão realizada com sucesso TA: ${TA}`
+      );
 
       const responseOlts = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/olt-isolada/buscar`);
       if (!responseOlts.ok) throw new Error('Erro ao carregar OLTs Isoladas');
@@ -229,6 +299,11 @@ const OltIsolada = () => {
       setOltsIsoladas(oltsAtualizadas);
     } catch (error) {
       setErro(error.message);
+      await registrarLog(
+        token,
+        'Erro',
+        `Núcleo Técnico - OLT Isolada - Erro ao excluir: ${error.message}`
+      );
     }
   };
 
@@ -257,6 +332,11 @@ const OltIsolada = () => {
       link.download = 'olts_isoladas.csv';
       link.click();
       URL.revokeObjectURL(link.href);
+      await registrarLog(
+        token,
+        'Download',
+        'Núcleo Técnico - OLT Isolada - CSV baixado com sucesso'
+      );
     } catch (error) {
       setErro(error.message);
     }
@@ -316,9 +396,10 @@ const OltIsolada = () => {
     { chave: 'AFETACAO', titulo: 'Afetação' },
     { chave: 'EPS', titulo: 'EPS' },
     { chave: 'DATA_CRIACAO', titulo: 'Data de Criação', formato: (valor) => {
-        const data = new Date(valor);
-        return isNaN(data) ? "N/A" : data.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
-      }},
+      const date = new Date(valor);
+      date.setHours(date.getHours() - 3);
+      return date.toLocaleString('pt-BR');
+    }},
     { chave: 'SLA', titulo: 'SLA' },
     { chave: 'STATUS', titulo: 'Status',formato: (valor) => (
         <Badge bg={valor === 'ATIVO' ? 'success' : valor === 'PRÉ-BAIXA' ? 'warning' : 'secondary'}>

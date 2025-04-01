@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Table, Pagination, Badge, Button ,Col} from 'react-bootstrap';
+import { Table, Pagination, Badge, Button, Col } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
@@ -10,17 +10,18 @@ const TabelaPaginada = ({
   onEditar,
   onExcluir,
   onDetalhes,
-  permissoes,
+  permissoes = {},
+  mostrarAcoes = true // Valor padrão true
 }) => {
   const [paginaAtual, setPaginaAtual] = useState(1);
 
   // Calcular os índices dos itens da página atual
   const indexUltimoItem = paginaAtual * itensPorPagina;
   const indexPrimeiroItem = indexUltimoItem - itensPorPagina;
-  const itensPaginaAtual = dados.slice(indexPrimeiroItem, indexUltimoItem);
+  const itensPaginaAtual = dados?.slice(indexPrimeiroItem, indexUltimoItem) || [];
 
   // Calcular o número total de páginas
-  const totalPaginas = Math.ceil(dados.length / itensPorPagina);
+  const totalPaginas = Math.ceil((dados?.length || 0) / itensPorPagina);
 
   // Função para mudar de página
   const mudarPagina = (numeroPagina) => {
@@ -44,18 +45,15 @@ const TabelaPaginada = ({
   // Renderizar os números das páginas
   const renderizarNumerosPaginas = () => {
     const numerosPaginas = [];
-    const paginasVisiveis = 15; // Número de páginas visíveis ao redor da página atual
+    const paginasVisiveis = 15;
 
-    // Calcular o intervalo de páginas visíveis
     let inicio = Math.max(1, paginaAtual - Math.floor(paginasVisiveis / 2));
     let fim = Math.min(totalPaginas, inicio + paginasVisiveis - 1);
 
-    // Ajustar o início se o fim ultrapassar o total de páginas
     if (fim - inicio + 1 < paginasVisiveis) {
       inicio = Math.max(1, fim - paginasVisiveis + 1);
     }
 
-    // Botão para a primeira página
     if (inicio > 1) {
       numerosPaginas.push(
         <Pagination.Item key={1} onClick={() => mudarPagina(1)}>
@@ -67,7 +65,6 @@ const TabelaPaginada = ({
       }
     }
 
-    // Botões das páginas visíveis
     for (let i = inicio; i <= fim; i++) {
       numerosPaginas.push(
         <Pagination.Item
@@ -80,7 +77,6 @@ const TabelaPaginada = ({
       );
     }
 
-    // Botão para a última página
     if (fim < totalPaginas) {
       if (fim < totalPaginas - 1) {
         numerosPaginas.push(<Pagination.Ellipsis key="ellipsis-end" disabled />);
@@ -106,7 +102,7 @@ const TabelaPaginada = ({
                   {coluna.titulo}
                 </th>
               ))}
-              <th className="tabela-head">Ações</th>
+              {mostrarAcoes && <th className="tabela-head">Ações</th>}
             </tr>
           </thead>
           <tbody>
@@ -117,35 +113,39 @@ const TabelaPaginada = ({
                     {coluna.formato ? coluna.formato(item[coluna.chave]) : item[coluna.chave] || "N/A"}
                   </td>
                 ))}
-                <td className="tabela-dados">
-                  <Button
-                    variant="outline-info"
-                    size="sm"
-                    onClick={() => onDetalhes(item)}
-                  >
-                    <FontAwesomeIcon icon={faSearch} />
-                  </Button>
-                  {permissoes.canEdit && (
-                    <Button
-                      variant="outline-primary"
-                      size="sm"
-                      className="ms-2"
-                      onClick={() => onEditar(item)}
-                    >
-                      <FontAwesomeIcon icon={faEdit} />
-                    </Button>
-                  )}
-                  {permissoes.canDelete && (
-                    <Button
-                      variant="outline-danger"
-                      size="sm"
-                      className="ms-2"
-                      onClick={() => onExcluir(item)}
-                    >
-                      <FontAwesomeIcon icon={faTrash} />
-                    </Button>
-                  )}
-                </td>
+                {mostrarAcoes && (
+                  <td className="tabela-dados">
+                    {onDetalhes && (
+                      <Button
+                        variant="outline-info"
+                        size="sm"
+                        onClick={() => onDetalhes(item)}
+                      >
+                        <FontAwesomeIcon icon={faSearch} />
+                      </Button>
+                    )}
+                    {permissoes.canEdit && onEditar && (
+                      <Button
+                        variant="outline-primary"
+                        size="sm"
+                        className="ms-2"
+                        onClick={() => onEditar(item)}
+                      >
+                        <FontAwesomeIcon icon={faEdit} />
+                      </Button>
+                    )}
+                    {permissoes.canDelete && onExcluir && (
+                      <Button
+                        variant="outline-danger"
+                        size="sm"
+                        className="ms-2"
+                        onClick={() => onExcluir(item)}
+                      >
+                        <FontAwesomeIcon icon={faTrash} />
+                      </Button>
+                    )}
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
@@ -155,11 +155,11 @@ const TabelaPaginada = ({
       {/* Controles de Paginação */}
       <div className="paginacao-container">
         <Col className="d-flex justify-content-center">
-            <Pagination>
+          <Pagination>
             <Pagination.Prev onClick={paginaAnterior} disabled={paginaAtual === 1} />
             {renderizarNumerosPaginas()}
             <Pagination.Next onClick={proximaPagina} disabled={paginaAtual === totalPaginas} />
-            </Pagination>
+          </Pagination>
         </Col>
       </div>
     </>

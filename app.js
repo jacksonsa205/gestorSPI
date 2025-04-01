@@ -7,7 +7,7 @@ const session = require('express-session');
 const path = require('path');
 const { redisClient } = require('./config/redis');
 const RedisStore = require('connect-redis').default;
-const { auth,permissoes, sessao,cadastro,reporteREM,consultaOLT,consultaPrioritaria,oltIsolada,oltUplink,olt,telegram,whatsapp } = require('./routes/index.routes');
+const { logs,auth,permissoes, sessao,cadastro,reporteREM,consultaOLT,consultaPrioritaria,oltIsolada,oltUplink,olt,telegram,whatsapp } = require('./routes/index.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,7 +19,7 @@ app.use(session({
   secret: process.env.SESS_SECRET,
   resave: false,
   saveUninitialized: false,
-  rolling: true,
+  rolling: false,
   cookie: {
     maxAge: parseInt(process.env.SESSION_MAX_AGE) || 1800000,
     sameSite: 'lax',
@@ -38,6 +38,7 @@ app.use(bodyParser.json());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
+app.use('/logs', logs);
 // Configuração do ambiente (produção/desenvolvimento)
 if (process.env.NODE_ENV === 'production') {
   app.use('/usuario', auth, permissoes, sessao,cadastro);

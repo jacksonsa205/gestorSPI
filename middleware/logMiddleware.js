@@ -9,7 +9,7 @@ const logMiddleware = (usuarioID, acao, detalhes, ip) => {
       console.error('Erro ao registrar log:', error);
     }
 
-    next(); // Continua para o próximo middleware ou controller
+    next(); 
   };
 };
 

@@ -20,6 +20,7 @@ import { MapContainer, TileLayer, Marker, Popup, LayerGroup } from 'react-leafle
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useEffect, useState } from 'react';
+import { registrarLog } from '../../../hooks/logs';
 
 // Configuração das etapas
 const etapasConfig = [
@@ -64,6 +65,7 @@ const criarIcone = (cor, quantidade) => {
 const MapaREM = () => {
   const { loading, user, permissions } = useAuthValidation(2, 2, 1);
   const [obras, setObras] = useState([]);
+  const token = localStorage.getItem('token'); 
   const [legendaVisivel, setLegendaVisivel] = useState(false);
   const [filtroEtapas, setFiltroEtapas] = useState(
     etapasConfig.reduce((acc, etapa) => ({ ...acc, [etapa.etapa]: true }), {})
@@ -72,9 +74,17 @@ const MapaREM = () => {
   useEffect(() => {
     const buscarObras = async () => {
       try {
+        
         const response = await fetch(`${import.meta.env.VITE_API_URL}/gestao-obra/buscar`);
         const data = await response.json();
         setObras(data);
+
+        await registrarLog(
+          token,
+          'Consulta',
+          'Gestão Obra - Mapa REM - Página carregada com sucesso'
+        );
+
       } catch (error) {
         console.error('Erro ao buscar obras:', error);
       }

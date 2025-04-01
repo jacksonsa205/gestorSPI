@@ -1,10 +1,10 @@
-// components/WhatsAppSender/WhatsAppSender.jsx
 import { useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 import axios from 'axios';
 import { toPng } from 'html-to-image';
+import { registrarLog } from '../../hooks/logs';
 
 const WhatsAppSender = ({ 
   elementSelector, 
@@ -17,6 +17,7 @@ const WhatsAppSender = ({
   disabled = false
 }) => {
   const [sending, setSending] = useState(false);
+  const token = localStorage.getItem('token');
 
   const generateUniqueFileName = (baseName) => {
     const timestamp = Date.now();
@@ -25,16 +26,16 @@ const WhatsAppSender = ({
   };
 
   const handleSend = async () => {
+    if (sending) return;
+    setSending(true);
+
     try {
-      setSending(true);
-      
-      // 1. Capturar o elemento
       const element = document.querySelector(elementSelector);
       if (!element) {
+        await registrarLog(token, 'Envio', 'WhatsApp - Elemento não encontrado para captura');
         throw new Error('Elemento não encontrado');
       }
 
-      // Converter groupIds para array
       const groupsArray = typeof groupIds === 'string' 
         ? groupIds.split(',').map(id => id.trim()).filter(id => id) 
         : Array.isArray(groupIds) 
@@ -42,60 +43,73 @@ const WhatsAppSender = ({
           : [groupIds];
 
       if (groupsArray.length === 0) {
+        await registrarLog(token, 'Envio', 'WhatsApp - Nenhum grupo especificado para envio');
         throw new Error('Nenhum grupo especificado para envio');
       }
 
-      console.log('Grupos para enviar:', groupsArray); // Log para debug
+      // Registrar início do processo
+      await registrarLog(
+        token,
+        'Envio',
+        `WhatsApp - Iniciando envio para ${groupsArray.length} grupo(s)`
+      );
 
-      // Enviar para cada grupo
       const results = [];
-      for (const groupId of groupsArray) {
+      for (const [index, groupId] of groupsArray.entries()) {
         try {
-          console.log(`Processando grupo ${groupId}`); // Log para debug
-          
-          // 2. Converter para imagem PNG (para cada grupo)
           const dataUrl = await toPng(element, {
             quality: 0.95,
             pixelRatio: 2,
             backgroundColor: '#ffffff'
           });
 
-          // 3. Converter para blob
-          const blob = await fetch(dataUrl).then(res => {
-            if (!res.ok) throw new Error('Falha ao criar imagem');
-            return res.blob();
-          });
-
-          // 4. Gerar nome de arquivo único
+          const blob = await fetch(dataUrl).then(res => res.blob());
           const uniqueFileName = generateUniqueFileName(fileName);
 
-          // 5. Preparar e enviar formData
           const formData = new FormData();
           formData.append('image', blob, uniqueFileName);
           formData.append('groupId', groupId);
           formData.append('caption', caption);
 
-          console.log(`Enviando para grupo ${groupId}`); // Log para debug
-          
           const response = await axios.post(
             `${import.meta.env.VITE_API_URL}/whatsapp/send-file`,
             formData,
             {
               headers: {
-                'Content-Type': 'multipart/form-data'
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${token}`
               },
               timeout: 30000
             }
           );
 
-          if (!response.data.success) {
-            throw new Error(response.data.error || `Erro ao enviar mensagem para o grupo ${groupId}`);
-          }
+          // Registrar sucesso por grupo
+          await registrarLog(
+            token,
+            'Envio',
+            `WhatsApp - Sucesso no envio para grupo ${groupId}`,
+            {
+              fileName: uniqueFileName,
+              groupId,
+              position: index + 1,
+              total: groupsArray.length
+            }
+          );
 
           results.push({ groupId, success: true });
-          console.log(`Sucesso no envio para grupo ${groupId}`); // Log para debug
         } catch (error) {
-          console.error(`Erro no grupo ${groupId}:`, error); // Log detalhado
+          // Registrar erro específico por grupo
+          await registrarLog(
+            token,
+            'Envio',
+            `WhatsApp - Falha no envio para grupo ${groupId}`,
+            {
+              error: error.message,
+              groupId,
+              position: index + 1
+            }
+          );
+          
           results.push({ 
             groupId, 
             success: false, 
@@ -104,16 +118,27 @@ const WhatsAppSender = ({
         }
       }
 
-      // Verificar resultados
-      const failedGroups = results.filter(r => !r.success);
-      if (failedGroups.length === 0) {
-        alert('Enviado com sucesso para todos os grupos do WhatsApp!');
-      } else if (failedGroups.length < results.length) {
-        alert(`Enviado com sucesso para alguns grupos, mas falhou para: ${failedGroups.map(g => g.groupId).join(', ')}`);
-      } else {
-        throw new Error('Falha ao enviar para todos os grupos: ' + 
-          failedGroups.map(g => `${g.groupId}: ${g.error}`).join('; '));
+      // Registrar resumo final
+      const successfulSends = results.filter(r => r.success).length;
+      await registrarLog(
+        token,
+        'Envio',
+        `Processo concluído - ${successfulSends}/${groupsArray.length} enviados com sucesso`,
+        {
+          totalGroups: groupsArray.length,
+          successfulSends,
+          failedSends: groupsArray.length - successfulSends
+        }
+      );
+
+      if (successfulSends === 0) {
+        throw new Error('Falha ao enviar para todos os grupos');
       }
+
+      alert(successfulSends === groupsArray.length
+        ? 'Enviado com sucesso para todos os grupos!'
+        : `Enviado com sucesso para ${successfulSends} de ${groupsArray.length} grupos`);
+
     } catch (error) {
       console.error('Erro geral no envio:', error);
       alert(`Erro ao enviar: ${error.message}`);

@@ -1,3 +1,4 @@
+const logs = require('./logs/logs.routes');
 const auth = require('./usuario/auth.routes');
 const permissoes = require('./permissoes/permissoes.routes')
 const sessao = require('./usuario/sessao.routes');
@@ -12,6 +13,7 @@ const telegram = require('./telegram/telegram.routes');
 const whatsapp = require('./whatsapp/whatsapp.routes');
 
 module.exports = {
+  logs,
   auth,
   permissoes,
   sessao,

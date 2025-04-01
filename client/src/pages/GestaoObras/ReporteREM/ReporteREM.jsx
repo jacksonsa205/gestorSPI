@@ -28,6 +28,7 @@ import TabelaPaginada from "../../../components/Table/TabelaPaginada";
 import WhatsAppSender from "../../../components/WhatsAppSender/WhatsAppSender";
 import Loading from '../../../components/Loading/Loading';
 import CardEtapas from '../../../components/Cards/CardEtapas/CardEtapas';
+import { registrarLog } from '../../../hooks/logs';
 import './ReporteREM.css';
 
 const ReporteREM = () => {
@@ -37,7 +38,8 @@ const ReporteREM = () => {
     rem: '',
     idObra: '',
     municipio: '',
-    cluster: ''
+    cluster: '',
+    etapa: ''
   });
   const [showEditarModal, setShowEditarModal] = useState(false);
   const [showNovoModal, setShowNovoModal] = useState(false);
@@ -80,6 +82,7 @@ const ReporteREM = () => {
   });
   const [erro, setErro] = useState('');
   const [carregando, setCarregando] = useState(true);
+  const token = localStorage.getItem('token'); 
 
   // Validações: módulo 2 (Reporte REM), submodulo 1, ação de leitura (1)
   const { loading, user, permissions } = useAuthValidation(2, 1, 1);
@@ -91,8 +94,13 @@ const ReporteREM = () => {
         if (!response.ok) throw new Error('Erro ao carregar consultas');
         
         const data = await response.json();
-
         setConsultas(data);
+
+        await registrarLog(
+          token,
+          'Consulta',
+          'Gestão Obra - Reporte REM - Página carregada com sucesso'
+        );
       } catch (error) {
         setErro(error.message);
       } finally {
@@ -304,6 +312,12 @@ const ReporteREM = () => {
       });
   
       if (!response.ok) throw new Error('Erro ao cadastrar obra');
+
+      await registrarLog(
+        token,
+        'Cadastrar',
+        `Gestão Obra - Reporte REM - Nova obra cadastrada: ${novaConsulta.REM}`
+      );
   
       const responseObras = await fetch(`${import.meta.env.VITE_API_URL}/gestao-obra/buscar`);
       if (!responseObras.ok) throw new Error('Erro ao carregar obras');
@@ -354,6 +368,12 @@ const ReporteREM = () => {
             const errorData = await response.json();
             throw new Error(errorData.error || 'Erro ao salvar edição');
         }
+
+        await registrarLog(
+          token,
+          'Editar',
+          `Gestão Obra - Reporte REM - Obra editada: ${consultaEditando.REM}`
+        );
 
         const responseConsultas = await fetch(`${import.meta.env.VITE_API_URL}/gestao-obra/buscar`);
         if (!responseConsultas.ok) throw new Error('Erro ao carregar consultas');
@@ -413,6 +433,12 @@ const handleExcluirConsulta = async (rem) => {
             throw new Error(errorData.error || 'Erro ao excluir consulta');
         }
 
+        await registrarLog(
+          token,
+          'Excluir',
+          `Gestão Obra - Reporte REM - Obra excluída: ${rem}`
+        );
+
         const responseConsultas = await fetch(`${import.meta.env.VITE_API_URL}/gestao-obra/buscar`);
         if (!responseConsultas.ok) throw new Error('Erro ao carregar consultas');
 
@@ -434,6 +460,12 @@ const handleExcluirConsulta = async (rem) => {
         alert('Nenhum dado disponível para download.');
         return;
       }
+
+      await registrarLog(
+        token,
+        'Download',
+        'Gestão Obra - Reporte REM - Download do CSV realizado'
+      );
   
       const csv = Papa.unparse(data, {
         delimiter: ";",
@@ -489,6 +521,7 @@ const handleExcluirConsulta = async (rem) => {
     if (filtro.idObra && consulta.ID_OBRA !== filtro.idObra) return false;
     if (filtro.municipio && consulta.MUNICIPIO !== filtro.municipio) return false;
     if (filtro.cluster && consulta.CLUSTER !== filtro.cluster) return false;
+    if (filtro.etapa && consulta.ETAPA !== filtro.etapa) return false;
   
     return true;
   });
@@ -545,6 +578,18 @@ const handleExcluirConsulta = async (rem) => {
     });
   };
 
+  const abrirModalDetalhes = (item) => {
+    setConsultaDetalhada(item);
+    setShowDetalhesModal(true);
+    
+    // Registro de log para visualização de detalhes
+    registrarLog(
+      token,
+      'Consulta',
+      `Gestão Obra - Reporte REM - Detalhes visualizados: ${item.REM}`
+    );
+  };
+
 
   if (loading) {
     return <Loading />; 
@@ -568,7 +613,7 @@ const handleExcluirConsulta = async (rem) => {
                   <FontAwesomeIcon icon={faSearch} />
                 </InputGroup.Text>
                 <Form.Control
-                    placeholder="Pesquisar por REM, ID Obra, Municipio e Contrato"
+                    placeholder="Pesquisar por REM, ID Obra, Municipio, Contrato e Etapa"
                     value={filtro.pesquisa}
                     onChange={(e) => setFiltro({...filtro, pesquisa: e.target.value})}
                 />
@@ -596,10 +641,7 @@ const handleExcluirConsulta = async (rem) => {
               colunas={colunas}
               onEditar={abrirModalEdicao}
               onExcluir={(item) => handleExcluirConsulta(item.REM)}
-              onDetalhes={(item) => {
-                setConsultaDetalhada(item);
-                setShowDetalhesModal(true);
-              }}
+              onDetalhes={abrirModalDetalhes}
               permissoes={permissions}
             />
           </Col>

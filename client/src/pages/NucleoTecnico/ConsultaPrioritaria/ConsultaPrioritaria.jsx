@@ -22,6 +22,7 @@ import TabelaPaginada from "../../../components/Table/TabelaPaginada";
 import WhatsAppSender from "../../../components/WhatsAppSender/WhatsAppSender";
 import Loading from '../../../components/Loading/Loading';
 import Select from 'react-select';
+import { registrarLog } from '../../../hooks/logs';
 import './ConsultaPrioritaria.css';
 
 const ConsultaPrioritaria = () => {
@@ -53,6 +54,7 @@ const ConsultaPrioritaria = () => {
   const [erro, setErro] = useState('');
   const [carregando, setCarregando] = useState(true);
   const [pesquisando, setPesquisando] = useState(false);
+  const token = localStorage.getItem('token'); 
 
   // Validações de permissão
   const { loading, user, permissions } = useAuthValidation(3, 7, 1);
@@ -61,6 +63,13 @@ const ConsultaPrioritaria = () => {
   useEffect(() => {
     const carregarConsultas = async () => {
       try {
+
+        await registrarLog(
+          token,
+          'Consulta',
+          'Núcleo Técnico - Consulta Prioritária - Página carregada com sucesso'
+        );
+
         const response = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/consulta-prioritaria/buscar?limit=30000`);
         if (!response.ok) throw new Error('Erro ao carregar consultas');
         
@@ -118,6 +127,11 @@ const ConsultaPrioritaria = () => {
   const handlePesquisar = async () => {
     setPesquisando(true);
     try {
+      await registrarLog(
+        token,
+        'Consulta',
+        'Núcleo Técnico - Consulta Prioritária - Realizando pesquisa com filtros'
+      );
       const params = {
         gbe: filtro.gbe || '',
         swo: filtro.swo || '',
@@ -135,6 +149,11 @@ const ConsultaPrioritaria = () => {
       setConsultas(data);
     } catch (error) {
       setErro(error.message);
+      await registrarLog(
+        token,
+        'Erro',
+        `Núcleo Técnico - Consulta Prioritária - Erro na pesquisa: ${error.message}`
+      );
     } finally {
       setPesquisando(false);
     }
@@ -177,6 +196,11 @@ const ConsultaPrioritaria = () => {
 
   const abrirModalEdicao = async (consulta) => {
     try {
+      await registrarLog(
+        token,
+        'Consulta',
+        `Núcleo Técnico - Consulta Prioritária - Acessando detalhes para edição ID: ${consulta.ID}`
+      );
       const response = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/consulta-prioritaria/buscar/${consulta.ID}`);
       if (!response.ok) throw new Error('Erro ao carregar consulta para edição');
       
@@ -185,11 +209,22 @@ const ConsultaPrioritaria = () => {
       setShowEditarModal(true);
     } catch (error) {
       setErro(error.message);
+      await registrarLog(
+        token,
+        'Erro',
+        `Núcleo Técnico - Consulta Prioritária - Erro ao carregar para edição: ${error.message}`
+      );
     }
   };
 
   const handleSalvarEdicao = async () => {
     try {
+
+      await registrarLog(
+        token,
+        'Editar',
+        `Núcleo Técnico - Consulta Prioritária - Tentativa de edição ID: ${consultaEditando.ID}`
+      );
       const response = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/consulta-prioritaria/editar/${consultaEditando.ID}`, {
         method: 'PUT',
         headers: {
@@ -199,6 +234,11 @@ const ConsultaPrioritaria = () => {
       });
   
       if (!response.ok) throw new Error('Erro ao salvar edição');
+
+      await registrarLog(
+        token,
+        'Editar',
+        `Núcleo Técnico - Consulta Prioritária - Edição realizada com sucesso ID: ${consultaEditando.ID}`);
   
       const responseConsultas = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/consulta-prioritaria/buscar`);
       if (!responseConsultas.ok) throw new Error('Erro ao carregar consultas');
@@ -209,6 +249,11 @@ const ConsultaPrioritaria = () => {
       setShowEditarModal(false);
     } catch (error) {
       setErro(error.message);
+      await registrarLog(
+        token,
+        'Erro',
+        `Núcleo Técnico - Consulta Prioritária - Erro ao editar: ${error.message}`
+      );
     }
   };
 
@@ -216,11 +261,22 @@ const ConsultaPrioritaria = () => {
     if (!window.confirm('Tem certeza que deseja excluir esta consulta?')) return;
     
     try {
+      await registrarLog(
+        token,
+        'Excluir',
+        `Núcleo Técnico - Consulta Prioritária - Tentativa de exclusão ID: ${id}`
+      );
       const response = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/consulta-prioritaria/excluir/${id}`, {
         method: 'DELETE',
       });
       
       if (!response.ok) throw new Error('Erro ao excluir consulta');
+
+      await registrarLog(
+        token,
+        'Excluir',
+        `Núcleo Técnico - Consulta Prioritária - Exclusão realizada com sucesso ID: ${id}`
+      );
 
       const responseConsultas = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/consulta-prioritaria/buscar`);
       if (!responseConsultas.ok) throw new Error('Erro ao carregar consultas');
@@ -230,6 +286,11 @@ const ConsultaPrioritaria = () => {
       setConsultasIniciais(consultasAtualizadas);
     } catch (error) {
       setErro(error.message);
+      await registrarLog(
+        token,
+        'Erro',
+        `Núcleo Técnico - Consulta Prioritária - Erro ao excluir: ${error.message}`
+      );
     }
   };
 

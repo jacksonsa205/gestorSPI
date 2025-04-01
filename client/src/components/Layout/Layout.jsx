@@ -16,6 +16,7 @@ import {
 import Sidebar from '../Sidebar/Sidebar';
 import axios from 'axios';
 import useAuthValidation from '../../hooks/useAuthValidation';
+import { registrarLog } from '../../hooks/logs';
 import './Layout.css';
 
 const Layout = ({ title, content }) => {
@@ -76,6 +77,11 @@ const Layout = ({ title, content }) => {
   const handleLogout = async () => {
     try {
       const token = localStorage.getItem('token');
+      await registrarLog(
+        token,
+        'Logoff',
+        'Usuario fez logoff do sistema.'
+      );
       
       // Envia requisição de logout para o servidor
       await axios.post(`${import.meta.env.VITE_API_URL}/usuario/logout`, null, {
@@ -83,6 +89,7 @@ const Layout = ({ title, content }) => {
           Authorization: `Bearer ${token}`
         }
       });
+      
 
     } catch (error) {
       console.error('Erro durante o logout:', error);

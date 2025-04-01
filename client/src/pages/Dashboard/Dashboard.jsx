@@ -21,6 +21,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import './Dashboard.css'; 
 import CardObras from '../../components/Cards/CardObras/CardObras'; 
+import { registrarLog } from '../../hooks/logs';
 
 const etapasConfig = [
   { etapa: 'PENDENTE', cor: '#dc3545', label: 'Pendente', icone: faClock, gradient: ['#ff758c', '#ff7eb3'] },
@@ -51,34 +52,40 @@ const Dashboard = () => {
   const [tasData, setTasData] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [chartDataContratos, setChartDataContratos] = useState([]);
+  const [pageLoaded, setPageLoaded] = useState(false);
+  const token = localStorage.getItem('token'); 
 
-  useEffect(() => {
-    const fetchObras = async () => {
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/gestao-obra/buscar`);
-        setObras(response.data);
-      } catch (error) {
-        console.error("Erro ao buscar obras:", error);
-      }
-    };
-
-    fetchObras();
-  }, []);
-
-  useEffect(() => {
-    const fetchTAS = async () => {
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/buscar`);
-        setTasData(response.data);
-        processChartData(response.data);
-        processChartDataContratos(response.data);
-      } catch (error) {
-        console.error("Erro ao buscar TAS:", error);
-      }
-    };
-
-    fetchTAS();
-  }, []);
+    // Efeito único para carregamento inicial
+    useEffect(() => {
+      const loadInitialData = async () => {
+        try {
+          // Carrega dados de obras
+          const obrasResponse = await axios.get(`${import.meta.env.VITE_API_URL}/gestao-obra/buscar`);
+          setObras(obrasResponse.data);
+  
+          // Carrega dados de TAS
+          const tasResponse = await axios.get(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/buscar`);
+          setTasData(tasResponse.data);
+          processChartData(tasResponse.data);
+          processChartDataContratos(tasResponse.data);
+  
+          // Registra log único de carregamento da página
+          if (!pageLoaded && token) {
+            await registrarLog(
+              token,
+              'Consulta',
+              'Dashboard - Página inicial carregada com sucesso'
+            );
+            setPageLoaded(true);
+          }
+  
+        } catch (error) {
+          console.error("Erro ao carregar dados iniciais:", error);
+        }
+      };
+  
+      loadInitialData();
+    }, [token]);
 
   // Processar dados para o gráfico
   const processChartData = (data) => {
@@ -188,13 +195,13 @@ const Dashboard = () => {
         <div className="d-flex align-items-center">
           <h5 className="resumo-obras-title mb-0">Resumo da Obras SPI</h5>
           {permissions.canEnviar && (
-            <WhatsAppSender
-              elementSelector=".container-subtitle + .container-fluid"
-              fileName={`resumo_obras_${formatarDataHoraAtual().replace(/[/,: ]/g, '_')}.png`}
-              caption={`Resumo de Obras SPI - ${formatarDataHoraAtual()}`}
-              className="text-success p-1 ms-2"
-            />
-          )}
+                <WhatsAppSender
+                  elementSelector=".container-subtitle + .container-fluid"
+                  fileName={`resumo_obras_${formatarDataHoraAtual().replace(/[/,: ]/g, '_')}.png`}
+                  caption={`Resumo de Obras SPI - ${formatarDataHoraAtual()}`}
+                  className="text-success p-1 ms-2"
+                />
+            )}
         </div>
         
         {/* Linha fina que liga o subtítulo ao botão */}
