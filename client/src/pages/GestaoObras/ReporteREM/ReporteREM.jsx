@@ -39,6 +39,7 @@ const ReporteREM = () => {
     idObra: '',
     municipio: '',
     cluster: '',
+    contratada:'',
     etapa: ''
   });
   const [showEditarModal, setShowEditarModal] = useState(false);
@@ -521,6 +522,7 @@ const handleExcluirConsulta = async (rem) => {
     if (filtro.idObra && consulta.ID_OBRA !== filtro.idObra) return false;
     if (filtro.municipio && consulta.MUNICIPIO !== filtro.municipio) return false;
     if (filtro.cluster && consulta.CLUSTER !== filtro.cluster) return false;
+    if (filtro.contratada && consulta.CONTRATADA !== filtro.contratada) return false;
     if (filtro.etapa && consulta.ETAPA !== filtro.etapa) return false;
   
     return true;
@@ -606,14 +608,14 @@ const handleExcluirConsulta = async (rem) => {
         <Container fluid className="consulta-olt-container">
           {erro && <Alert variant="danger">{erro}</Alert>}
 
-          <Row className="mb-4 filtros-section">
+          <Row className="mb-3 filtros-section">
             <Col md={8}>
               <InputGroup>
                 <InputGroup.Text>
                   <FontAwesomeIcon icon={faSearch} />
                 </InputGroup.Text>
                 <Form.Control
-                    placeholder="Pesquisar por REM, ID Obra, Municipio, Contrato e Etapa"
+                    placeholder="Pesquisar por REM e ID Obra"
                     value={filtro.pesquisa}
                     onChange={(e) => setFiltro({...filtro, pesquisa: e.target.value})}
                 />
@@ -630,6 +632,87 @@ const handleExcluirConsulta = async (rem) => {
                 <FontAwesomeIcon icon={faDownload} className="me-2" />
                 Baixar CSV
             </Button>
+            </Col>
+          </Row>
+          <Row className="mb-3 filtros-section">
+            <Col md={3}>
+              <Select
+                options={opcoesEtapa}
+                placeholder="Filtrar por etapa"
+                isClearable
+                onChange={(selectedOption) => 
+                  setFiltro({...filtro, etapa: selectedOption ? selectedOption.value : ''})
+                }
+                className="react-select-container"
+                classNamePrefix="react-select"
+                styles={{
+                  control: (provided) => ({
+                    ...provided,
+                    minWidth: '100%',
+                    minHeight: '38px'
+                  })
+                }}
+              />
+            </Col>
+
+            <Col md={3}>
+              <Select
+                options={opcoesCluster}
+                placeholder="Filtrar por cluster"
+                isClearable
+                onChange={(selectedOption) => 
+                  setFiltro({...filtro, cluster: selectedOption ? selectedOption.value : ''})
+                }
+                className="react-select-container"
+                classNamePrefix="react-select"
+                styles={{
+                  control: (provided) => ({
+                    ...provided,
+                    minWidth: '100%',
+                    minHeight: '38px'
+                  })
+                }}
+              />
+            </Col>
+
+            <Col md={3}>
+              <Select
+                options={municipiosSP}
+                placeholder="Filtrar por município"
+                isClearable
+                onChange={(selectedOption) => 
+                  setFiltro({...filtro, municipio: selectedOption ? selectedOption.value : ''})
+                }
+                className="react-select-container"
+                classNamePrefix="react-select"
+                styles={{
+                  control: (provided) => ({
+                    ...provided,
+                    minWidth: '100%',
+                    minHeight: '38px'
+                  })
+                }}
+              />
+            </Col>
+
+            <Col md={3}>
+              <Select
+                options={opcoesContratada}
+                placeholder="Filtrar por contratada"
+                isClearable
+                onChange={(selectedOption) => 
+                  setFiltro({...filtro, contratada: selectedOption ? selectedOption.value : ''})
+                }
+                className="react-select-container"
+                classNamePrefix="react-select"
+                styles={{
+                  control: (provided) => ({
+                    ...provided,
+                    minWidth: '100%',
+                    minHeight: '38px'
+                  })
+                }}
+              />
             </Col>
           </Row>
           <CardEtapas obras={consultasFiltradas} />
