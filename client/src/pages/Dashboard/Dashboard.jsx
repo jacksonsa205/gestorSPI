@@ -1,4 +1,4 @@
-import { Container, Row, Button } from 'react-bootstrap';
+import { Container, Row, Button , Col} from 'react-bootstrap';
 import { 
   faClock,
   faExclamationTriangle,
@@ -10,6 +10,13 @@ import {
   faCheckCircle,
   faChevronUp,
   faChevronDown,
+  faHexagonNodesBolt,
+  faTriangleExclamation,            
+  faServer,            
+  faCity,              
+  faMobileAlt,         
+  faBriefcase,        
+  faNetworkWired,      
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Importe o FontAwesomeIcon
 import Layout from "../../components/Layout/Layout";
@@ -34,6 +41,65 @@ const etapasConfig = [
   { etapa: 'CONCLUÍDAS', cor: '#0066FF', label: 'Concluídas', icone: faCheckCircle, gradient: ['#4298f5', '#3182ce'] },
 ];
 
+const tipoConfig = [
+  { 
+    tipo: 'DWDM', 
+    cor: '#dc3545', 
+    label: 'DWDM', 
+    icone: faHexagonNodesBolt, 
+    gradient: ['#ff758c', '#ff7eb3'] 
+  },
+  { 
+    tipo: 'OLT UPLINK', 
+    cor: '#E97132', 
+    label: 'OLT Uplink', 
+    icone: faNetworkWired, 
+    gradient: ['#ff9a44', '#ff6e68'] 
+  },
+  { 
+    tipo: 'OLT ISOLADA', 
+    cor: '#6c757d', 
+    label: 'OLT Isolada', 
+    icone: faTriangleExclamation, 
+    gradient: ['#868f96', '#596164'] 
+  },
+  { 
+    tipo: 'HL4', 
+    cor: '#FA7A6C', 
+    label: 'HL4', 
+    icone: faServer, 
+    gradient: ['#ff6b6b', '#ff8787'] 
+  },
+  { 
+    tipo: 'METRO', 
+    cor: '#9900CC', 
+    label: 'Metro', 
+    icone: faCity, 
+    gradient: ['#9f7aea', '#805ad5'] 
+  },
+  { 
+    tipo: 'MÓVEL', 
+    cor: '#0C769E', 
+    label: 'Móvel', 
+    icone: faMobileAlt, 
+    gradient: ['#4298f5', '#2b6cb0'] 
+  },
+  { 
+    tipo: 'B2B AVANÇADO', 
+    cor: '#00B050', 
+    label: 'B2B Avançado', 
+    icone: faBriefcase, 
+    gradient: ['#48bb78', '#38a169'] 
+  },
+  { 
+    tipo: 'INFRA', 
+    cor: '#0066FF', 
+    label: 'Infra', 
+    icone: faNetworkWired, 
+    gradient: ['#4298f5', '#3182ce'] 
+  },
+];
+
 
 const contratosConfig = {
   CAMPINAS: ['#ff758c', '#ff7eb3'],
@@ -52,12 +118,13 @@ const Dashboard = () => {
   const [tasData, setTasData] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [chartDataContratos, setChartDataContratos] = useState([]);
+  const [carimbos, setCarimbos] = useState([]);
   const [pageLoaded, setPageLoaded] = useState(false);
   const token = localStorage.getItem('token'); 
 
     // Efeito único para carregamento inicial
     useEffect(() => {
-      const loadInitialData = async () => {
+      const loadAllData = async () => {
         try {
           // Carrega dados de obras
           const obrasResponse = await axios.get(`${import.meta.env.VITE_API_URL}/gestao-obra/buscar`);
@@ -68,6 +135,12 @@ const Dashboard = () => {
           setTasData(tasResponse.data);
           processChartData(tasResponse.data);
           processChartDataContratos(tasResponse.data);
+  
+          // Carrega dados de carimbos
+          const carimbosResponse = await axios.get(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/gestao-carimbo/buscar`);
+          setCarimbos(carimbosResponse.data);
+
+          console.log('DADOS DO RESUMO DE OCORRENCIAS:',carimbosResponse)
   
           // Registra log único de carregamento da página
           if (!pageLoaded && token) {
@@ -80,12 +153,14 @@ const Dashboard = () => {
           }
   
         } catch (error) {
-          console.error("Erro ao carregar dados iniciais:", error);
+          console.error("Erro ao carregar dados:", error);
         }
       };
   
-      loadInitialData();
+      loadAllData();
     }, [token]);
+
+    
 
   // Processar dados para o gráfico
   const processChartData = (data) => {
@@ -175,6 +250,20 @@ const Dashboard = () => {
       hour12: false,
     });
   };
+
+
+  const calcularTAsPorSLA = (tasLista, slaLabel) => {
+    return tasLista.filter(ta => {
+      if (!ta.SLA) return false;
+      
+      const [horas, minutos] = ta.SLA.split(':').map(Number);
+      const horasDecimais = horas + (minutos / 60);
+      
+      if (slaLabel === "Menor que 4 HRs") return horasDecimais < 4;
+      if (slaLabel === "Menor que 8 HRs") return horasDecimais >= 4 && horasDecimais < 8;
+      return horasDecimais >= 8; // "Maior que 8 HRs"
+    }).length;
+  };
   
 
   if (loading) {
@@ -193,7 +282,7 @@ const Dashboard = () => {
       {/* Resumo Obras */}
       <div className="container-subtitle d-flex align-items-center justify-content-between w-100 p-3 position-relative">
         <div className="d-flex align-items-center">
-          <h5 className="resumo-obras-title mb-0">Resumo da Obras SPI</h5>
+          <h5 className="resumo-obras-title mb-0">Resumo de Obras SPI</h5>
           {permissions.canEnviar && (
                 <WhatsAppSender
                   elementSelector=".container-subtitle + .container-fluid"
@@ -245,6 +334,79 @@ const Dashboard = () => {
           </Row>
         )}
       </Container>
+
+      {/* Resumo de Ocorrências */}
+     
+      <div className="container-subtitle d-flex align-items-center justify-content-between w-100 p-3 position-relative">
+      <div className="d-flex align-items-center">
+        <h5 className="resumo-obras-title mb-0">Resumo de Ocorrência</h5>
+        {permissions.canEnviar && (
+          <WhatsAppSender
+            elementSelector=".resumo-ocorrencias"
+            fileName={`resumo_ocorrencias_${formatarDataHoraAtual().replace(/[/,: ]/g, '_')}.png`}
+            caption={`Resumo de Ocorrências - ${formatarDataHoraAtual()}`}
+            className="text-success p-1 ms-2"
+          />
+        )}
+      </div>
+      
+      <div className="linha-azul" />
+
+      <button
+        onClick={() => setShowCardsTAS(!showCardsTAS)}
+        className="botao-toggle d-flex align-items-center justify-content-center"
+      >
+        <FontAwesomeIcon
+          icon={showCardsTAS ? faChevronUp : faChevronDown}
+          size="sm"
+          className="text-white"
+        />
+      </button>
+    </div>
+
+    {/* Container dos cards de ocorrências - Mantendo estrutura original */}
+    <Container fluid className="resumo-ocorrencias mt-4">
+      {showCardsTAS && (
+        <Row>
+          {tipoConfig.map((tipo, index) => {
+            // Filtra os carimbos por tipo exato (sem normalização para manter estrutura)
+            const carimbosDoTipo = carimbos.filter(c => c.TIPOS === tipo.tipo);
+            
+            // Calcula distribuição por SLA
+            const slaDistribuicao = {
+              "Menor que 4 HRs": carimbosDoTipo.filter(c => {
+                const [h, m] = (c.SLA || '00:00').split(':').map(Number);
+                return (h + m/60) < 4;
+              }).length,
+              "Menor que 8 HRs": carimbosDoTipo.filter(c => {
+                const [h, m] = (c.SLA || '00:00').split(':').map(Number);
+                const horas = h + m/60;
+                return horas >= 4 && horas < 8;
+              }).length,
+              "Maior que 8 HRs": carimbosDoTipo.filter(c => {
+                const [h, m] = (c.SLA || '00:00').split(':').map(Number);
+                return (h + m/60) >= 8;
+              }).length
+            };
+
+            // Formata para o componente CardObras
+            const slasFormatados = Object.entries(slaDistribuicao)
+              .map(([nome, quantidade]) => ({ nome, quantidade }));
+
+            return (
+              <CardObras
+                key={`tipo-${index}`}
+                etapa={tipo.label}
+                gradient={tipo.gradient}
+                icone={tipo.icone}
+                total={carimbosDoTipo.length}
+                contratos={slasFormatados}
+              />
+            );
+          })}
+        </Row>
+      )}
+    </Container>
 
      {/* Historico de TAS */}
      <div className="container-subtitle d-flex align-items-center justify-content-between w-100 p-3 position-relative">

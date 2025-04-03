@@ -14,9 +14,3 @@ const listarOLT = async () => {
 module.exports = {
   listarOLT,
 };
-
-
-module.exports = {
-  listarOLT,
-  
-};

@@ -55,7 +55,8 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
         { id: 4, text: 'Consulta OLT', link: '/nucleo-tecnico/consultaOLT' }, 
         { id: 7, text: 'Consulta Prioritária', link: '/nucleo-tecnico/consultaPrioritaria' },
         { id: 5, text: 'OLT UPLINK', link: '/nucleo-tecnico/olt-uplink' }, 
-        { id: 6, text: 'OLT Isolada', link: '/nucleo-tecnico/olt-isolada' } 
+        { id: 6, text: 'OLT Isolada', link: '/nucleo-tecnico/olt-isolada' },
+        { id: 8, text: 'Gestão de Carimbos', link: '/nucleo-tecnico/gestao-carimbo'}
       ]
     },
     {

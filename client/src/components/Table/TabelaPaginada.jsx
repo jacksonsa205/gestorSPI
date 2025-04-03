@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Table, Pagination, Badge, Button, Col } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import './TabelaPaginada.css';
 
 const TabelaPaginada = ({
   dados,
@@ -119,6 +120,7 @@ const TabelaPaginada = ({
                       <Button
                         variant="outline-info"
                         size="sm"
+                        className="btn-compact ms-1" 
                         onClick={() => onDetalhes(item)}
                       >
                         <FontAwesomeIcon icon={faSearch} />
@@ -128,7 +130,7 @@ const TabelaPaginada = ({
                       <Button
                         variant="outline-primary"
                         size="sm"
-                        className="ms-2"
+                         className="btn-compact ms-1" 
                         onClick={() => onEditar(item)}
                       >
                         <FontAwesomeIcon icon={faEdit} />
@@ -138,7 +140,7 @@ const TabelaPaginada = ({
                       <Button
                         variant="outline-danger"
                         size="sm"
-                        className="ms-2"
+                         className="btn-compact ms-1" 
                         onClick={() => onExcluir(item)}
                       >
                         <FontAwesomeIcon icon={faTrash} />

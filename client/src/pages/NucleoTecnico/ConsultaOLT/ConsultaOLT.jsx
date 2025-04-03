@@ -360,7 +360,7 @@ const ConsultaOLT = () => {
       // Libera o objeto URL
       URL.revokeObjectURL(link.href);
 
-      await registrarLog(
+       await registrarLog(
         token,
         'Download',
         'Núcleo Técnico - Consulta OLT - CSV baixado com sucesso'
