@@ -116,6 +116,7 @@ const Dashboard = () => {
   const [obras, setObras] = useState([]);
   const [showCardsObras, setShowCardsObras] = useState(true);
   const [showCardsTAS, setShowCardsTAS] = useState(true);
+  const [showCardsOcorrencias, setShowCardsOcorrencias] = useState(true);
   const [tasData, setTasData] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [chartDataContratos, setChartDataContratos] = useState([]);
@@ -354,11 +355,11 @@ const Dashboard = () => {
       <div className="linha-azul" />
 
       <button
-        onClick={() => setShowCardsTAS(!showCardsTAS)}
+        onClick={() => setShowCardsOcorrencias(!showCardsOcorrencias)}
         className="botao-toggle d-flex align-items-center justify-content-center"
       >
         <FontAwesomeIcon
-          icon={showCardsTAS ? faChevronUp : faChevronDown}
+          icon={showCardsOcorrencias ? faChevronUp : faChevronDown}
           size="sm"
           className="text-white"
         />
@@ -367,57 +368,57 @@ const Dashboard = () => {
 
     {/* Container dos cards de ocorrências - Mantendo estrutura original */}
     <Container fluid className="resumo-ocorrencias mt-4">
-  {showCardsTAS && (
-    <Row>
-      {tipoConfig.map((tipo, index) => {
-        const carimbosDoTipo = carimbos.filter(c => c.TIPOS === tipo.tipo);
-        
-        // Função corrigida para determinar a variante do badge
-        const getVariant = (nome) => {
-          if (nome === "Menor que 4 HRs") return 'success';
-          if (nome === "Menor que 8 HRs") return 'warning';
-          if (nome === "Maior que 8 HRs") return 'danger';
-          return 'secondary';
-        };
+      {showCardsOcorrencias && (
+        <Row>
+          {tipoConfig.map((tipo, index) => {
+            const carimbosDoTipo = carimbos.filter(c => c.TIPOS === tipo.tipo);
+            
+            // Função corrigida para determinar a variante do badge
+            const getVariant = (nome) => {
+              if (nome === "Menor que 4 HRs") return 'success';
+              if (nome === "Menor que 8 HRs") return 'warning';
+              if (nome === "Maior que 8 HRs") return 'danger';
+              return 'secondary';
+            };
 
-        // Calcula distribuição por SLA
-        const slaDistribuicao = {
-          "Menor que 4 HRs": carimbosDoTipo.filter(c => {
-            const [h, m] = (c.SLA || '00:00').split(':').map(Number);
-            return (h + m/60) < 4;
-          }).length,
-          "Menor que 8 HRs": carimbosDoTipo.filter(c => {
-            const [h, m] = (c.SLA || '00:00').split(':').map(Number);
-            const horas = h + m/60;
-            return horas >= 4 && horas < 8;
-          }).length,
-          "Maior que 8 HRs": carimbosDoTipo.filter(c => {
-            const [h, m] = (c.SLA || '00:00').split(':').map(Number);
-            return (h + m/60) >= 8;
-          }).length
-        };
+            // Calcula distribuição por SLA
+            const slaDistribuicao = {
+              "Menor que 4 HRs": carimbosDoTipo.filter(c => {
+                const [h, m] = (c.SLA || '00:00').split(':').map(Number);
+                return (h + m/60) < 4;
+              }).length,
+              "Menor que 8 HRs": carimbosDoTipo.filter(c => {
+                const [h, m] = (c.SLA || '00:00').split(':').map(Number);
+                const horas = h + m/60;
+                return horas >= 4 && horas < 8;
+              }).length,
+              "Maior que 8 HRs": carimbosDoTipo.filter(c => {
+                const [h, m] = (c.SLA || '00:00').split(':').map(Number);
+                return (h + m/60) >= 8;
+              }).length
+            };
 
-        // Formata para o componente CardTas
-        const slasFormatados = Object.entries(slaDistribuicao).map(([nome, quantidade]) => ({
-          nome,
-          quantidade,
-          variant: getVariant(nome)
-        }));
+            // Formata para o componente CardTas
+            const slasFormatados = Object.entries(slaDistribuicao).map(([nome, quantidade]) => ({
+              nome,
+              quantidade,
+              variant: getVariant(nome)
+            }));
 
-        return (
-          <CardTas
-            key={`tipo-${index}`}
-            etapa={tipo.label}
-            gradient={tipo.gradient}
-            icone={tipo.icone}
-            total={carimbosDoTipo.length}
-            contratos={slasFormatados}
-          />
-        );
-      })}
-    </Row>
-  )}
-</Container>
+            return (
+              <CardTas
+                key={`tipo-${index}`}
+                etapa={tipo.label}
+                gradient={tipo.gradient}
+                icone={tipo.icone}
+                total={carimbosDoTipo.length}
+                contratos={slasFormatados}
+              />
+            );
+          })}
+        </Row>
+      )}
+    </Container>
 
      {/* Historico de TAS */}
      <div className="container-subtitle d-flex align-items-center justify-content-between w-100 p-3 position-relative">
