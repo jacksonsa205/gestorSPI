@@ -91,7 +91,7 @@ const GestaoCarimbo = () => {
   ].map(item => ({ value: item, label: item }));
 
   const opcoesAliada = [
-    "ABILITY", "TEL", "TEL-REDE", "ICOMON"
+    "ABILITY", "TEL", "TEL-REDE", "ICOMON", "BL N2","CO","NOC"
   ].map(item => ({ value: item, label: item }));
 
   const opcoesAbordagem = [
