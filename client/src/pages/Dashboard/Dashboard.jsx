@@ -28,6 +28,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import './Dashboard.css'; 
 import CardObras from '../../components/Cards/CardObras/CardObras'; 
+import CardTas from '../../components/Cards/CardTas/CardTas'; 
 import { registrarLog } from '../../hooks/logs';
 
 const etapasConfig = [
@@ -366,47 +367,57 @@ const Dashboard = () => {
 
     {/* Container dos cards de ocorrências - Mantendo estrutura original */}
     <Container fluid className="resumo-ocorrencias mt-4">
-      {showCardsTAS && (
-        <Row>
-          {tipoConfig.map((tipo, index) => {
-            // Filtra os carimbos por tipo exato (sem normalização para manter estrutura)
-            const carimbosDoTipo = carimbos.filter(c => c.TIPOS === tipo.tipo);
-            
-            // Calcula distribuição por SLA
-            const slaDistribuicao = {
-              "Menor que 4 HRs": carimbosDoTipo.filter(c => {
-                const [h, m] = (c.SLA || '00:00').split(':').map(Number);
-                return (h + m/60) < 4;
-              }).length,
-              "Menor que 8 HRs": carimbosDoTipo.filter(c => {
-                const [h, m] = (c.SLA || '00:00').split(':').map(Number);
-                const horas = h + m/60;
-                return horas >= 4 && horas < 8;
-              }).length,
-              "Maior que 8 HRs": carimbosDoTipo.filter(c => {
-                const [h, m] = (c.SLA || '00:00').split(':').map(Number);
-                return (h + m/60) >= 8;
-              }).length
-            };
+  {showCardsTAS && (
+    <Row>
+      {tipoConfig.map((tipo, index) => {
+        const carimbosDoTipo = carimbos.filter(c => c.TIPOS === tipo.tipo);
+        
+        // Função corrigida para determinar a variante do badge
+        const getVariant = (nome) => {
+          if (nome === "Menor que 4 HRs") return 'success';
+          if (nome === "Menor que 8 HRs") return 'warning';
+          if (nome === "Maior que 8 HRs") return 'danger';
+          return 'secondary';
+        };
 
-            // Formata para o componente CardObras
-            const slasFormatados = Object.entries(slaDistribuicao)
-              .map(([nome, quantidade]) => ({ nome, quantidade }));
+        // Calcula distribuição por SLA
+        const slaDistribuicao = {
+          "Menor que 4 HRs": carimbosDoTipo.filter(c => {
+            const [h, m] = (c.SLA || '00:00').split(':').map(Number);
+            return (h + m/60) < 4;
+          }).length,
+          "Menor que 8 HRs": carimbosDoTipo.filter(c => {
+            const [h, m] = (c.SLA || '00:00').split(':').map(Number);
+            const horas = h + m/60;
+            return horas >= 4 && horas < 8;
+          }).length,
+          "Maior que 8 HRs": carimbosDoTipo.filter(c => {
+            const [h, m] = (c.SLA || '00:00').split(':').map(Number);
+            return (h + m/60) >= 8;
+          }).length
+        };
 
-            return (
-              <CardObras
-                key={`tipo-${index}`}
-                etapa={tipo.label}
-                gradient={tipo.gradient}
-                icone={tipo.icone}
-                total={carimbosDoTipo.length}
-                contratos={slasFormatados}
-              />
-            );
-          })}
-        </Row>
-      )}
-    </Container>
+        // Formata para o componente CardTas
+        const slasFormatados = Object.entries(slaDistribuicao).map(([nome, quantidade]) => ({
+          nome,
+          quantidade,
+          variant: getVariant(nome)
+        }));
+
+        return (
+          <CardTas
+            key={`tipo-${index}`}
+            etapa={tipo.label}
+            gradient={tipo.gradient}
+            icone={tipo.icone}
+            total={carimbosDoTipo.length}
+            contratos={slasFormatados}
+          />
+        );
+      })}
+    </Row>
+  )}
+</Container>
 
      {/* Historico de TAS */}
      <div className="container-subtitle d-flex align-items-center justify-content-between w-100 p-3 position-relative">
