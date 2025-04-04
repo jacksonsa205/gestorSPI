@@ -1,21 +1,21 @@
 .dashboard-wrapper {
     min-height: 100vh;
     background-color: #f2f2f2;
-  }
-  
+}
+
+.dashboard-wrapper.mobile-view {
+    padding-top: 0;
+}
+
 .main-content {
     transition: all 0.3s;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     background-color: #f2f2f2;
-  }
-  
-  /* .content-wrapper {
-    
-    padding: 20px;
-  }
-   */
+}
+
+/* Header - apenas para desktop */
 .main-header {
     background-color: white !important;
     border-radius: 8px;
@@ -27,31 +27,48 @@
     z-index: 999;
     transition: all 0.3s;
     width: calc(100% - 22px);
-  }
-  
+}
+
+/* Ajustes para mobile */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 80px !important;
+    }
+    
+    .content-wrapper {
+        padding: 10px;
+    }
+    
+    .page-title {
+        padding-left: 10px;
+        font-size: 1.5rem;
+    }
+}
+
 .page-title {
     padding-left: 20px;
     color: #333;
     font-size: 2rem;
     margin-bottom: 1rem;
-  }
- 
-.user-icon-btn{
-   color: #333 !important;
-   font-weight: bold;
-   text-decoration: none;
 }
 
-.user-icon-btn:hover{
-    color: #0066ff !important;
- }
+.user-icon-btn {
+    color: #333 !important;
+    font-weight: bold;
+    text-decoration: none;
+}
 
-.user-icon{
+.user-icon-btn:hover {
+    color: #0066ff !important;
+}
+
+.user-icon {
     margin-right: 5px;
-} 
+}
+
 .user-popup {
     position: absolute;
-    left: calc(100% - 143px);
+    right: -16px;
     top: 55px;
     background: white;
     border-radius: 8px;
@@ -59,7 +76,7 @@
     min-width: 160px;
     z-index: 1000;
     padding: 8px;
-  }
+}
 
 .popup-item {
     width: 100%;
@@ -71,21 +88,18 @@
     display: flex;
     align-items: center;
     transition: all 0.3s;
-  }
-  
+}
+
 .popup-item:hover {
     border-radius: 8px;
     background: #e0e0e0 !important;
-  }
+}
 
 .toggle-btn {
     color: #666 !important;
     padding: 0.5rem !important;
-  }
+}
 
-  
-  
-  
 .menu-item {
     width: 100%;
     color: white !important;
@@ -97,24 +111,58 @@
     display: flex !important;
     align-items: center;
     text-decoration: none !important;
-  }
-  
+}
+
 .menu-item:hover {
     background-color: rgba(255, 255, 255, 0.1) !important;
-  }
-  
+}
+
 .menu-item .svg-inline--fa {
     color: white !important;
     min-width: 25px;
-  }
-  
+}
+
 .main-footer {
     margin-top: 50px;
     background-color: transparent;
-    
-  }
+}
 
-.text-center.py-3{
+.text-center.py-3 {
     font-size: 12px;
     color: #666;
+}
+
+/* Adicione estas regras ao final do seu arquivo Layout.css */
+
+@media (max-width: 768px) {
+  /* Remove o header flutuante em telas menores */
+  .main-header {
+    display: none;
   }
+
+  /* Remove o espaço do lado esquerdo do menu */
+  .main-content {
+    margin-left: 0 !important;
+    padding-top: 0;
+  }
+
+  /* Ajusta o sidebar para ficar sobreposto ao conteúdo */
+  .sidebar {
+    position: fixed;
+    z-index: 1000;
+    height: 100%;
+  }
+
+  /* Ajusta o padding do conteúdo */
+  .content-wrapper {
+    padding: 10px;
+    margin-top: 20px; /* Adiciona margem superior para o título */
+  }
+
+  /* Ajusta o tamanho do título da página */
+  .page-title {
+    font-size: 1.5rem;
+    padding-left: 10px;
+    margin-top: 50px; /* Margem adicional apenas para o título */
+  }
+}

@@ -4,3 +4,81 @@
     line-height: 1;
     border-radius: 0.2rem;
   }
+
+
+
+/* Adicione estas regras ao seu arquivo TabelaPaginada.css */
+
+@media (max-width: 768px) {
+  /* Container principal com scroll horizontal */
+  .table-responsive-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+  }
+
+  /* Tabela com largura automática para permitir scroll */
+  .table-responsive {
+    width: auto;
+    min-width: 100%;
+    margin-bottom: 0;
+  }
+
+  /* Ajustes para células da tabela */
+  .tabela-head, 
+  .tabela-dados {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    min-width: 80px; /* Largura mínima para as células */
+  }
+
+  /* Botões de ação compactos */
+  .btn-compact {
+    padding: 0.2rem 0.3rem;
+    margin: 0.1rem;
+    min-width: 28px;
+    font-size: 0.7rem;
+  }
+
+  /* Container da paginação - fixo e sem scroll */
+  .paginacao-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    overflow: visible;
+  }
+
+  /* Paginação responsiva */
+  .pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0;
+    padding: 0.5rem;
+    max-width: 100%;
+  }
+
+  /* Ajustes para telas muito pequenas */
+  @media (max-width: 480px) {
+    .tabela-head, 
+    .tabela-dados {
+      padding: 0.3rem;
+      font-size: 0.75rem;
+      min-width: 70px;
+    }
+
+    .btn-compact {
+      padding: 0.15rem 0.25rem;
+      min-width: 24px;
+      font-size: 0.65rem;
+    }
+
+    /* Simplifica a paginação em telas muito pequenas */
+    .page-item:not(.active):not(.prev):not(.next):not(:first-child):not(:last-child) {
+      display: none;
+    }
+  }
+}

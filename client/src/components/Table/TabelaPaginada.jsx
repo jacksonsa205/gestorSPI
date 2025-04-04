@@ -94,8 +94,8 @@ const TabelaPaginada = ({
 
   return (
     <>
-      <div className="table-responsive">
-        <Table striped hover>
+      <div className="table-responsive-wrapper">
+        <Table striped hover className="table-responsive">
           <thead>
             <tr>
               {colunas.map((coluna, index) => (

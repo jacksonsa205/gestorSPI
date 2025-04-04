@@ -101,3 +101,66 @@ button[type="submit"]:hover {
     background: none !important;
     border: none !important;
 }
+
+
+/* Ajustes para telas pequenas (celulares) */
+@media (max-width: 767px) {
+    .login-container {
+      padding: 15px;
+    }
+    
+    .login-form {
+      width: 100%;
+      max-width: 100%;
+      padding: 20px 15px;
+    }
+    
+    .login-logo {
+      width: 180px;
+    }
+    
+    .login-form h2 {
+      font-size: 1.3rem;
+      margin-bottom: 1.2rem;
+    }
+    
+    input[type="text"],
+    input[type="password"] {
+      padding: 12px;
+      font-size: 14px;
+    }
+    
+    .password-container {
+      margin-bottom: 1.2rem;
+    }
+    
+    button[type="submit"] {
+      padding: 12px;
+      font-size: 15px;
+    }
+    
+    .eye-button {
+      right: 8px;
+      padding: 8px;
+    }
+  }
+  
+  /* Ajustes extras para telas muito pequenas */
+  @media (max-width: 375px) {
+    .login-form {
+      padding: 15px 10px;
+    }
+    
+    .login-logo {
+      width: 150px;
+    }
+    
+    .login-form h2 {
+      font-size: 1.2rem;
+    }
+    
+    input[type="text"],
+    input[type="password"] {
+      padding: 10px;
+    }
+  }

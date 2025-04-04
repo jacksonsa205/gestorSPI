@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
+import { Button, Offcanvas, Nav, Navbar } from 'react-bootstrap';
+import { useMediaQuery } from 'react-responsive';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faHome,
@@ -9,36 +10,36 @@ import {
   faPersonDigging,
   faCircle,
   faScrewdriverWrench,
-
+  faBars,
 } from '@fortawesome/free-solid-svg-icons';
-import { faTelegram } from '@fortawesome/free-brands-svg-icons'; // Ícone de marcas (WhatsApp)
+import { faTelegram } from '@fortawesome/free-brands-svg-icons';
 import logo from "../../assets/imagens/sidebar.png";
 import logoClosed from "../../assets/imagens/sidebarClosed.png";
-import useAuthValidation from '../../hooks/useAuthValidation'; // Importe o hook
+import useAuthValidation from '../../hooks/useAuthValidation';
 import './Sidebar.css';
 
 const Sidebar = ({ collapsed, toggleSidebar }) => {
   const [expandedItem, setExpandedItem] = useState(null);
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
   const [showPopup, setShowPopup] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const itemRefs = useRef([]);
   const sidebarRef = useRef(null);
   const [clickedItemIndex, setClickedItemIndex] = useState(null);
   const navigate = useNavigate();
 
-  // Use o hook para obter as permissões
-  const { permissoesModulo , permissoesSubmodulo} = useAuthValidation(null, null, null);
+  const isMobile = useMediaQuery({ maxWidth: 768 });
+  const { permissoesModulo, permissoesSubmodulo } = useAuthValidation(null, null, null);
 
-  // Defina os menus e submenus com base nas permissões
   const menuItems = [
     {
-      id: 1, // ID do módulo
+      id: 1,
       icon: faHome,
       text: 'Dashboard',
       link: '/dashboard'
     },
     {
-      id: 2, // ID do módulo
+      id: 2,
       icon: faPersonDigging,
       text: 'Gestor de Obras',
       subItems: [
@@ -47,7 +48,7 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
       ]
     },
     {
-      id: 3, // ID do módulo
+      id: 3,
       icon: faScrewdriverWrench,
       text: 'Núcleo Técnico',
       subItems: [
@@ -60,22 +61,15 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
       ]
     },
     {
-      id: 8, // ID do módulo
+      id: 8,
       icon: faTelegram,
       text: 'Telegram',
       link: '/Telegram'
     },
   ];
 
-  // Função para verificar permissões de módulo
-  const hasModulePermission = (moduleId) => {
-    return permissoesModulo.includes(moduleId);
-  };
-
-  // Função para verificar permissões de submódulo
-  const hasSubmodulePermission = (submoduleId) => {
-    return permissoesSubmodulo.includes(submoduleId);
-  };
+  const hasModulePermission = (moduleId) => permissoesModulo.includes(moduleId);
+  const hasSubmodulePermission = (submoduleId) => permissoesSubmodulo.includes(submoduleId);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -89,16 +83,21 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
 
   const handleItemClick = (index, e) => {
     const item = menuItems[index];
-
+  
     // Navegação direta para itens sem submenu
     if (!item.subItems && item.link) {
       navigate(item.link);
+      if (isMobile) setShowMobileMenu(false);
       return;
     }
-
+  
     // Lógica para itens com submenu
     if (item.subItems) {
-      if (collapsed) {
+      if (isMobile) {
+        // No mobile, alternamos a expansão do item clicado
+        setExpandedItem(expandedItem === index ? null : index);
+      } else if (collapsed) {
+        // Sidebar colapsado em desktop - mostra popup
         const rect = e.currentTarget.getBoundingClientRect();
         setClickedItemIndex(index);
         setPopupPosition({
@@ -107,12 +106,23 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
         });
         setShowPopup(prev => !prev);
       } else {
+        // Sidebar expandido em desktop - expande normalmente
         setExpandedItem(expandedItem === index ? null : index);
       }
     }
   };
 
-  return (
+  const renderMobileMenuButton = () => (
+    <Navbar className="mobile-menu-button" bg="primary" variant="dark">
+      <Navbar.Brand>
+        <Button variant="link" onClick={() => setShowMobileMenu(true)}>
+          <FontAwesomeIcon icon={faBars} size="lg" />
+        </Button>
+      </Navbar.Brand>
+    </Navbar>
+  );
+
+  const renderDesktopSidebar = () => (
     <div
       className="sidebar"
       ref={sidebarRef}
@@ -131,7 +141,6 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
 
       <div className="sidebar-menu">
         {menuItems.map((item, index) => (
-          // Renderiza apenas se o usuário tiver permissão para o módulo
           hasModulePermission(item.id) && (
             <div key={index} className="menu-group">
               <Button
@@ -159,11 +168,9 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
                 )}
               </Button>
 
-              {/* Submenu normal */}
               {!collapsed && expandedItem === index && item.subItems && (
                 <div className="submenu">
                   {item.subItems.map((subItem, subIndex) => (
-                    // Renderiza apenas se o usuário tiver permissão para o submódulo
                     hasSubmodulePermission(subItem.id) && (
                       <Button
                         key={subIndex}
@@ -186,11 +193,9 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
         ))}
       </div>
 
-      {/* Popup para collapsed */}
       {collapsed && showPopup && clickedItemIndex !== null && (
         <div className="submenu-popup" style={popupPosition}>
           {menuItems[clickedItemIndex].subItems.map((subItem, subIndex) => (
-            // Renderiza apenas se o usuário tiver permissão para o submódulo
             hasSubmodulePermission(subItem.id) && (
               <Button
                 key={subIndex}
@@ -209,6 +214,82 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
         </div>
       )}
     </div>
+  );
+
+  const renderMobileMenu = () => (
+    <Offcanvas
+      show={showMobileMenu}
+      onHide={() => setShowMobileMenu(false)}
+      placement="start"
+      className="mobile-sidebar"
+    >
+      <Offcanvas.Header closeButton>
+        <Offcanvas.Title>
+          <img src={logo} alt="Logo" className="mobile-sidebar-logo" />
+        </Offcanvas.Title>
+      </Offcanvas.Header>
+      <Offcanvas.Body>
+        <Nav className="flex-column">
+          {menuItems.map((item, index) => (
+            hasModulePermission(item.id) && (
+              <div key={index} className="mobile-menu-group">
+                <Nav.Link
+                  as={Button}
+                  variant="link"
+                  className="mobile-menu-item"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Evita que o Offcanvas feche
+                    handleItemClick(index, e);
+                  }}
+                >
+                  <div className="mobile-menu-icon-wrapper">
+                    <FontAwesomeIcon icon={item.icon} className="mobile-menu-icon" />
+                    <span className="mobile-menu-text">{item.text}</span>
+                  </div>
+                  {item.subItems && (
+                    <FontAwesomeIcon
+                      icon={expandedItem === index ? faChevronUp : faChevronDown}
+                      className="mobile-chevron-icon"
+                    />
+                  )}
+                </Nav.Link>
+  
+                {expandedItem === index && item.subItems && (
+                  <div className="mobile-submenu">
+                    {item.subItems.map((subItem, subIndex) => (
+                      hasSubmodulePermission(subItem.id) && (
+                        <Nav.Link
+                          key={subIndex}
+                          as={Button}
+                          variant="link"
+                          className="mobile-submenu-item"
+                          onClick={(e) => {
+                            e.stopPropagation(); // Evita que o Offcanvas feche
+                            navigate(subItem.link);
+                            setShowMobileMenu(false);
+                          }}
+                        >
+                          <FontAwesomeIcon icon={faCircle} className="mobile-submenu-icon" />
+                          <span className="mobile-submenu-text">{subItem.text}</span>
+                        </Nav.Link>
+                      )
+                    ))}
+                  </div>
+                )}
+              </div>
+            )
+          ))}
+        </Nav>
+      </Offcanvas.Body>
+    </Offcanvas>
+  );
+
+  return (
+    <>
+      {isMobile && renderMobileMenuButton()}
+      {!isMobile && renderDesktopSidebar()}
+      {isMobile && renderMobileMenu()}
+    </>
   );
 };
 

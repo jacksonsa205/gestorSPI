@@ -117,44 +117,66 @@
     font-weight: 700;
   }
   
-  /* Responsividade */
-  @media (max-width: 768px) {
-    .card-obra-body {
-      padding: 0.75rem;
-    }
-  
-    .card-obra-icon-wrapper {
-      min-width: 40px;
-      width: 40px;
-      height: 40px;
-      margin-right: 0.75rem;
-    }
-  
-    .card-obra-icon {
-      font-size: 1.1rem;
-    }
-  
-    .card-obra-title {
-      font-size: 0.8rem;
-    }
-  
-    .card-obra-value {
-      font-size: 1.3rem;
-    }
+  /* Adicione estas regras ao seu arquivo CardObras.css */
+
+@media (max-width: 768px) {
+  .card-obra-container {
+    min-height: 90px; /* Aumentado para acomodar textos maiores */
   }
-  
-  @media (max-width: 576px) {
-    .card-obra-container {
-      min-height: 80px;
-    }
-  
-    .card-obra-icon-wrapper {
-      min-width: 35px;
-      width: 35px;
-      height: 35px;
-    }
-  
-    .card-obra-value {
-      font-size: 1.2rem;
-    }
+
+  .card-obra-body {
+    padding: 0.85rem; /* Aumentado ligeiramente */
   }
+
+  .card-obra-icon-wrapper {
+    min-width: 45px; /* Reduzido menos que antes */
+    width: 45px;
+    height: 45px;
+    margin-right: 0.85rem;
+  }
+
+  /* TÍTULO PRINCIPAL - AUMENTADO */
+  .card-obra-title {
+    font-size: 17px !important; /* Aumentado de 16px */
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+
+  /* VALOR PRINCIPAL - AUMENTADO */
+  .card-obra-value {
+    font-size: 1.8rem !important; /* Aumentado de 1.5rem */
+    font-weight: 900;
+  }
+
+  /* SUBTÍTULOS (nomes dos contratos) - AUMENTADO */
+  .card-obra-contrato-nome {
+    font-size: 13px !important; /* Aumentado de 11px */
+    font-weight: 600;
+  }
+
+  /* SUBVALORES (quantidades) - AUMENTADO */
+  .card-obra-contrato-quantidade {
+    font-size: 13px !important; /* Aumentado de 11px */
+    font-weight: 800;
+  }
+}
+
+@media (max-width: 576px) {
+  .card-obra-container {
+    min-height: 85px;
+  }
+
+  /* Ajustes finos para telas muito pequenas */
+  .card-obra-title {
+    font-size: 16px !important;
+  }
+
+  .card-obra-value {
+    font-size: 1.7rem !important;
+  }
+
+  .card-obra-contrato-nome,
+  .card-obra-contrato-quantidade {
+    font-size: 12px !important;
+  }
+}

@@ -218,3 +218,87 @@
       width: 0%;
     }
   }
+
+
+  /* Ajustes para telas médias (tablets) */
+@media (max-width: 992px) {
+  .cadastro-colunas {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Ajustes para telas pequenas (celulares) */
+@media (max-width: 768px) {
+  .cadastro-container {
+    padding: 0.5rem;
+    align-items: flex-start;
+  }
+  
+  .cadastro-formulario {
+    padding: 1rem;
+    margin: 0.5rem 0;
+  }
+  
+  .cadastro-colunas {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+  
+  .cadastro-grupo {
+    grid-column: span 1 !important;
+  }
+  
+  .cadastro-logo {
+    width: 150px;
+  }
+  
+  .cadastro-titulo {
+    font-size: 1.3rem;
+  }
+  
+  .cadastro-input {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .cadastro-botao {
+    padding: 0.7rem;
+    font-size: 0.95rem;
+  }
+  
+  .senha-requisitos {
+    font-size: 0.75rem;
+  }
+}
+
+/* Ajustes extras para telas muito pequenas */
+@media (max-width: 480px) {
+  .cadastro-formulario {
+    padding: 0.8rem;
+    border-radius: 8px;
+  }
+  
+  .cadastro-logo {
+    width: 130px;
+  }
+  
+  .cadastro-titulo {
+    font-size: 1.2rem;
+    margin-bottom: 0.8rem;
+  }
+  
+  .cadastro-input {
+    height: 38px;
+    font-size: 0.85rem;
+  }
+  
+  .cadastro-alerta {
+    padding: 0.8rem 1.5rem 0.8rem 2.5rem;
+    font-size: 0.85rem;
+  }
+  
+  .alerta-icone {
+    font-size: 1rem;
+    left: 0.8rem;
+  }
+}
