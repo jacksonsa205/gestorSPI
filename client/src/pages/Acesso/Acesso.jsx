@@ -218,6 +218,7 @@ const Acesso = () => {
       if (!response.ok) throw new Error('Erro ao carregar usuários');
       
       const data = await response.json();
+     
       const usuariosFormatados = data.map(usuario => ({
         id: usuario.ID,
         nome: usuario.NOME,
@@ -235,7 +236,8 @@ const Acesso = () => {
         permissoes_modulo: JSON.parse(usuario.PERMISSOES_MODULO),
         permissoes_submodulo: JSON.parse(usuario.PERMISSOES_SUBMODULO),
         ultimoAcesso: usuario.ULTIMO_ACESSO ? 
-          new Date(usuario.ULTIMO_ACESSO).toLocaleString() : 'Nunca acessou'
+        new Date(new Date(usuario.ULTIMO_ACESSO).getTime() - 3 * 60 * 60 * 1000).toLocaleString() : 
+        'Nunca acessou'
       }));
       
       setUsuarios(usuariosFormatados);
@@ -258,12 +260,14 @@ const Acesso = () => {
     { chave: 'nome', titulo: 'Nome' },
     { chave: 'email', titulo: 'Email' },
     { 
-      chave: 'perfil', 
+      chave: 'cargo', 
       titulo: 'Cargo',
       formato: (valor) => (
         <Badge bg={
-          valor === 'administrador' ? 'danger' : 
-          valor === 'gerente' ? 'warning' : 'secondary'
+          valor === 'GERENTE' ? 'danger' : 
+          valor === 'CONSULTOR' ? 'warning' : 
+          valor === 'COORDENADOR' ? 'warning' : 
+          valor === 'ANALISTA' ? 'success' : 'secondary'
         }>
           {valor}
         </Badge>

@@ -142,7 +142,6 @@ const Dashboard = () => {
           const carimbosResponse = await axios.get(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/gestao-carimbo/buscar`);
           setCarimbos(carimbosResponse.data);
 
-          console.log('DADOS DO RESUMO DE OCORRENCIAS:',carimbosResponse)
   
           // Registra log único de carregamento da página
           if (!pageLoaded && token) {
