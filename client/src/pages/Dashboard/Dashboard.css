@@ -51,6 +51,24 @@
   }
 
 
+  .botao-whatsapp {
+    background: #25D366 !important;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    position: relative; /* Garante que fique acima da linha */
+  }
+
+  .botao-whatsapp:hover {
+    opacity: 0.9;
+  }
+
+
   .chart-row {
     margin-left: -15px; 
     margin-right: -15px;

@@ -284,30 +284,34 @@ const Dashboard = () => {
       <div className="container-subtitle d-flex align-items-center justify-content-between w-100 p-3 position-relative">
         <div className="d-flex align-items-center">
           <h5 className="resumo-obras-title mb-0">Resumo de Obras SPI</h5>
-          {permissions.canEnviar && (
-                <WhatsAppSender
-                  elementSelector=".container-subtitle + .container-fluid"
-                  fileName={`resumo_obras_${formatarDataHoraAtual().replace(/[/,: ]/g, '_')}.png`}
-                  caption={`Resumo de Obras SPI - ${formatarDataHoraAtual()}`}
-                  className="text-success p-1 ms-2"
-                />
-            )}
+          
         </div>
         
         {/* Linha fina que liga o subtítulo ao botão */}
-        <div className="linha-azul" />
-
-        {/* Botão redondo */}
-        <button
-          onClick={() => setShowCardsObras(!showCardsObras)}
-          className="botao-toggle d-flex align-items-center justify-content-center"
-        >
-          <FontAwesomeIcon
-            icon={showCardsObras ? faChevronUp : faChevronDown}
-            size="sm"
-            className="text-white"
-          />
-        </button>
+        {/* <div className="linha-azul" /> */}
+        <div className="d-flex align-items-center gap-2">
+        {permissions.canEnviar && (
+            <WhatsAppSender
+              elementSelector=".container-subtitle + .container-fluid"
+              fileName={`resumo_obras_${formatarDataHoraAtual().replace(/[/,: ]/g, '_')}.png`}
+              caption={`Resumo de Obras SPI - ${formatarDataHoraAtual()}`}
+              className="botao-whatsapp d-flex align-items-center justify-content-center"
+              variant="success"
+            />
+          )}
+          {/* Botão redondo */}
+          <button
+            onClick={() => setShowCardsObras(!showCardsObras)}
+            className="botao-toggle d-flex align-items-center justify-content-center"
+          >
+            <FontAwesomeIcon
+              icon={showCardsObras ? faChevronUp : faChevronDown}
+              size="sm"
+              className="text-white"
+            />
+          </button>
+        </div>
+        
       </div>
 
       {/* Container dos cards (condicional) */}
@@ -341,28 +345,32 @@ const Dashboard = () => {
       <div className="container-subtitle d-flex align-items-center justify-content-between w-100 p-3 position-relative">
       <div className="d-flex align-items-center">
         <h5 className="resumo-obras-title mb-0">Resumo de Ocorrência</h5>
-        {permissions.canEnviar && (
-          <WhatsAppSender
-            elementSelector=".resumo-ocorrencias"
-            fileName={`resumo_ocorrencias_${formatarDataHoraAtual().replace(/[/,: ]/g, '_')}.png`}
-            caption={`Resumo de Ocorrências - ${formatarDataHoraAtual()}`}
-            className="text-success p-1 ms-2"
-          />
-        )}
+        
       </div>
       
-      <div className="linha-azul" />
+      {/* <div className="linha-azul" /> */}
 
-      <button
-        onClick={() => setShowCardsOcorrencias(!showCardsOcorrencias)}
-        className="botao-toggle d-flex align-items-center justify-content-center"
-      >
-        <FontAwesomeIcon
-          icon={showCardsOcorrencias ? faChevronUp : faChevronDown}
-          size="sm"
-          className="text-white"
-        />
-      </button>
+      <div className="d-flex align-items-center gap-2">
+        {permissions.canEnviar && (
+            <WhatsAppSender
+              elementSelector=".resumo-ocorrencias"
+              fileName={`resumo_ocorrencias_${formatarDataHoraAtual().replace(/[/,: ]/g, '_')}.png`}
+              caption={`Resumo de Ocorrências - ${formatarDataHoraAtual()}`}
+              className="botao-whatsapp d-flex align-items-center justify-content-center"
+              variant="success"
+            />
+          )}
+        <button
+          onClick={() => setShowCardsOcorrencias(!showCardsOcorrencias)}
+          className="botao-toggle d-flex align-items-center justify-content-center"
+        >
+          <FontAwesomeIcon
+            icon={showCardsOcorrencias ? faChevronUp : faChevronDown}
+            size="sm"
+            className="text-white"
+          />
+        </button>
+      </div>
     </div>
 
     {/* Container dos cards de ocorrências - Mantendo estrutura original */}
@@ -423,7 +431,7 @@ const Dashboard = () => {
      <div className="container-subtitle d-flex align-items-center justify-content-between w-100 p-3 position-relative">
             <h5 className="resumo-obras-title mb-0">Histórico de TAs SPI</h5>
             
-            <div className="linha-azul" />
+            {/* <div className="linha-azul" /> */}
 
             <button
               onClick={() => setShowCardsTAS(!showCardsTAS)}

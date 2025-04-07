@@ -592,6 +592,7 @@ const GestaoCarimbo = () => {
                         elementSelector=".leaflet-container"
                         fileName={`mapa_ocorrencias_${formatarDataHoraAtual().replace(/[/,: ]/g, '_')}.png`}
                         caption={`Mapa de Ocorrências - ${formatarDataHoraAtual()}`}
+                         className="botao-whatsapp d-flex align-items-center justify-content-center"
                         variant="success"
                     />
                 )}
