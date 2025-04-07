@@ -53,11 +53,11 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
       text: 'Núcleo Técnico',
       subItems: [
         { id: 3, text: 'Carimbos', link: '' }, 
-        { id: 4, text: 'Consulta OLT', link: '/nucleo-tecnico/consultaOLT' }, 
-        { id: 7, text: 'Consulta Prioritária', link: '/nucleo-tecnico/consultaPrioritaria' },
-        { id: 5, text: 'OLT UPLINK', link: '/nucleo-tecnico/olt-uplink' }, 
-        { id: 6, text: 'OLT Isolada', link: '/nucleo-tecnico/olt-isolada' },
-        { id: 8, text: 'Gestão de Carimbos', link: '/nucleo-tecnico/gestao-carimbo'}
+        { id: 4, text: 'Consulta OLT', link: '/nucleo-tecnico-spi/consultaOLT' }, 
+        { id: 7, text: 'Consulta Prioritária', link: '/nucleo-tecnico-spi/consultaPrioritaria' },
+        { id: 5, text: 'OLT UPLINK', link: '/nucleo-tecnico-spi/olt-uplink' }, 
+        { id: 6, text: 'OLT Isolada', link: '/nucleo-tecnico-spi/olt-isolada' },
+        { id: 8, text: 'Gestão de Carimbos', link: '/nucleo-tecnico-spi/gestao-carimbo'}
       ]
     },
     {

@@ -26,11 +26,11 @@ function App() {
         <Route path="/cadastro" element={<Cadastro />} />
         <Route path="/gestao-obras/reporteREM" element={<ReporteREM />} />
         <Route path="/gestao-obras/mapaREM" element={<MapaREM />} />
-        <Route path="/nucleo-tecnico/consultaOLT" element={<ConsultaOLT />} />
-        <Route path="/nucleo-tecnico/consultaPrioritaria" element={<ConsultaPrioritaria />} />
-        <Route path="/nucleo-tecnico/olt-isolada" element={<OltIsolada />} />
-        <Route path="/nucleo-tecnico/olt-uplink" element={<OltUplink />} />
-        <Route path="/nucleo-tecnico/gestao-carimbo" element={<GestaoCarimbo />} />
+        <Route path="/nucleo-tecnico-spi/consultaOLT" element={<ConsultaOLT />} />
+        <Route path="/nucleo-tecnico-spi/consultaPrioritaria" element={<ConsultaPrioritaria />} />
+        <Route path="/nucleo-tecnico-spi/olt-isolada" element={<OltIsolada />} />
+        <Route path="/nucleo-tecnico-spi/olt-uplink" element={<OltUplink />} />
+        <Route path="/nucleo-tecnico-spi/gestao-carimbo" element={<GestaoCarimbo />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Usuario/>} />
         <Route path="/acesso" element={<Acesso />} />
