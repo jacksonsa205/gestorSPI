@@ -140,7 +140,10 @@ const Dashboard = () => {
   
           // Carrega dados de carimbos
           const carimbosResponse = await axios.get(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/gestao-carimbo/buscar`);
-          setCarimbos(carimbosResponse.data);
+          const carimbosFiltrados = carimbosResponse.data.filter(item => 
+            item.STATUS && item.STATUS.toUpperCase() !== 'FECHADO'
+          );
+          setCarimbos(carimbosFiltrados);
 
   
           // Registra log único de carregamento da página
