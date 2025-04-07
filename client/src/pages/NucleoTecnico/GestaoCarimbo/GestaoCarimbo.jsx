@@ -73,6 +73,7 @@ const GestaoCarimbo = () => {
   const [carimboDetalhado, setCarimboDetalhado] = useState(null);
   const [showDetalhesModal, setShowDetalhesModal] = useState(false);
   const [mostrarConteudo, setMostrarConteudo] = useState(true);
+  const [cadastrando, setCadastrando] = useState(false);
   const [municipios, setMunicipios] = useState([]);
   const [erro, setErro] = useState('');
   const [carregando, setCarregando] = useState(true);
@@ -209,8 +210,8 @@ const GestaoCarimbo = () => {
   });
 
   const handleCriarCarimbo = async () => {
+    setCadastrando(true); // Ativa o estado de carregamento
     try {
-      // Obter coordenadas do município selecionado diretamente do estado
       const municipioSelecionado = municipios.find(m => m.value === novaCarimbo.localidade);
       
       const carimboCompleto = {
@@ -247,6 +248,8 @@ const GestaoCarimbo = () => {
   
     } catch (error) {
       setErro(error.message);
+    } finally {
+      setCadastrando(false); // Desativa o estado de carregamento independente do resultado
     }
   };
 
@@ -1267,10 +1270,23 @@ const GestaoCarimbo = () => {
               <Button variant="secondary" onClick={() => { setShowNovoModal(false); limparFormulario(); }}>
                 Cancelar
               </Button>
-              <Button variant="primary" onClick={handleCriarCarimbo}>
-                <FontAwesomeIcon icon={faSave} className="me-2" />
-                Cadastrar
-              </Button>
+              <Button 
+                  variant="primary" 
+                  onClick={handleCriarCarimbo}
+                  disabled={cadastrando} // Desabilita o botão durante o carregamento
+                >
+                  {cadastrando ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                      Cadastrando...
+                    </>
+                  ) : (
+                    <>
+                      <FontAwesomeIcon icon={faSave} className="me-2" />
+                      Cadastrar
+                    </>
+                  )}
+                </Button>
             </Modal.Footer>
           </Modal>
 

@@ -171,6 +171,16 @@
     font-size: 0.9em;
     margin-bottom: 10px;
   }
+
+  /* Adicione no seu arquivo CSS */
+.spinner-border {
+  vertical-align: middle;
+}
+
+.btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
   
   /* Adaptação para mobile */
   @media (max-width: 768px) {
