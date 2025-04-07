@@ -539,7 +539,12 @@ const GestaoCarimbo = () => {
   const agruparCarimbosPorMunicipio = () => {
     const grupos = {};
     
-    carimbos.forEach(carimbo => {
+    // Filtra os carimbos antes de agrupar
+    const carimbosAtivos = carimbos.filter(carimbo => 
+      carimbo && carimbo.STATUS && carimbo.STATUS.toUpperCase() !== 'FECHADO'
+    );
+  
+    carimbosAtivos.forEach(carimbo => {
       if (!carimbo || !carimbo.LOCALIDADE || !carimbo.TIPOS) return;
       
       const municipio = carimbo.LOCALIDADE;
