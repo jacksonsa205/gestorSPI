@@ -5,9 +5,9 @@ import { faEye, faEyeSlash, faCheckCircle, faTimesCircle, faSpinner } from '@for
 import './Cadastro.css';
 
 // Opções para os selects
-const EMPRESAS = ['Vivo', 'Abilit', 'Tel', 'Telemom', 'Icomon'];
+const EMPRESAS = ['Vivo', 'Ability', 'Tel', 'Telemom', 'Icomon'];
 const REGIONAIS = ['SP Interior'];
-const DIVISOES = ['Assistência', 'Rede Externa', 'Planta interna', 'Móvel', 'Escritório', 'Planejamento'];
+const DIVISOES = ['Assistência', 'Rede Externa','Núcleo Técnico', 'Planta Interna', 'Móvel', 'Escritório', 'Planejamento'];
 const CONTRATOS = ['Osasco', 'São Jose dos Campo', 'Campinas', 'Interior', 'PC/SC', 'Jundiai'];
 const CARGOS = ['Técnico', 'Assistente', 'Analista', 'Consultor','Coordenador','Especialista', 'Gerente','Diretor'];
 
@@ -142,6 +142,14 @@ const Cadastro = () => {
       }));
     }
   };
+
+
+  // Função para capitalizar nomes (primeira letra de cada palavra maiúscula)
+const capitalizarNome = (nome) => {
+  return nome.toLowerCase().split(' ')
+    .map(palavra => palavra.charAt(0).toUpperCase() + palavra.slice(1))
+    .join(' ');
+};
   
   // Modificar a submissão para normalizar os campos necessários
   const handleSubmit = async (e) => {
@@ -162,6 +170,8 @@ const Cadastro = () => {
       // Normalizar os campos necessários apenas no envio
       const dadosParaEnvio = {
         ...formData,
+        nome: capitalizarNome(formData.nome),
+        re: formData.re.toUpperCase(), 
         celular: celularFormatado,
         empresa: normalizeText(formData.empresa),
         regional: normalizeText(formData.regional),
