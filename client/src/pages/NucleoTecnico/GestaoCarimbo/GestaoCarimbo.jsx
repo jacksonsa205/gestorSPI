@@ -587,16 +587,14 @@ const GestaoCarimbo = () => {
             <div className="d-flex justify-content-between align-items-center">
               <h5 className="mb-0">{mostrarConteudo ? 'Lista de Ocorrências' : 'Mapa das Ocorrências'} </h5>
               <div className="d-flex align-items-center gap-2">
-                {!mostrarConteudo && (
-                        // {permissions.canEnviar && (
-                            <WhatsAppSender
-                            elementSelector=".leaflet-container"
-                            fileName={`mapa_ocorrencias_${formatarDataHoraAtual().replace(/[/,: ]/g, '_')}.png`}
-                            caption={`Mapa de Ocorrências - ${formatarDataHoraAtual()}`}
-                             variant="success"
-                            />
-                        // )}
-                    )}
+              {!mostrarConteudo && permissions.canEnviar && (
+                    <WhatsAppSender
+                        elementSelector=".leaflet-container"
+                        fileName={`mapa_ocorrencias_${formatarDataHoraAtual().replace(/[/,: ]/g, '_')}.png`}
+                        caption={`Mapa de Ocorrências - ${formatarDataHoraAtual()}`}
+                        variant="success"
+                    />
+                )}
                 <Button 
                     variant="secondary" 
                     onClick={toggleConteudo}
