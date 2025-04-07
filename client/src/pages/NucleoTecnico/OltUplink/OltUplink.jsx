@@ -589,9 +589,9 @@ const OltUplink = () => {
                         <Tooltip />
                         <Legend
                         formatter={(value, entry) => (
-                            <span>
-                            {value}: {entry.payload.value} {/* Exibe o valor junto com a legenda */}
-                            </span>
+                          <span>
+                            {value}: <span style={{ fontSize: '18px', fontWeight: 'bold' }}> {entry.payload.value}</span>
+                          </span>
                         )}
                         />
                     </PieChart>
@@ -618,9 +618,9 @@ const OltUplink = () => {
                         <Tooltip />
                         <Legend
                         formatter={(value, entry) => (
-                            <span>
-                            {value}: {entry.payload.value} {/* Exibe o valor junto com a legenda */}
-                            </span>
+                          <span>
+                          {value}: <span style={{ fontSize: '18px', fontWeight: 'bold' }}> {entry.payload.value}</span>
+                        </span>
                         )}
                         />
                     </PieChart>
