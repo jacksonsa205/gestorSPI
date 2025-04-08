@@ -14,16 +14,91 @@ import {
   faSearch,
   faEdit,
   faUserPlus,
-  faSave
+  faSave,
+  faUsers,
+  faIdBadge,
+  faUserTie,
+  faCommentsDollar,
+  faUsersCog,
+  faChartLine,
+  faTools,
+  faShieldAlt
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useAuthValidation from '../../hooks/useAuthValidation';
 import TabelaPaginada from '../../components/Table/TabelaPaginada';
+import CardExpansivo from '../../components/Cards/CardExpansivo/CardExpansivo';
 import Layout from "../../components/Layout/Layout";
 import Loading from '../../components/Loading/Loading';
 import './Acesso.css';
 
 const Acesso = () => {
+
+  const cardsConfig = {
+    TOTAL: {
+      cor: '#4e54c8',
+      label: 'Total',  // Título mais descritivo
+      icone: faUsers,
+      gradient: ['#4e54c8', '#8f94fb'],
+      etapa: 'Total' // Adicionando a chave etapa que estava faltando
+    },
+    GERENTE: {
+      cor: '#dc3545', // Vermelho igual ao badge
+      label: 'Gerente',
+      icone: faUserTie,
+      gradient: ['#dc3545', '#c82333'], // Gradiente do vermelho
+      etapa: 'Gerente'
+    },
+    CONSULTOR: {
+      cor: '#ffc107', // Amarelo igual ao badge
+      label: 'Consultor',
+      icone: faCommentsDollar,
+      gradient: ['#ffc107', '#e0a800'], // Gradiente do amarelo
+      etapa: 'Consultor'
+    },
+    COORDENADOR: {
+      cor: '#ffc107', // Amarelo igual ao badge
+      label: 'Coordenador',
+      icone: faUsersCog,
+      gradient: ['#ffc107', '#e0a800'], // Gradiente consistente
+      etapa: 'Coordenador'
+    },
+    ANALISTA: {
+      cor: '#28a745', // Verde igual ao badge
+      label: 'Analista',
+      icone: faChartLine,
+      gradient: ['#28a745', '#218838'], // Gradiente do verde
+      etapa: 'Analista'
+    },
+    TECNICO: {
+      cor: '#6c757d', // Cinza igual ao badge
+      label: 'Técnico',
+      icone: faTools,
+      gradient: ['#6c757d', '#5a6268'], // Gradiente do cinza
+      etapa: 'Técnico'
+    },
+    ADMINISTRADOR: {
+      cor: '#6610f2',
+      label: 'Administrador',
+      icone: faShieldAlt,
+      gradient: ['#6610f2', '#4a0bc5'],
+      etapa: 'ADMINISTRADOR'
+    },
+    ASSITENTE: {
+      cor: '#6610f2',
+      label: 'Assistente',
+      icone: faIdBadge,
+      gradient: ['#868f96', '#596164'],
+      etapa: 'Assistente'
+    },
+    'SEM CARGO': { // Fallback explícito
+      cor: '#6c757d',
+      label: 'Sem Cargo',
+      icone: faIdBadge,
+      gradient: ['#868f96', '#596164'],
+      etapa: 'Assistente'
+    }
+  };
   const [usuarios, setUsuarios] = useState([]);
   const [modules, setModules] = useState([]);
   const [submodules, setSubmodules] = useState([]);
@@ -247,6 +322,49 @@ const Acesso = () => {
   };
 
 
+  // Estatísticas para os cards
+  const estatisticas = useMemo(() => {
+    const totalUsuarios = usuarios.length;
+    const status = {
+      Ativo: 0,
+      Inativo: 0,
+      Bloqueado: 0
+    };
+  
+    const cargos = usuarios.reduce((acc, usuario) => {
+      const cargo = usuario.cargo || 'Sem cargo';
+      const statusUsuario = usuario.status === 1 ? 'Ativo' : 
+                           usuario.status === 0 ? 'Inativo' : 'Bloqueado';
+  
+      if (!acc[cargo]) {
+        acc[cargo] = {
+          total: 0,
+          status: { Ativo: 0, Inativo: 0, Bloqueado: 0 }
+        };
+      }
+  
+      acc[cargo].total++;
+      acc[cargo].status[statusUsuario]++;
+      status[statusUsuario]++;
+  
+      return acc;
+    }, {});
+  
+    return {
+      total: totalUsuarios,
+      status: Object.entries(status).map(([nome, quantidade]) => ({ nome, quantidade })),
+      cargos: Object.entries(cargos).map(([nome, dados]) => ({
+        nome,
+        total: dados.total,
+        status: Object.entries(dados.status).map(([statusNome, qtd]) => ({
+          nome: statusNome,
+          quantidade: qtd
+        }))
+      }))
+    };
+  }, [usuarios]);
+
+
   const usuariosFiltrados = usuarios.filter(usuario => {
     const matchPesquisa = usuario.nome.toLowerCase().includes(filtro.pesquisa.toLowerCase()) ||
                           usuario.email.toLowerCase().includes(filtro.pesquisa.toLowerCase());
@@ -306,6 +424,8 @@ const Acesso = () => {
         <Container fluid className="acesso-container">
           {erro && <Alert variant="danger">{erro}</Alert>}
 
+          
+          
           <Row className="mb-4 filtros-section">
             <Col md={8}>
               <InputGroup>
@@ -345,6 +465,38 @@ const Acesso = () => {
             </Form.Select>
             </Col>
           </Row>
+
+          <Container className="mt-4">
+            <Row className="custom-cards-row">
+              {/* Card Total */}
+              <CardExpansivo 
+                etapa={cardsConfig.TOTAL.etapa}
+                titulo={cardsConfig.TOTAL.label} // Propriedade corrigida
+                icone={cardsConfig.TOTAL.icone}
+                total={estatisticas.total}
+                contratos={estatisticas.status}
+                gradient={cardsConfig.TOTAL.gradient}
+              />
+
+              {/* Cards por Cargo */}
+              {estatisticas.cargos.map((cargo, index) => {
+                const cargoKey = cargo.nome?.toUpperCase() || 'SEM CARGO';
+                const config = cardsConfig[cargoKey] || cardsConfig['SEM CARGO'];
+                
+                return (
+                  <CardExpansivo 
+                    key={index}
+                    etapa={config.etapa}
+                    titulo={config.label}
+                    icone={config.icone}
+                    total={cargo.total}
+                    contratos={cargo.status}
+                    gradient={config.gradient}
+                  />
+                );
+              })}
+            </Row>
+          </Container>
 
           <Row>
             <Col>

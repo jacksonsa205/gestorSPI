@@ -84,7 +84,7 @@ const GestaoCarimbo = () => {
 
     // Opções para selects
   const opcoesTipos = [
-    "DWDM", "OLT UPLINK", "OLT ISOLADA", "HL4", "METRO", "MÓVEL", "B2B AVANÇADO","INFRA"
+    "DWDM", "OLT UPLINK", "OLT ISOLADA", "HL4", "METRO", "MÓVEL", "B2B AVANÇADO","INFRA","BBN","DRACO"
   ].map(item => ({ value: item, label: item }));
 
   const opcoesStatus = [
