@@ -44,9 +44,8 @@ const LogAplicacao = () => {
       chave: 'DataHora', 
       titulo: 'Data/Hora', 
       formato: (valor) => {
-        const date = new Date(valor);
-        date.setHours(date.getHours() - 3);
-        return date.toLocaleString('pt-BR');
+          const date = new Date(valor);
+          return date.toLocaleString('pt-BR');
       }
     },
     { chave: 'UsuarioID', titulo: 'RE' },
