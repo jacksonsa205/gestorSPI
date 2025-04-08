@@ -92,7 +92,21 @@ const GestaoCarimbo = () => {
   ].map(item => ({ value: item, label: item }));
 
   const opcoesAliada = [
-    "ABILITY", "TEL", "TEL-REDE", "ICOMON", "BL N2","CO","NOC"
+    "ABILITY", "TEL", "TEL-REDE", "ICOMON", "BL N2", "CO", "NOC",
+    "SWAP",
+    "NOC COMUNICAÇÃO",
+    "REDE CAPITAL",
+    "N1 CAPITAL",
+    "REDE SUDESTE",
+    "N1 SUDESTE",
+    "OPERAÇÃO BACKBONE N2",
+    "SOBRESSALENTES (AMERINODE)",
+    "SOBRESSALENTES (COM O FORNECEDOR)",
+    "OPERAÇÃO BANDA LARGA",
+    "OPERAÇÃO DWDM",
+    "OPERAÇÃO REDE IP",
+    "OPERAÇÃO MÓVEL BACKHAUL (METRO BAIXA) CERTIFICAÇÃO DRACO",
+    "OPERAÇÃO REDE IP"
   ].map(item => ({ value: item, label: item }));
 
   const opcoesAbordagem = [
