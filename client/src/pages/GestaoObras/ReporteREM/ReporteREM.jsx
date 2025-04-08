@@ -63,6 +63,7 @@ const ReporteREM = () => {
   });
   const [consultaDetalhada, setConsultaDetalhada] = useState(null);
   const [showDetalhesModal, setShowDetalhesModal] = useState(false);
+  const [municipios, setMunicipios] = useState([]);
   const [olts, setOlts] = useState([]);
   const [novaConsulta, setNovaConsulta] = useState({
     REM: '',
@@ -129,6 +130,27 @@ const ReporteREM = () => {
     }
   }, [showNovoModal, showEditarModal]);
 
+  useEffect(() => {
+    const carregarMunicipios = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/municipios/buscar`);
+        if (!response.ok) throw new Error('Erro ao carregar municípios');
+        
+        const data = await response.json();
+        setMunicipios(data.map(m => ({ 
+          value: m.MUNICIPIO, 
+          label: m.MUNICIPIO,
+          lat: m.LAT,
+          long: m.LNG 
+        })));
+      } catch (error) {
+        console.error('Erro ao carregar municípios:', error);
+      }
+    };
+  
+    carregarMunicipios();
+  }, []);
+
   const opcoesCriticidade = [
     { value: 'CRÍTICA', label: 'CRÍTICA' },
     { value: 'CRÍTICA - P0', label: 'CRÍTICA - P0' },
@@ -187,87 +209,7 @@ const ReporteREM = () => {
     { value: 'CONCLUÍDAS', label: 'CONCLUÍDAS' },
   ];
   
-  const municipiosSP = [
-    { value: 'Américo Brasiliense', label: 'Américo Brasiliense', lat: -21.7286, long: -48.1147 },
-    { value: 'Araçatuba', label: 'Araçatuba', lat: -21.2089, long: -50.4328 },
-    { value: 'Araraquara', label: 'Araraquara', lat: -21.7933, long: -48.1750 },
-    { value: 'Araras', label: 'Araras', lat: -22.3569, long: -47.3839 },
-    { value: 'Atibaia', label: 'Atibaia', lat: -23.1167, long: -46.5500 },
-    { value: 'Balsamo', label: 'Balsamo', lat: -20.7350, long: -49.5786 },
-    { value: 'Bananal', label: 'Bananal', lat: -22.6833, long: -44.3167 },
-    { value: 'Barra Bonita', label: 'Barra Bonita', lat: -22.4958, long: -48.5581 },
-    { value: 'Barueri', label: 'Barueri', lat: -23.5111, long: -46.8764 },
-    { value: 'Bauru', label: 'Bauru', lat: -22.3147, long: -49.0606 },
-    { value: 'Bocaina', label: 'Bocaina', lat: -22.1333, long: -48.5167 },
-    { value: 'Borboréma', label: 'Borboréma', lat: -22.2667, long: -48.1167 },
-    { value: 'Botucatu', label: 'Botucatu', lat: -22.8858, long: -48.4450 },
-    { value: 'Bragança Paulista', label: 'Bragança Paulista', lat: -22.9522, long: -46.5419 },
-    { value: 'Cabreúva', label: 'Cabreúva', lat: -23.3053, long: -47.1328 },
-    { value: 'Caçapava', label: 'Caçapava', lat: -23.1000, long: -45.7000 },
-    { value: 'Caieiras', label: 'Caieiras', lat: -23.3644, long: -46.7406 },
-    { value: 'Cajamar', label: 'Cajamar', lat: -23.3550, long: -46.8789 },
-    { value: 'Campinas', label: 'Campinas', lat: -22.9056, long: -47.0608 },
-    { value: 'Capivari', label: 'Capivari', lat: -22.9950, long: -47.5078 },
-    { value: 'Caraguatatuba', label: 'Caraguatatuba', lat: -23.6200, long: -45.4128 },
-    { value: 'Carapicuíba', label: 'Carapicuíba', lat: -23.5228, long: -46.8358 },
-    { value: 'Charqueada', label: 'Charqueada', lat: -22.5097, long: -47.7758 },
-    { value: 'Cordeirópolis', label: 'Cordeirópolis', lat: -22.4819, long: -47.4567 },
-    { value: 'Divinolândia', label: 'Divinolândia', lat: -21.6608, long: -46.7397 },
-    { value: 'Dois Córregos', label: 'Dois Córregos', lat: -22.3667, long: -48.3833 },
-    { value: 'Embu das Artes', label: 'Embu das Artes', lat: -23.6439, long: -46.8528 },
-    { value: 'Embu Guaçu', label: 'Embu Guaçu', lat: -23.8322, long: -46.8119 },
-    { value: 'Fernandópolis', label: 'Fernandópolis', lat: -20.2839, long: -50.2469 },
-    { value: 'Franca', label: 'Franca', lat: -20.5389, long: -47.4008 },
-    { value: 'Francisco Morato', label: 'Francisco Morato', lat: -23.2819, long: -46.7450 },
-    { value: 'Gavião Peixoto', label: 'Gavião Peixoto', lat: -21.8369, long: -48.4958 },
-    { value: 'Guarantã', label: 'Guarantã', lat: -21.9000, long: -49.5833 },
-    { value: 'Hortolândia', label: 'Hortolândia', lat: -22.8583, long: -47.2200 },
-    { value: 'Indaiatuba', label: 'Indaiatuba', lat: -23.0900, long: -47.2181 },
-    { value: 'Itapetininga', label: 'Itapetininga', lat: -23.5917, long: -48.0531 },
-    { value: 'Itapeva', label: 'Itapeva', lat: -23.9819, long: -48.8758 },
-    { value: 'Itapevi', label: 'Itapevi', lat: -23.5489, long: -46.9342 },
-    { value: 'Itatiba', label: 'Itatiba', lat: -23.0056, long: -46.8389 },
-    { value: 'Jacareí', label: 'Jacareí', lat: -23.3050, long: -45.9658 },
-    { value: 'Jaguariúna', label: 'Jaguariúna', lat: -22.7058, long: -46.9858 },
-    { value: 'Laranjal Paulista', label: 'Laranjal Paulista', lat: -23.0506, long: -47.8367 },
-    { value: 'Lindóia', label: 'Lindóia', lat: -22.5225, long: -46.6500 },
-    { value: 'Limeira', label: 'Limeira', lat: -22.5647, long: -47.4017 },
-    { value: 'Mairinque', label: 'Mairinque', lat: -23.5469, long: -47.1839 },
-    { value: 'Mairiporã', label: 'Mairiporã', lat: -23.3189, long: -46.5869 },
-    { value: 'Martinópolis', label: 'Martinópolis', lat: -22.1458, long: -51.1708 },
-    { value: 'Mirassolândia', label: 'Mirassolândia', lat: -20.8167, long: -49.4667 },
-    { value: 'Mogi Guaçu', label: 'Mogi Guaçu', lat: -22.3714, long: -46.9425 },
-    { value: 'Monte Mor', label: 'Monte Mor', lat: -22.9469, long: -47.3158 },
-    { value: 'Nova Odessa', label: 'Nova Odessa', lat: -22.7833, long: -47.3000 },
-    { value: 'Olímpia', label: 'Olímpia', lat: -20.7369, long: -48.9147 },
-    { value: 'Oriente', label: 'Oriente', lat: -22.1500, long: -50.0833 },
-    { value: 'Orlândia', label: 'Orlândia', lat: -20.7200, long: -47.8858 },
-    { value: 'Osasco', label: 'Osasco', lat: -23.5328, long: -46.7919 },
-    { value: 'Ourinhos', label: 'Ourinhos', lat: -22.9789, long: -49.8708 },
-    { value: 'Panorama', label: 'Panorama', lat: -21.3569, long: -51.8600 },
-    { value: 'Paraguaçu Paulista', label: 'Paraguaçu Paulista', lat: -22.4139, long: -50.5758 },
-    { value: 'Paraibuna', label: 'Paraibuna', lat: -23.3869, long: -45.6628 },
-    { value: 'Piracicaba', label: 'Piracicaba', lat: -22.7253, long: -47.6492 },
-    { value: 'Pongaí', label: 'Pongaí', lat: -21.7333, long: -49.3667 },
-    { value: 'Pederneiras', label: 'Pederneiras', lat: -22.3519, long: -48.7750 },
-    { value: 'Paulínia', label: 'Paulínia', lat: -22.7614, long: -47.1542 },
-    { value: 'Quintana', label: 'Quintana', lat: -22.0667, long: -50.3000 },
-    { value: 'Ribeirão Preto', label: 'Ribeirão Preto', lat: -21.1775, long: -47.8103 },
-    { value: 'Rio Claro', label: 'Rio Claro', lat: -22.4108, long: -47.5608 },
-    { value: 'Santa Gertrudes', label: 'Santa Gertrudes', lat: -22.4569, long: -47.5300 },
-    { value: 'Santa Maria da Serra', label: 'Santa Maria da Serra', lat: -22.5667, long: -48.1667 },
-    { value: 'Santa Rosa do Viterbo', label: 'Santa Rosa do Viterbo', lat: -21.4728, long: -47.3631 },
-    { value: 'Santana de Parnaíba', label: 'Santana de Parnaíba', lat: -23.4439, long: -46.9178 },
-    { value: 'São Carlos', label: 'São Carlos', lat: -22.0178, long: -47.8908 },
-    { value: 'São José do Rio Preto', label: 'São José do Rio Preto', lat: -20.8111, long: -49.3758 },
-    { value: 'São José dos Campos', label: 'São José dos Campos', lat: -23.2237, long: -45.9009 },
-    { value: 'São Roque', label: 'São Roque', lat: -23.5286, long: -47.1350 },
-    { value: 'Taboão da Serra', label: 'Taboão da Serra', lat: -23.6239, long: -46.7908 },
-    { value: 'Tarumã', label: 'Tarumã', lat: -22.7469, long: -50.5772 },
-    { value: 'Tietê', label: 'Tietê', lat: -23.1019, long: -47.7147 },
-    { value: 'Ubatuba', label: 'Ubatuba', lat: -23.4339, long: -45.0711 },
-    { value: 'Valinhos', label: 'Valinhos', lat: -22.9708, long: -46.9958 }
-];
+  
 
   const limparFormulario = () => {
     setNovaConsulta({
@@ -292,10 +234,10 @@ const ReporteREM = () => {
   const handleCriarConsulta = async () => {
     try {
       // Obter latitude e longitude do município selecionado
-      const municipioSelecionado = municipiosSP.find(opcao => opcao.value === novaConsulta.municipio);
+      const municipioSelecionado = municipios.find(opcao => opcao.value === novaConsulta.municipio);
       const latLong = {
-        lat: municipioSelecionado.lat,
-        long: municipioSelecionado.long,
+        lat: municipioSelecionado?.lat || null,
+        long: municipioSelecionado?.long || null,
       };
   
       const dadosParaEnviar = {
@@ -313,7 +255,7 @@ const ReporteREM = () => {
       });
   
       if (!response.ok) throw new Error('Erro ao cadastrar obra');
-
+  
       await registrarLog(
         token,
         'Cadastrar',
@@ -345,47 +287,54 @@ const ReporteREM = () => {
 
   const handleSalvarEdicao = async () => {
     try {
-        // Formata as datas antes de enviar
-        const dadosFormatados = {
-            ...consultaEditando,
-            inicio: formatarDataParaBackend(consultaEditando.inicio),
-            entrega: formatarDataParaBackend(consultaEditando.entrega),
-        };
-
-        // Verifica se o REM está presente
-        if (!consultaEditando.REM) {
-            throw new Error('REM não definido');
-        }
-
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/gestao-obra/editar/${consultaEditando.REM}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(dadosFormatados), // Envia os dados formatados
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Erro ao salvar edição');
-        }
-
-        await registrarLog(
-          token,
-          'Editar',
-          `Gestão Obra - Reporte REM - Obra editada: ${consultaEditando.REM}`
-        );
-
-        const responseConsultas = await fetch(`${import.meta.env.VITE_API_URL}/gestao-obra/buscar`);
-        if (!responseConsultas.ok) throw new Error('Erro ao carregar consultas');
-
-        const consultasAtualizadas = await responseConsultas.json();
-        setConsultas(consultasAtualizadas);
-        setShowEditarModal(false);
+      // Obter latitude e longitude do município selecionado
+      const municipioSelecionado = municipios.find(opcao => opcao.value === consultaEditando.municipio);
+      const latLong = {
+        lat: municipioSelecionado?.lat || null,
+        long: municipioSelecionado?.long || null,
+      };
+  
+      const dadosFormatados = {
+        ...consultaEditando,
+        lat: latLong.lat,
+        long: latLong.long,
+        inicio: formatarDataParaBackend(consultaEditando.inicio),
+        entrega: formatarDataParaBackend(consultaEditando.entrega),
+      };
+  
+      if (!consultaEditando.REM) {
+        throw new Error('REM não definido');
+      }
+  
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/gestao-obra/editar/${consultaEditando.REM}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dadosFormatados),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Erro ao salvar edição');
+      }
+  
+      await registrarLog(
+        token,
+        'Editar',
+        `Gestão Obra - Reporte REM - Obra editada: ${consultaEditando.REM}`
+      );
+  
+      const responseConsultas = await fetch(`${import.meta.env.VITE_API_URL}/gestao-obra/buscar`);
+      if (!responseConsultas.ok) throw new Error('Erro ao carregar consultas');
+  
+      const consultasAtualizadas = await responseConsultas.json();
+      setConsultas(consultasAtualizadas);
+      setShowEditarModal(false);
     } catch (error) {
-        setErro(error.message);
+      setErro(error.message);
     }
-};
+  };
 
 const abrirModalEdicao = async (consulta) => {
     try {
@@ -677,7 +626,7 @@ const handleExcluirConsulta = async (rem) => {
 
             <Col md={3}>
               <Select
-                options={municipiosSP}
+                options={municipios}
                 placeholder="Filtrar por município"
                 isClearable
                 onChange={(selectedOption) => 
@@ -693,7 +642,7 @@ const handleExcluirConsulta = async (rem) => {
                   })
                 }}
               />
-            </Col>
+              </Col>
 
             <Col md={3}>
               <Select
@@ -834,8 +783,8 @@ const handleExcluirConsulta = async (rem) => {
                         <Form.Group className="mb-3">
                         <Form.Label>Município</Form.Label>
                         <Select
-                            options={municipiosSP}
-                            value={municipiosSP.find(opcao => opcao.value === consultaEditando.municipio)}
+                            options={municipios}
+                            value={municipios.find(opcao => opcao.value === consultaEditando.municipio)}
                             onChange={(selectedOption) =>
                             setConsultaEditando({ ...consultaEditando, municipio: selectedOption.value })
                             }
@@ -1003,16 +952,16 @@ const handleExcluirConsulta = async (rem) => {
                     </Form.Group>
 
                     <Form.Group className="mb-3">
-                        <Form.Label>Município</Form.Label>
-                        <Select
-                        options={municipiosSP}
-                        value={municipiosSP.find(opcao => opcao.value === novaConsulta.municipio)}
+                      <Form.Label>Município</Form.Label>
+                      <Select
+                        options={municipios}
+                        value={municipios.find(opcao => opcao.value === novaConsulta.municipio)}
                         onChange={(selectedOption) =>
-                            setNovaConsulta({ ...novaConsulta, municipio: selectedOption.value })
+                          setNovaConsulta({ ...novaConsulta, municipio: selectedOption.value })
                         }
                         placeholder="Selecione um município"
                         isSearchable
-                        />
+                      />
                     </Form.Group>
 
                     <Form.Group className="mb-3">
