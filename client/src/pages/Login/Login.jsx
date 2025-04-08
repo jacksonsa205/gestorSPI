@@ -13,10 +13,12 @@ const Login = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastVariant, setToastVariant] = useState('success');
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     try {
       // Faz a requisição de login
@@ -66,6 +68,9 @@ const Login = () => {
       setToastVariant('danger');
       setShowToast(true);
       console.error('Erro no login:', error);
+    }
+      finally {
+      setIsLoading(false); 
     }
   };
 
@@ -118,12 +123,20 @@ const Login = () => {
           </div>
 
           <div>
-            <button
+          <button
               type="submit"
               className="btn btn-primary w-100 py-2"
+              disabled={isLoading}
             >
-              Entrar
-            </button>
+              {isLoading ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Entrando...
+                </>
+              ) : (
+                'Entrar'
+              )}
+          </button>
           </div>
         </form>
 
