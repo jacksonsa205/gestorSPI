@@ -181,6 +181,8 @@
   opacity: 0.65;
   cursor: not-allowed;
 }
+
+
   
   /* Adaptação para mobile */
   @media (max-width: 768px) {

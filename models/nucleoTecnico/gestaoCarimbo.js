@@ -1,16 +1,40 @@
 const pool = require('../../config/db');
 
+// Função para formatar o timestamp atual
+const getCurrentTimestamp = () => {
+    const now = new Date();
+    return now.toLocaleString('pt-BR', {
+        timeZone: 'America/Sao_Paulo',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+};
+
+
+const formatUltimaAtualizacao = (user_re, mensagem) => {
+  const timestamp = getCurrentTimestamp();
+  return user_re 
+      ? `[${timestamp} - RE:${user_re}] ${mensagem || ''}`
+      : `[${timestamp}] ${mensagem || ''}`;
+};
+
 // Cadastrar um novo carimbo
 const cadastrarCarimbo = async (dados) => {
     // Garante que valores undefined sejam convertidos para null
     const sanitize = (value) => (value === undefined ? null : value);
     
+    // Formata a ULT_ATUALIZACAO com user_re e timestamp
+    const ultAtualizacao = formatUltimaAtualizacao(dados.user_re, dados.atualizacao)
+    
     const query = `
       INSERT INTO TB_GSPI_NT_Gestao_Carimbo 
       (TA, TA_RAIZ, TIPOS, LOCALIDADE, HOSTNAME, ROTA, DATA_CRIACAO, SLA, STATUS, 
        ALIADA, ESCANOLAMENTO, FABRICANTE, RISCO, AFETACAO, ABORDAGEM, CONDOMINIO, 
-       CAUSA, SOLUCAO, MEDICOES, ATUALIZACAO, LAT, LNG, USER_RE, USER_NOME)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+       CAUSA, SOLUCAO, MEDICOES, ATUALIZACAO, LAT, LNG, USER_RE, USER_NOME, ULT_ATUALIZACAO)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     
     const params = [
       sanitize(dados.ta),
@@ -36,14 +60,15 @@ const cadastrarCarimbo = async (dados) => {
       sanitize(dados.lat),
       sanitize(dados.lng),
       sanitize(dados.user_re),
-      sanitize(dados.user_nome)
+      sanitize(dados.user_nome),
+      ultAtualizacao 
     ];
   
     const [result] = await pool.execute(query, params);
     return result;
 };
 
-// Listar todos os carimbos
+// Listar todos os carimbos (mantido igual)
 const listarCarimbos = async (filtro = {}) => {
     let query = `
       SELECT 
@@ -71,7 +96,8 @@ const listarCarimbos = async (filtro = {}) => {
           LAT,
           LNG,
           USER_RE, 
-          USER_NOME
+          USER_NOME,
+          ULT_ATUALIZACAO
       FROM TB_GSPI_NT_Gestao_Carimbo
     `;
   
@@ -103,20 +129,11 @@ const editarCarimbo = async (ta, dados) => {
         [ta]
     );
     
-    const now = new Date();
-    const timestamp = now.toLocaleString('pt-BR', {
-        timeZone: 'America/Sao_Paulo',
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-    
-    // Formatar os novos valores para as colunas incrementais
+    // Formatar os novos valores para as colunas incrementais (mantido igual)
     const formatIncrementalValue = (newValue, currentValue, user_re) => {
         if (!newValue) return currentValue || null;
         
+        const timestamp = getCurrentTimestamp();
         const userInfo = user_re ? `| [${timestamp} - RE:${user_re}]` : `| [${timestamp}]`;
         const separator = currentValue ? '\n\n' : '';
         return `${currentValue || ''}${separator}${userInfo}\n${newValue}`;
@@ -133,6 +150,9 @@ const editarCarimbo = async (ta, dados) => {
         currentData[0]?.ATUALIZACAO, 
         dados.user_re
     );
+    
+    // Formata a ULT_ATUALIZACAO com user_re e timestamp (sem histórico)
+    const ultAtualizacao = formatUltimaAtualizacao(dados.user_re, dados.atualizacao);
     
     const query = `
       UPDATE TB_GSPI_NT_Gestao_Carimbo SET
@@ -156,7 +176,8 @@ const editarCarimbo = async (ta, dados) => {
           LAT = ?,
           LNG = ?,
           USER_RE = ?,
-          USER_NOME = ?
+          USER_NOME = ?,
+          ULT_ATUALIZACAO = ?
       WHERE TA = ?`;
   
     const params = [
@@ -181,6 +202,7 @@ const editarCarimbo = async (ta, dados) => {
       sanitize(dados.lng),
       sanitize(dados.user_re),
       sanitize(dados.user_nome),
+      ultAtualizacao, 
       ta
     ];
   
@@ -188,8 +210,7 @@ const editarCarimbo = async (ta, dados) => {
     return result;
 };
 
-
-// Excluir um carimbo
+// Excluir um carimbo (mantido igual)
 const excluirCarimbo = async (ta) => {
     const query = 'DELETE FROM TB_GSPI_NT_Gestao_Carimbo WHERE TA = ?';
     await pool.execute(query, [ta]);

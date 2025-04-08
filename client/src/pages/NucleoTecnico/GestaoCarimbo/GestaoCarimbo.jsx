@@ -73,6 +73,7 @@ const GestaoCarimbo = () => {
   const [carimboDetalhado, setCarimboDetalhado] = useState(null);
   const [showDetalhesModal, setShowDetalhesModal] = useState(false);
   const [mostrarConteudo, setMostrarConteudo] = useState(true);
+  const [showRelatorioModal, setShowRelatorioModal] = useState(false);
   const [cadastrando, setCadastrando] = useState(false);
   const [municipios, setMunicipios] = useState([]);
   const [erro, setErro] = useState('');
@@ -498,6 +499,49 @@ const GestaoCarimbo = () => {
     }
   ];
 
+  const colunasRelatorio = [
+    { chave: 'TA', titulo: 'TA', formato: (valor) => <Badge bg="secondary">{valor || "N/A"}</Badge> },
+    { chave: 'TA_RAIZ', titulo: 'TA Raiz' },
+    { chave: 'TIPOS', titulo: 'Tipo' },
+    { chave: 'LOCALIDADE', titulo: 'Localidade' },
+    // { chave: 'HOSTNAME', titulo: 'Hostname' },
+    // { chave: 'ROTA', titulo: 'Rota' },
+    { chave: 'DATA_CRIACAO', titulo: 'Data Criação', formato: (valor) => new Date(valor).toLocaleString() },
+    { chave: 'SLA', titulo: 'SLA' },
+    { 
+        chave: 'STATUS',
+        titulo: 'Status',
+        formato: (valor) => (
+          <Badge bg={
+            valor === 'ATIVO' ? 'success' : 
+            valor === 'PRE BAIXA' ? 'warning' : 
+            'secondary'
+          }>
+            {valor || "N/A"}
+          </Badge>
+        )
+      },
+    { chave: 'ALIADA', titulo: 'Aliada' },
+    { 
+      chave: 'ESCANOLAMENTO', 
+      titulo: 'Escalonamento',
+      formato: (valor) => (
+        <Badge bg={
+          valor === 'Coordenador' ? 'success' : 
+          valor === 'Gerente' ? 'warning' : 
+          valor === 'Diretor' ? 'danger' : 
+          valor === 'Gerente NT' ? 'dark' : 
+          'secondary'
+        }>
+          {valor || "N/A"}
+        </Badge>
+      ) 
+    },
+    { chave: 'CAUSA', titulo: 'Causa' },
+    { chave: 'ULT_ATUALIZACAO', titulo: 'Atualização' },
+    
+  ];
+
   const formatarDataHoraAtual = () => {
     const agora = new Date();
     return agora.toLocaleString('pt-BR', {
@@ -636,7 +680,7 @@ const GestaoCarimbo = () => {
         {mostrarConteudo ? (
           <>
           <Row className="mb-4 filtros-section">
-            <Col md={8}>
+            <Col md={7}>
               <InputGroup>
                 <InputGroup.Text>
                   <FontAwesomeIcon icon={faSearch} />
@@ -648,7 +692,7 @@ const GestaoCarimbo = () => {
                 />
               </InputGroup>
             </Col>
-            <Col md={4} className="d-flex justify-content-end">
+            <Col md={5} className="d-flex justify-content-end">
               {permissions.canCadastro && (
                 <Button variant="primary" onClick={() => setShowNovoModal(true)}>
                   <FontAwesomeIcon icon={faPlus} className="me-2" />
@@ -658,6 +702,11 @@ const GestaoCarimbo = () => {
               <Button variant="success" onClick={handleDownloadCSV}>
                 <FontAwesomeIcon icon={faDownload} className="me-2" />
                 Baixar CSV
+              </Button>
+
+              <Button variant="info" onClick={() => setShowRelatorioModal(true)} className="ms-2">
+                <FontAwesomeIcon icon={faTable} className="me-2" />
+                Relatório
               </Button>
               
             </Col>
@@ -743,6 +792,8 @@ const GestaoCarimbo = () => {
                 }}
                 />
             </Col>
+            
+            
             </Row>
 
           <Row>
@@ -882,7 +933,7 @@ const GestaoCarimbo = () => {
                         </tr>
                         <tr>
                         <td><strong><FontAwesomeIcon icon={faSyncAlt} className="descricao-title me-2" />Atualização</strong></td>
-                        <td>{carimboDetalhado.ATUALIZACAO || "N/A"}</td>
+                        <td>{carimboDetalhado.ULT_ATUALIZACAO || "N/A"}</td>
                         </tr>
                     </tbody>
                     </table>
@@ -1302,6 +1353,42 @@ const GestaoCarimbo = () => {
                   )}
                 </Button>
             </Modal.Footer>
+          </Modal>
+
+          {/* Modal Relatório */}
+          <Modal show={showRelatorioModal} onHide={() => setShowRelatorioModal(false)} size="xl" className="modal-relatorio" id="modalRelatorioCarimbos">
+            <Modal.Header closeButton className="border-0">
+              <div className="d-flex justify-content-between w-100 align-items-center rounded" style={{ borderColor: '#0066ff', backgroundColor: '#0066ff' }}>
+                <div className="p-2">
+                  <Modal.Title className="m-0 text-white">
+                    <FontAwesomeIcon icon={faTable} className="me-2" />
+                    Relatório Gestão de Falhas
+                  </Modal.Title>
+                </div>
+                <div className="d-flex align-items-center">
+                  {permissions.canEnviar && (
+                    <WhatsAppSender
+                      elementSelector="#modalRelatorioCarimbos .modal-content"
+                      fileName={`relatorio_carimbos_${formatarDataHoraAtual().replace(/[/,: ]/g, '_')}.png`}
+                      caption={`Relatório de Carimbos - ${formatarDataHoraAtual()}`}
+                      variant="link"
+                      className="text-white p-1 me-2"
+                    />
+                  )}
+                </div>
+              </div>
+            </Modal.Header>
+            <Modal.Body>
+              <TabelaPaginada
+                dados={carimbosFiltrados}
+                colunas={colunasRelatorio}
+                paginacao={true}
+                itensPorPagina={10}
+                mostrarAcoes={false}
+                permissoes={permissions}
+                estiloCompacto={true}
+              />
+            </Modal.Body>
           </Modal>
 
           {/* Setor do mapa */}
