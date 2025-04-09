@@ -464,7 +464,7 @@ const GestaoCarimbo = () => {
     { chave: 'TA_RAIZ', titulo: 'TA Raiz' },
     { chave: 'TIPOS', titulo: 'Tipo' },
     { chave: 'LOCALIDADE', titulo: 'Localidade' },
-    { chave: 'HOSTNAME', titulo: 'Hostname' },
+    // { chave: 'HOSTNAME', titulo: 'Hostname' },
     // { chave: 'ROTA', titulo: 'Rota' },
     { chave: 'DATA_CRIACAO', titulo: 'Data Criação', formato: (valor) => new Date(valor).toLocaleString() },
     { chave: 'SLA', titulo: 'SLA' },
