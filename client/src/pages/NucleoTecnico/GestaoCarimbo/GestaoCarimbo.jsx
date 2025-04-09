@@ -632,6 +632,20 @@ const GestaoCarimbo = () => {
   const toggleConteudo = () => {
     setMostrarConteudo(!mostrarConteudo);
   };
+
+  function getMinDate() {
+    const now = new Date();
+    const minDate = new Date();
+    minDate.setDate(now.getDate() - 15); // 15 dias atrás
+    return minDate.toISOString().slice(0, 16);
+  }
+  
+  function getMaxDate() {
+    const now = new Date();
+    const maxDate = new Date();
+    maxDate.setDate(now.getDate() + 30); // 30 dias no futuro
+    return maxDate.toISOString().slice(0, 16);
+  }
     
   if (loading) {
     return <Loading />; 
@@ -1068,6 +1082,8 @@ const GestaoCarimbo = () => {
                           type="datetime-local"
                           value={formatDateTimeForInput(carimboEditando.dataCriacao)}
                           onChange={(e) => setCarimboEditando({...carimboEditando, dataCriacao: e.target.value.replace('T', ' ')})}
+                          min={getMinDate()}
+                          max={getMaxDate()}
                         />
                       </Form.Group>
                     </Col>
@@ -1263,13 +1279,15 @@ const GestaoCarimbo = () => {
                     </Form.Group>
 
                     <Form.Group className="mb-3">
-                      <Form.Label>Data de Criação</Form.Label>
-                      <Form.Control
-                        type="datetime-local"
-                        value={novaCarimbo.dataCriacao}
-                        onChange={(e) => setNovaCarimbo({...novaCarimbo, dataCriacao: e.target.value})}
-                      />
-                    </Form.Group>
+                        <Form.Label>Data de Criação</Form.Label>
+                        <Form.Control
+                          type="datetime-local"
+                          value={novaCarimbo.dataCriacao}
+                          onChange={(e) => setNovaCarimbo({...novaCarimbo, dataCriacao: e.target.value})}
+                          min={getMinDate()}
+                          max={getMaxDate()}
+                        />
+                      </Form.Group>
                   </Col>
                 </Row>
 
