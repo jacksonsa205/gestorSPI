@@ -57,7 +57,10 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
         { id: 7, text: 'Consulta Prioritária', link: '/nucleo-tecnico-spi/consultaPrioritaria' },
         { id: 5, text: 'OLT UPLINK', link: '/nucleo-tecnico-spi/olt-uplink' }, 
         { id: 6, text: 'OLT Isolada', link: '/nucleo-tecnico-spi/olt-isolada' },
-        { id: 8, text: 'Gestão de Carimbos', link: '/nucleo-tecnico-spi/gestao-carimbo'}
+        { id: 8, text: 'Gestão de Carimbos', link: '/nucleo-tecnico-spi/gestao-carimbo'},
+        { id: 9, text: 'Ocorrências G.V', link: '/nucleo-tecnico-spi/ocorrencias-grande-vulto'}
+
+        
       ]
     },
     {

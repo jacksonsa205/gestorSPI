@@ -1,47 +1,47 @@
 .card-expansivo-container {
-    border: none;
-    border-radius: 12px;
-    background: linear-gradient(145deg, #f6f9ff 0%, #ffffff 100%);
-    box-shadow: 0 3px 12px rgba(0, 102, 255, 0.08);
-    transition: all 0.3s ease;
-    overflow: hidden;
-    position: relative;
-    min-height: 80px;
-    cursor: pointer;
-  }
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #f6f9ff 0%, #ffffff 100%);
+  box-shadow: 0 3px 12px rgba(0, 102, 255, 0.08);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  position: relative;
+  min-height: 80px;
+}
 
   
   
-  .card-expansivo-body {
-    padding: 1rem;
-    height: 100%;
-  }
+.card-expansivo-body {
+  padding: 1rem;
+  height: 100%;
+}
   
-  .card-expansivo-icon-wrapper {
-    min-width: 50px;
-    width: 50px;
-    height: 50px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-    flex-shrink: 0;
-    margin-right: 1rem;
-  }
+.card-expansivo-icon-wrapper {
+  min-width: 50px;
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+  margin-right: 1rem;
+}
+
+.card-expansivo-icon {
+  color: white !important;
+  font-size: 1.3rem;
+  transition: transform 0.2s ease;
+}
   
-  .card-expansivo-icon {
-    color: white !important;
-    font-size: 1.3rem;
-    transition: transform 0.2s ease;
-  }
-  
-  .card-expansivo-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
+.card-expansivo-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
   
   .card-expansivo-title {
     color: #6c757d;

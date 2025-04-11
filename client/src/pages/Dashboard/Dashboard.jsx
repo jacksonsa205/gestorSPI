@@ -123,6 +123,7 @@ const Dashboard = () => {
   const [carimbos, setCarimbos] = useState([]);
   const [pageLoaded, setPageLoaded] = useState(false);
   const token = localStorage.getItem('token'); 
+  
 
     // Efeito único para carregamento inicial
     useEffect(() => {

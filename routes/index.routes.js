@@ -8,6 +8,7 @@ const consultaPrioritaria = require('./nucleoTecnico/consultaPrioritaria.routes'
 const oltIsolada = require('./nucleoTecnico/oltIsolada.routes');
 const oltUplink = require('./nucleoTecnico/oltUplink.routes');
 const gestaoCarimbo = require('./nucleoTecnico/gestaoCarimbo.routes');
+const ocorrenciasGV = require('./nucleoTecnico/ocorrenciasGV.routes');
 const reporteREM = require('./gestaoObras/reporteREM.routes');
 const olt = require('./olt/olt.routes');
 const municipios = require('./municipios/municipios.routes');
@@ -25,6 +26,7 @@ module.exports = {
   oltIsolada,
   oltUplink,
   gestaoCarimbo,
+  ocorrenciasGV,
   reporteREM,
   olt,
   municipios,

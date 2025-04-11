@@ -13,6 +13,7 @@ import ConsultaPrioritaria from './pages/NucleoTecnico/ConsultaPrioritaria/Consu
 import OltIsolada from './pages/NucleoTecnico/OltIsolada/OltIsolada';
 import OltUplink from './pages/NucleoTecnico/OltUplink/OltUplink';
 import GestaoCarimbo from './pages/NucleoTecnico/GestaoCarimbo/GestaoCarimbo';
+import OcorrenciasGV from './pages/NucleoTecnico/OcorrenciasGV/OcorrenciasGV';
 import ReporteREM from './pages/GestaoObras/ReporteREM/ReporteREM';
 import MapaREM from './pages/GestaoObras/Mapa/MapaREM';
 import Telegram from './pages/Telegram/Telegram';
@@ -31,6 +32,7 @@ function App() {
         <Route path="/nucleo-tecnico-spi/olt-isolada" element={<OltIsolada />} />
         <Route path="/nucleo-tecnico-spi/olt-uplink" element={<OltUplink />} />
         <Route path="/nucleo-tecnico-spi/gestao-carimbo" element={<GestaoCarimbo />} />
+        <Route path="/nucleo-tecnico-spi/ocorrencias-grande-vulto" element={<OcorrenciasGV />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Usuario/>} />
         <Route path="/acesso" element={<Acesso />} />
