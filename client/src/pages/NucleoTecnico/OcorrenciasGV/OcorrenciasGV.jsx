@@ -177,7 +177,7 @@ const OcorrenciasGV = () => {
           'Núcleo Técnico - Ocorrências GV - Página carregada'
         );
 
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/ocorrencia-grande-vulto`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/ocorrencia-grande-vulto/buscar`);
         if (!response.ok) throw new Error('Erro ao carregar ocorrências');
         
         const data = await response.json();
