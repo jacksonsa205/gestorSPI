@@ -10,6 +10,7 @@ import {
   Badge,
   Alert,
 } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import {
   faSearch,
   faEdit,
@@ -28,6 +29,9 @@ import {
   faDraftingCompass,
   faFileInvoiceDollar,
   faHardHat,
+  faArrowDown,
+  faArrowUp
+ 
 } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
 import Papa from 'papaparse';
@@ -74,6 +78,8 @@ const GestaoCarimbo = () => {
   const [showDetalhesModal, setShowDetalhesModal] = useState(false);
   const [mostrarConteudo, setMostrarConteudo] = useState(true);
   const [showRelatorioModal, setShowRelatorioModal] = useState(false);
+  const [ordemDataAsc, setOrdemDataAsc] = useState(true);
+  const [hoveredRow, setHoveredRow] = useState(null);
   const [cadastrando, setCadastrando] = useState(false);
   const [municipios, setMunicipios] = useState([]);
   const [erro, setErro] = useState('');
@@ -147,6 +153,7 @@ const GestaoCarimbo = () => {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/gestao-carimbo/buscar`);
         if (!response.ok) throw new Error('Erro ao carregar carimbos');
         
+        
         const data = await response.json();
         setCarimbos(data);
       } catch (error) {
@@ -178,6 +185,7 @@ const GestaoCarimbo = () => {
   
     return () => clearInterval(intervalId); // Limpa o intervalo ao desmontar o componente
   }, []);
+
 
   const limparFormulario = () => {
     setNovaCarimbo({
@@ -225,10 +233,19 @@ const GestaoCarimbo = () => {
   });
 
   const handleCriarCarimbo = async () => {
-    setCadastrando(true); // Ativa o estado de carregamento
+    setCadastrando(true);
     try {
+      const taDigitada = novaCarimbo.ta;
+  
+      const taJaExiste = carimbos.some(c => String(c.TA) === String(taDigitada));
+      if (taJaExiste) {
+        setErro(`A TA ${taDigitada} já está cadastrada.`);
+        setCadastrando(false);
+        return;
+      }
+  
       const municipioSelecionado = municipios.find(m => m.value === novaCarimbo.localidade);
-      
+  
       const carimboCompleto = {
         ...novaCarimbo,
         lat: municipioSelecionado?.lat || null,
@@ -252,22 +269,23 @@ const GestaoCarimbo = () => {
         'Cadastrar',
         `Núcleo Técnico - Gestão de Carimbos - TA cadastrada com sucesso: ${novaCarimbo.ta}`
       );
-      
+  
       const responseCarimbos = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/gestao-carimbo/buscar`);
       if (!responseCarimbos.ok) throw new Error('Erro ao carregar carimbos');
   
       const novosCarimbos = await responseCarimbos.json();
-      setCarimbos(novosCarimbos); 
+      setCarimbos(novosCarimbos);
       setShowNovoModal(false);
       limparFormulario();
   
     } catch (error) {
       setErro(error.message);
     } finally {
-      setCadastrando(false); // Desativa o estado de carregamento independente do resultado
+      setCadastrando(false);
     }
   };
 
+  
   const formatDateTimeForInput = (datetime) => {
     if (!datetime) return ''; 
     return datetime.replace(' ', 'T').slice(0, 16); 
@@ -460,13 +478,44 @@ const GestaoCarimbo = () => {
   });
 
   const colunas = [
-    { chave: 'TA', titulo: 'TA', formato: (valor) => <Badge bg="secondary">{valor || "N/A"}</Badge> },
+    { 
+      chave: 'TA', 
+      titulo: 'TA', 
+      formato: (valor) => {
+        const carimboInfo = carimbos.find(c => c.TA === valor); // busca manual pelo valor da TA
+        const ultimaAtualizacao = carimboInfo?.ULT_ATUALIZACAO ?? "N/A";
+    
+        return (
+          <OverlayTrigger
+            placement="top"
+            overlay={
+              <Tooltip id={`tooltip-${valor}`}>
+                <strong>Última Atualização:</strong><br />
+                {ultimaAtualizacao}
+              </Tooltip>
+            }
+          >
+            <Badge bg="secondary">{valor || "N/A"}</Badge>
+          </OverlayTrigger>
+        );
+      }
+    },
     { chave: 'TA_RAIZ', titulo: 'TA Raiz' },
     { chave: 'TIPOS', titulo: 'Tipo' },
     { chave: 'LOCALIDADE', titulo: 'Localidade' },
     // { chave: 'HOSTNAME', titulo: 'Hostname' },
-    // { chave: 'ROTA', titulo: 'Rota' },
-    { chave: 'DATA_CRIACAO', titulo: 'Data Criação', formato: (valor) => new Date(valor).toLocaleString() },
+    { chave: 'ROTA', titulo: 'Rota' },
+    {
+      chave: 'DATA_CRIACAO',
+      titulo: (
+        <div onClick={() => setOrdemDataAsc(prev => !prev)} style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+          Data Criação
+          <FontAwesomeIcon icon={ordemDataAsc ? faArrowDown : faArrowUp} />
+        </div>
+      ),
+      formato: (valor) => new Date(valor).toLocaleString()
+    },
+    
     { chave: 'SLA', titulo: 'SLA' },
     { 
         chave: 'STATUS',
@@ -482,22 +531,40 @@ const GestaoCarimbo = () => {
         )
       },
     { chave: 'ALIADA', titulo: 'Aliada' },
-    { 
-      chave: 'ESCANOLAMENTO', 
+    {
+      chave: 'ESCANOLAMENTO',
       titulo: 'Escalonamento',
-      formato: (valor) => (
-        <Badge bg={
-          valor === 'Coordenador' ? 'success' : 
-          valor === 'Gerente' ? 'warning' : 
-          valor === 'Diretor' ? 'danger' : 
-          valor === 'Gerente NT' ? 'dark' : 
-          'secondary'
-        }>
-          {valor || "N/A"}
-        </Badge>
-      ) 
+      formato: (valor) => {
+        const carimboInfo = carimbos.find(c => c.ESCANOLAMENTO === valor);
+        const isEscalonado = Number(carimboInfo?.ESCALONADO_WHATSAPP) === 1;
+    
+        return (
+          <div>
+            <Badge bg={
+              valor === 'Coordenador' ? 'success' :
+              valor === 'Gerente' ? 'warning' :
+              valor === 'Diretor' ? 'danger' :
+              valor === 'Gerente NT' ? 'dark' :
+              'secondary'
+            }>
+              {valor || "N/A"}
+            </Badge>
+            <FontAwesomeIcon
+              icon={isEscalonado ? faCheckCircle : faTimesCircle}
+              style={{
+                color: isEscalonado ? 'green' : 'red',
+                marginLeft: '8px',
+                verticalAlign: 'middle'
+              }}
+            />
+          </div>
+        );
+      }
     }
+    
   ];
+
+  
 
   const colunasRelatorio = [
     { chave: 'TA', titulo: 'TA', formato: (valor) => <Badge bg="secondary">{valor || "N/A"}</Badge> },
@@ -522,21 +589,36 @@ const GestaoCarimbo = () => {
         )
       },
     { chave: 'ALIADA', titulo: 'Aliada' },
-    { 
-      chave: 'ESCANOLAMENTO', 
+    {
+      chave: 'ESCANOLAMENTO',
       titulo: 'Escalonamento',
-      formato: (valor) => (
-        <Badge bg={
-          valor === 'Coordenador' ? 'success' : 
-          valor === 'Gerente' ? 'warning' : 
-          valor === 'Diretor' ? 'danger' : 
-          valor === 'Gerente NT' ? 'dark' : 
-          'secondary'
-        }>
-          {valor || "N/A"}
-        </Badge>
-      ) 
-    },
+      formato: (valor) => {
+        const carimboInfo = carimbos.find(c => c.ESCANOLAMENTO === valor);
+        const isEscalonado = Number(carimboInfo?.ESCALONADO_WHATSAPP) === 1;
+    
+        return (
+          <div>
+            <Badge bg={
+              valor === 'Coordenador' ? 'success' :
+              valor === 'Gerente' ? 'warning' :
+              valor === 'Diretor' ? 'danger' :
+              valor === 'Gerente NT' ? 'dark' :
+              'secondary'
+            }>
+              {valor || "N/A"}
+            </Badge>
+            <FontAwesomeIcon
+              icon={isEscalonado ? faCheckCircle : faTimesCircle}
+              style={{
+                color: isEscalonado ? 'green' : 'red',
+                marginLeft: '8px',
+                verticalAlign: 'middle'
+              }}
+            />
+          </div>
+        );
+      }
+    },  
     { chave: 'CAUSA', titulo: 'Causa' },
     { chave: 'ULT_ATUALIZACAO', titulo: 'Atualização' },
     
@@ -813,7 +895,11 @@ const GestaoCarimbo = () => {
           <Row>
             <Col>
               <TabelaPaginada
-                dados={carimbosFiltrados}
+                dados={[...carimbosFiltrados].sort((a, b) => {
+                  const dataA = new Date(a.DATA_CRIACAO);
+                  const dataB = new Date(b.DATA_CRIACAO);
+                  return ordemDataAsc ? dataA - dataB : dataB - dataA;
+                })}
                 colunas={colunas}
                 onEditar={abrirModalEdicao}
                 onExcluir={(item) => handleExcluirCarimbo(item.TA)}
@@ -822,6 +908,8 @@ const GestaoCarimbo = () => {
                   setShowDetalhesModal(true);
                 }}
                 permissoes={permissions}
+                onRowHover={(item) => setHoveredRow(item)}
+                onRowLeave={() => setHoveredRow(null)}
               />
             </Col>
           </Row>
@@ -838,13 +926,36 @@ const GestaoCarimbo = () => {
                 </div>
                 <div className="d-flex align-items-center">
                     {permissions.canEnviar && (
+                    <div
+                    onClick={async () => {
+                      if (!carimboDetalhado?.TA) return;
+                
+                      try {
+                        const response = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/gestao-carimbo/escalonar/${carimboDetalhado.TA}`, {
+                          method: 'PUT',
+                          headers: {
+                            'Content-Type': 'application/json',
+                          },
+                        });
+                
+                        if (!response.ok) throw new Error('Erro ao atualizar escalonamento');
+                
+                        const novosCarimbos = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/gestao-carimbo/buscar`).then(r => r.json());
+                        setCarimbos(novosCarimbos);
+                      } catch (error) {
+                        console.error('Erro ao escalonar via WhatsApp:', error);
+                      }
+                    }}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <WhatsAppSender
-                        elementSelector=".modal-detalhes .modal-content"
-                        fileName={`detalhe_carimbo_${carimboDetalhado?.TA || 'desconhecido'}.png`}
-                        caption={`Gestão de Carimbos - Detalhes do TA: ${carimboDetalhado?.TA || 'N/A'} - Data: ${formatarDataHoraAtual()}`}
-                        variant="link"
-                        className="text-white p-1 me-2"
+                      elementSelector=".modal-detalhes .modal-content"
+                      fileName={`detalhe_carimbo_${carimboDetalhado?.TA || 'desconhecido'}.png`}
+                      caption={`Gestão de Carimbos - Detalhes do TA: ${carimboDetalhado?.TA || 'N/A'} - Data: ${formatarDataHoraAtual()}`}
+                      variant="link"
+                      className="text-white p-1 me-2"
                     />
+                  </div>
                     )}
                 </div>
                 </div>
@@ -895,6 +1006,7 @@ const GestaoCarimbo = () => {
                         <tr>
                         <td><strong>Status</strong></td>
                         <td>{carimboDetalhado.STATUS ? (
+                         
                                 <Badge 
                                 bg={
                                     carimboDetalhado.STATUS === 'ATIVO' ? 'success' : 
@@ -905,6 +1017,8 @@ const GestaoCarimbo = () => {
                                 >
                                 {carimboDetalhado.STATUS}
                                 </Badge>
+                                
+                          
                             ) : (
                                 <Badge bg="secondary" className="ms-2">N/A</Badge>
                             )}</td>
@@ -915,23 +1029,46 @@ const GestaoCarimbo = () => {
                         </tr>
                         <tr>
                         <td><strong>Escalonamento</strong></td>
-                        <td>{carimboDetalhado.ESCANOLAMENTO ? (
-                                <Badge 
+                        <td>
+                          {carimboDetalhado.ESCANOLAMENTO ? (
+                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                              <Badge
                                 bg={
-                                    carimboDetalhado.ESCANOLAMENTO === 'Coordenador' ? 'success' : 
-                                    carimboDetalhado.ESCANOLAMENTO === 'Gerente' ? 'warning' : 
-                                    carimboDetalhado.ESCANOLAMENTO === 'Diretor' ? 'danger' : 
-                                    carimboDetalhado.ESCANOLAMENTO === 'Gerente NT' ? 'dark' : 
-                                    'secondary'
+                                  carimboDetalhado.ESCANOLAMENTO === 'Coordenador'
+                                    ? 'success'
+                                    : carimboDetalhado.ESCANOLAMENTO === 'Gerente'
+                                    ? 'warning'
+                                    : carimboDetalhado.ESCANOLAMENTO === 'Diretor'
+                                    ? 'danger'
+                                    : carimboDetalhado.ESCANOLAMENTO === 'Gerente NT'
+                                    ? 'dark'
+                                    : 'secondary'
                                 }
-                                className="ms-2"
-                                >
+                              >
                                 {carimboDetalhado.ESCANOLAMENTO}
-                                </Badge>
-                            ) : (
-                                <Badge bg="secondary" className="ms-2">N/A</Badge>
-                            )}
-                            </td>
+                              </Badge>
+
+                              <FontAwesomeIcon
+                                icon={
+                                  Number(carimboDetalhado.ESCALONADO_WHATSAPP) === 1
+                                    ? faCheckCircle
+                                    : faTimesCircle
+                                }
+                                style={{
+                                  color:
+                                    Number(carimboDetalhado.ESCALONADO_WHATSAPP) === 1
+                                      ? 'green'
+                                      : 'red',
+                                }}
+                              />
+                            </div>
+                          ) : (
+                            <Badge bg="secondary" className="ms-2">
+                              N/A
+                            </Badge>
+                          )}
+                        </td>
+
                         </tr>
                         <tr>
                         <td><strong><FontAwesomeIcon icon={faExclamationTriangle} className="causa-title me-2" />Causa</strong></td>
@@ -1279,15 +1416,30 @@ const GestaoCarimbo = () => {
                     </Form.Group>
 
                     <Form.Group className="mb-3">
-                        <Form.Label>Data de Criação</Form.Label>
+                      <Form.Label>Data de Criação</Form.Label>
+                      <InputGroup>
                         <Form.Control
                           type="datetime-local"
                           value={novaCarimbo.dataCriacao}
-                          onChange={(e) => setNovaCarimbo({...novaCarimbo, dataCriacao: e.target.value})}
+                          onChange={(e) =>
+                            setNovaCarimbo({ ...novaCarimbo, dataCriacao: e.target.value })
+                          }
                           min={getMinDate()}
                           max={getMaxDate()}
                         />
-                      </Form.Group>
+                        <Form.Control
+                          type="text"
+                          placeholder="Cole aqui ex: 2025-04-14 15:30"
+                          onBlur={(e) => {
+                            const valor = e.target.value.trim();
+                            if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(valor)) {
+                              const formatado = valor.replace(" ", "T");
+                              setNovaCarimbo({ ...novaCarimbo, dataCriacao: formatado });
+                            }
+                          }}
+                        />
+                      </InputGroup>
+                    </Form.Group>
                   </Col>
                 </Row>
 

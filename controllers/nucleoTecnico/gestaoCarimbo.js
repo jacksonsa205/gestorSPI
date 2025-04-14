@@ -93,10 +93,30 @@ const getByTa = async (req, res) => {
     }
 };
 
+const marcarEscalonamentoWhatsApp = async (req, res) => {
+  const { ta } = req.params;
+  const cacheKey = 'carimbos_lista';
+
+  try {
+    const result = await Model.atualizarEscalonamentoWhatsApp(ta);
+    await redisClient.del(cacheKey);
+
+    res.status(200).json({
+      success: true,
+      message: `TA ${ta} marcado como escalonado via WhatsApp`,
+      affectedRows: result.affectedRows
+    });
+  } catch (error) {
+    console.error('Erro ao atualizar escalonamento WhatsApp:', error);
+    res.status(500).json({ error: 'Erro ao atualizar escalonamento WhatsApp' });
+  }
+};
+
 module.exports = {
   post,
   get,
   getByTa,
   put,
-  delete: del
+  delete: del,
+  marcarEscalonamentoWhatsApp
 };

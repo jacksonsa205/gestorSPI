@@ -97,7 +97,8 @@ const listarCarimbos = async (filtro = {}) => {
           LNG,
           USER_RE, 
           USER_NOME,
-          ULT_ATUALIZACAO
+          ULT_ATUALIZACAO,
+          ESCALONADO_WHATSAPP
       FROM TB_GSPI_NT_Gestao_Carimbo
     `;
   
@@ -216,9 +217,22 @@ const excluirCarimbo = async (ta) => {
     await pool.execute(query, [ta]);
 };
 
+
+const atualizarEscalonamentoWhatsApp = async (ta) => {
+  const query = `
+    UPDATE TB_GSPI_NT_Gestao_Carimbo
+    SET ESCALONADO_WHATSAPP = 1
+    WHERE TA = ?
+  `;
+  const [result] = await pool.execute(query, [ta]);
+  return result;
+};
+
+
 module.exports = {
     cadastrarCarimbo,
     listarCarimbos,
     editarCarimbo,
-    excluirCarimbo
+    excluirCarimbo,
+    atualizarEscalonamentoWhatsApp
 };
