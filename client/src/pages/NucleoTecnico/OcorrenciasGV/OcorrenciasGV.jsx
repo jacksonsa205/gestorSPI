@@ -482,23 +482,39 @@ const estatisticasOcorrencias = useMemo(() => {
 
 // Processar dados para o gráfico mensal
 const processarDadosGraficoMensal = useMemo(() => {
-    const contagemPorMes = ocorrenciasFiltradas.reduce((acc, ocorrencia) => {
-      const mes = ocorrencia.MES;
-      if (mes) {
-        acc[mes] = (acc[mes] || 0) + 1;
+    // Primeiro criamos um mapa para agrupar por MES mas manter a data mais antiga de cada mês para ordenação
+    const mesesComDatas = ocorrenciasFiltradas.reduce((acc, ocorrencia) => {
+      if (!ocorrencia.MES || !ocorrencia.DATA_OCORRENCIA) return acc;
+      
+      const dataOcorrencia = new Date(ocorrencia.DATA_OCORRENCIA);
+      
+      if (!acc[ocorrencia.MES] || dataOcorrencia < acc[ocorrencia.MES].dataMaisAntiga) {
+        acc[ocorrencia.MES] = {
+          dataMaisAntiga: dataOcorrencia,
+          quantidade: (acc[ocorrencia.MES]?.quantidade || 0) + 1
+        };
+      } else {
+        acc[ocorrencia.MES].quantidade += 1;
       }
+      
       return acc;
     }, {});
   
-    return Object.entries(contagemPorMes).map(([mes, quantidade]) => ({
-      name: mes,
-      value: quantidade
-    })).sort((a, b) => {
-      // Ordena os meses cronologicamente (assumindo formato "MM/YYYY")
-      const [mesA, anoA] = a.name.split('/');
-      const [mesB, anoB] = b.name.split('/');
-      return new Date(anoA, mesA - 1) - new Date(anoB, mesB - 1);
-    });
+    // Convertemos para array e ordenamos pela data mais antiga de cada mês
+    return Object.entries(mesesComDatas)
+      .map(([mes, { quantidade }]) => ({
+        name: mes,
+        value: quantidade
+      }))
+      .sort((a, b) => {
+        // Encontra a data mais antiga para cada mês para comparação
+        const dataA = ocorrenciasFiltradas
+          .find(oc => oc.MES === a.name)?.DATA_OCORRENCIA;
+        const dataB = ocorrenciasFiltradas
+          .find(oc => oc.MES === b.name)?.DATA_OCORRENCIA;
+        
+        return new Date(dataA) - new Date(dataB);
+      });
   }, [ocorrenciasFiltradas]);
 
   if (loading) {
