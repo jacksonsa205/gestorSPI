@@ -522,6 +522,19 @@ const processarDadosGraficoMensal = useMemo(() => {
       });
   }, [ocorrenciasFiltradas]);
 
+  // 1. Adicione esta função para resetar os filtros
+const resetarFiltros = () => {
+    setFiltro({
+      pesquisa: '',
+      municipio: '',
+      mes: '',
+      status: '',
+      at: '',
+      causa: '',
+      contratada: ''
+    });
+  };
+
   if (loading) {
     return <Loading />; 
   }
@@ -585,6 +598,10 @@ const processarDadosGraficoMensal = useMemo(() => {
                   </InputGroup>
                 </Col>
                 <Col md={4} className="d-flex justify-content-end">
+                  <Button variant="secondary" onClick={resetarFiltros}>
+                    <FontAwesomeIcon icon={faTimesCircle} className="me-2" />
+                    Limpar Filtros
+                  </Button>
                   <Button variant="success" onClick={handleDownloadCSV}>
                     <FontAwesomeIcon icon={faDownload} className="me-2" />
                     Baixar CSV
@@ -594,69 +611,76 @@ const processarDadosGraficoMensal = useMemo(() => {
 
               <Row className="mb-3 filtros-section">
                 <Col md={2}>
-                  <Select
-                    options={meses}
-                    placeholder="Mês"
-                    isClearable
-                    onChange={(selected) => 
-                      setFiltro({...filtro, mes: selected ? selected.value : ''})
-                    }
-                  />
-                </Col>
-                <Col md={2}>
-                  <Select
-                    options={Object.entries(statusConfig)
-                        .map(([value, config]) => ({
-                          value,
-                          label: config.label
-                        }))
-                        .sort((a, b) => a.label.localeCompare(b.label))}
-                    placeholder="Status"
-                    isClearable
-                    onChange={(selected) => 
-                      setFiltro({...filtro, status: selected ? selected.value : ''})
-                    }
-                  />
-                </Col>
-                <Col md={2}>
                     <Select
-                    options={contratadas}
-                    placeholder="Contratada"
-                    isClearable
-                    onChange={(selected) => 
-                        setFiltro({...filtro, contratada: selected ? selected.value : ''})
-                    }
+                        options={[{ value: '', label: 'Todos' }, ...meses]}
+                        placeholder="Mês"
+                        value={filtro.mes ? { value: filtro.mes, label: filtro.mes } : { value: '', label: 'Todos' }}
+                        onChange={(selected) => 
+                            setFiltro({...filtro, mes: selected ? selected.value : ''})
+                        }
                     />
                 </Col>
                 <Col md={2}>
-                  <Select
-                    options={municipios}
-                    placeholder="Município"
-                    isClearable
-                    onChange={(selected) => 
-                      setFiltro({...filtro, municipio: selected ? selected.value : ''})
-                    }
-                  />
+                    <Select
+                        options={[
+                            { value: '', label: 'Todos' }, 
+                            ...Object.entries(statusConfig).map(([value, config]) => ({
+                            value,
+                            label: config.label
+                            })) // Fechando o parêntese do map aqui
+                        ]}
+                        placeholder="Status"
+                        value={filtro.status ? { 
+                            value: filtro.status, 
+                            label: statusConfig[filtro.status]?.label || filtro.status 
+                        } : { value: '', label: 'Todos' }}
+                        onChange={(selected) => 
+                            setFiltro({...filtro, status: selected ? selected.value : ''})
+                        }
+                    />
                 </Col>
                 <Col md={2}>
-                  <Select
-                    options={ats}
-                    placeholder="AT"
-                    isClearable
-                    onChange={(selected) => 
-                      setFiltro({...filtro, at: selected ? selected.value : ''})
-                    }
-                  />
+                    <Select
+                        options={[{ value: '', label: 'Todos' }, ...contratadas]}
+                        placeholder="Contratada"
+                        value={filtro.contratada ? { 
+                            value: filtro.contratada, 
+                            label: contratadasConfig.find(c => c.nome === filtro.contratada)?.label || filtro.contratada 
+                        } : { value: '', label: 'Todos' }}
+                        onChange={(selected) => 
+                            setFiltro({...filtro, contratada: selected ? selected.value : ''})
+                        }
+                    />
                 </Col>
                 <Col md={2}>
-                  <Select
-                    options={causas}
-                    placeholder="Causa"
-                    isClearable
-                    onChange={(selected) => 
-                      setFiltro({...filtro, causa: selected ? selected.value : ''})
-                    }
-                  />
+                    <Select
+                        options={[{ value: '', label: 'Todos' }, ...municipios]}
+                        placeholder="Município"
+                        value={filtro.municipio ? { value: filtro.municipio, label: filtro.municipio } : { value: '', label: 'Todos' }}
+                        onChange={(selected) => 
+                            setFiltro({...filtro, municipio: selected ? selected.value : ''})
+                        }
+                    />
+                </Col>
+                <Col md={2}>
+                    <Select
+                        options={[{ value: '', label: 'Todos' }, ...ats]}
+                        placeholder="AT"
+                        value={filtro.at ? { value: filtro.at, label: filtro.at } : { value: '', label: 'Todos' }}
+                        onChange={(selected) => 
+                            setFiltro({...filtro, at: selected ? selected.value : ''})
+                        }
+                    />
+                </Col>
+                <Col md={2}>
+                    <Select
+                        options={[{ value: '', label: 'Todos' }, ...causas]}
+                        placeholder="Causa"
+                        value={filtro.causa ? { value: filtro.causa, label: filtro.causa } : { value: '', label: 'Todos' }}
+                        onChange={(selected) => 
+                            setFiltro({...filtro, causa: selected ? selected.value : ''})
+                        }
+                    />
                 </Col>
               </Row>
 
