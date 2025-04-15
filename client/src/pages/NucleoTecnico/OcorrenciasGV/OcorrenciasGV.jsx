@@ -609,80 +609,99 @@ const resetarFiltros = () => {
                 </Col>
               </Row>
 
-              <Row className="mb-3 filtros-section">
+              {/* Substitua a seção de filtros por este código: */}
+            <Row className="mb-3 filtros-section">
                 <Col md={2}>
+                    <Form.Group>
+                    <Form.Label className="filter-label">Mês</Form.Label>
                     <Select
                         options={[{ value: '', label: 'Todos' }, ...meses]}
-                        placeholder="Mês"
                         value={filtro.mes ? { value: filtro.mes, label: filtro.mes } : { value: '', label: 'Todos' }}
                         onChange={(selected) => 
-                            setFiltro({...filtro, mes: selected ? selected.value : ''})
+                        setFiltro({...filtro, mes: selected ? selected.value : ''})
                         }
+                        className="filter-select"
                     />
+                    </Form.Group>
                 </Col>
                 <Col md={2}>
+                    <Form.Group>
+                    <Form.Label className="filter-label">Status</Form.Label>
                     <Select
                         options={[
-                            { value: '', label: 'Todos' }, 
-                            ...Object.entries(statusConfig).map(([value, config]) => ({
+                        { value: '', label: 'Todos' }, 
+                        ...Object.entries(statusConfig).map(([value, config]) => ({
                             value,
                             label: config.label
-                            })) // Fechando o parêntese do map aqui
+                        }))
                         ]}
-                        placeholder="Status"
                         value={filtro.status ? { 
-                            value: filtro.status, 
-                            label: statusConfig[filtro.status]?.label || filtro.status 
+                        value: filtro.status, 
+                        label: statusConfig[filtro.status]?.label || filtro.status 
                         } : { value: '', label: 'Todos' }}
                         onChange={(selected) => 
-                            setFiltro({...filtro, status: selected ? selected.value : ''})
+                        setFiltro({...filtro, status: selected ? selected.value : ''})
                         }
+                        className="filter-select"
                     />
+                    </Form.Group>
                 </Col>
                 <Col md={2}>
+                    <Form.Group>
+                    <Form.Label className="filter-label">Contratada</Form.Label>
                     <Select
                         options={[{ value: '', label: 'Todos' }, ...contratadas]}
-                        placeholder="Contratada"
                         value={filtro.contratada ? { 
-                            value: filtro.contratada, 
-                            label: contratadasConfig.find(c => c.nome === filtro.contratada)?.label || filtro.contratada 
+                        value: filtro.contratada, 
+                        label: contratadasConfig.find(c => c.nome === filtro.contratada)?.label || filtro.contratada 
                         } : { value: '', label: 'Todos' }}
                         onChange={(selected) => 
-                            setFiltro({...filtro, contratada: selected ? selected.value : ''})
+                        setFiltro({...filtro, contratada: selected ? selected.value : ''})
                         }
+                        className="filter-select"
                     />
+                    </Form.Group>
                 </Col>
                 <Col md={2}>
+                    <Form.Group>
+                    <Form.Label className="filter-label">Município</Form.Label>
                     <Select
                         options={[{ value: '', label: 'Todos' }, ...municipios]}
-                        placeholder="Município"
                         value={filtro.municipio ? { value: filtro.municipio, label: filtro.municipio } : { value: '', label: 'Todos' }}
                         onChange={(selected) => 
-                            setFiltro({...filtro, municipio: selected ? selected.value : ''})
+                        setFiltro({...filtro, municipio: selected ? selected.value : ''})
                         }
+                        className="filter-select"
                     />
+                    </Form.Group>
                 </Col>
                 <Col md={2}>
+                    <Form.Group>
+                    <Form.Label className="filter-label">AT</Form.Label>
                     <Select
                         options={[{ value: '', label: 'Todos' }, ...ats]}
-                        placeholder="AT"
                         value={filtro.at ? { value: filtro.at, label: filtro.at } : { value: '', label: 'Todos' }}
                         onChange={(selected) => 
-                            setFiltro({...filtro, at: selected ? selected.value : ''})
+                        setFiltro({...filtro, at: selected ? selected.value : ''})
                         }
+                        className="filter-select"
                     />
+                    </Form.Group>
                 </Col>
                 <Col md={2}>
+                    <Form.Group>
+                    <Form.Label className="filter-label">Causa</Form.Label>
                     <Select
                         options={[{ value: '', label: 'Todos' }, ...causas]}
-                        placeholder="Causa"
                         value={filtro.causa ? { value: filtro.causa, label: filtro.causa } : { value: '', label: 'Todos' }}
                         onChange={(selected) => 
-                            setFiltro({...filtro, causa: selected ? selected.value : ''})
+                        setFiltro({...filtro, causa: selected ? selected.value : ''})
                         }
+                        className="filter-select"
                     />
+                    </Form.Group>
                 </Col>
-              </Row>
+            </Row>
 
               <Container className="mt-4">
                 <Row className="custom-cards-row">

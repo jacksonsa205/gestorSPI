@@ -190,6 +190,38 @@
 }
 
 
+/* Estilos para os filtros */
+.filter-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    color: #495057;
+  }
+  
+  .filter-select {
+    margin-bottom: 1rem;
+  }
+  
+  .filtros-section {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  }
+  
+  /* Ajuste para os botões de ação */
+  .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
+  
+  /* Ajuste para o botão de limpar filtros */
+  .btn-secondary {
+    margin-right: 0.5rem;
+  }
+
   
   /* Adaptação para mobile */
   @media (max-width: 768px) {
