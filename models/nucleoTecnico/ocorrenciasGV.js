@@ -1,5 +1,6 @@
 const pool = require('../../config/db');
 
+
 const listarOcorrencias = async (filtro = {}) => {
     let query = `
         SELECT 
@@ -49,6 +50,34 @@ const listarOcorrencias = async (filtro = {}) => {
     return rows;
 };
 
+
+const listarOcorrenciasSemCoordenadas = async () => {
+    const query = `
+        SELECT 
+            OCORRENCIA, 
+            mun
+        FROM railway.TB_GSPI_NT_Ocorrencias_GV
+        WHERE LAT IS NULL OR LNG IS NULL
+        ORDER BY DATA_OCORRENCIA DESC;
+    `;
+
+    const [rows] = await pool.execute(query);
+    return rows;
+};
+
+const atualizarCoordenadas = async (ocorrencia, lat, lng) => {
+    const query = `
+        UPDATE railway.TB_GSPI_NT_Ocorrencias_GV
+        SET LAT = ?, LNG = ?
+        WHERE OCORRENCIA = ?;
+    `;
+
+    await pool.execute(query, [lat, lng, ocorrencia]);
+};
+
+
 module.exports = {
-    listarOcorrencias
+    listarOcorrencias,
+    listarOcorrenciasSemCoordenadas,
+    atualizarCoordenadas
 };

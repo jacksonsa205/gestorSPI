@@ -12,7 +12,8 @@
     "postinstall": "npm run build",
     "dev": "concurrently \"npm run dev-server\" \"npm run dev-client\"",
     "dev-server": "nodemon app.js",
-    "dev-client": "cd client && npm start"
+    "dev-client": "cd client && npm start",
+    "update-coordinates": "node controllers/nucleoTecnico/updateCoordinates.js"
   },
   "dependencies": {
     "axios": "^1.8.4",
