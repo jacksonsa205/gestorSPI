@@ -185,27 +185,32 @@ const OcorrenciasGV = () => {
         
         // Extrai opções para filtros
         const municipiosUnicos = [...new Set(data.map(o => o.MUNICIPIO))]
-          .filter(Boolean)
-          .map(m => ({ value: m, label: m }));
-        
+        .filter(Boolean)
+        .map(m => ({ value: m, label: m }))
+        .sort((a, b) => a.label.localeCompare(b.label)); // Ordenação alfabética
+
         const atsUnicos = [...new Set(data.map(o => o.AT))]
-          .filter(Boolean)
-          .map(at => ({ value: at, label: at }));
-        
+        .filter(Boolean)
+        .map(at => ({ value: at, label: at }))
+        .sort((a, b) => a.label.localeCompare(b.label)); // Ordenação alfabética
+
         const causasUnicas = [...new Set(data.map(o => o.CAUSA))]
-          .filter(Boolean)
-          .map(c => ({ value: c, label: c }));
-        
+        .filter(Boolean)
+        .map(c => ({ value: c, label: c }))
+        .sort((a, b) => a.label.localeCompare(b.label)); // Ordenação alfabética
+
         const mesesUnicos = [...new Set(data.map(o => o.MES))]
-          .filter(Boolean)
-          .map(m => ({ value: m, label: m }));
+        .filter(Boolean)
+        .map(m => ({ value: m, label: m }))
+        .sort((a, b) => a.label.localeCompare(b.label)); // Ordenação alfabética
 
         const contratadasUnicas = [...new Set(data.map(o => o.CONTRATADA))]
-          .filter(Boolean)
-          .map(c => ({ 
-            value: c, 
-            label: contratadasConfig.find(ct => ct.nome === c)?.label || c 
-          }));
+        .filter(Boolean)
+        .map(c => ({ 
+        value: c, 
+        label: contratadasConfig.find(ct => ct.nome === c)?.label || c 
+        }))
+        .sort((a, b) => a.label.localeCompare(b.label)); // Ordenação alfabética
         
         setMunicipios(municipiosUnicos);
         setAts(atsUnicos);
@@ -350,7 +355,7 @@ const OcorrenciasGV = () => {
         titulo: 'Status',
         formato: (valor) => (
           <Badge bg={
-            valor === 'ATIVO' ? 'success' : 
+            valor === 'ABERTO' ? 'success' : 
             valor === 'ASSOCIADO' ? 'warning' : 
             valor === 'IMPROCEDIDO' ? 'danger' :
             valor === 'CANCELADO' ? 'dark' :
@@ -600,10 +605,12 @@ const processarDadosGraficoMensal = useMemo(() => {
                 </Col>
                 <Col md={2}>
                   <Select
-                    options={Object.entries(statusConfig).map(([value, config]) => ({
-                      value,
-                      label: config.label
-                    }))}
+                    options={Object.entries(statusConfig)
+                        .map(([value, config]) => ({
+                          value,
+                          label: config.label
+                        }))
+                        .sort((a, b) => a.label.localeCompare(b.label))}
                     placeholder="Status"
                     isClearable
                     onChange={(selected) => 
