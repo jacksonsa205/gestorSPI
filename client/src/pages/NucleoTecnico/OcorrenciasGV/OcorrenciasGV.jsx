@@ -25,7 +25,9 @@ import {
     faDatabase,
     faUsers,
     faChevronUp,
-    faChevronDown
+    faChevronDown,
+    faEdit,
+    faSave
   } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -163,6 +165,8 @@ const OcorrenciasGV = () => {
   const [showGraficoMensal, setShowGraficoMensal] = useState(true);
   const [ocorrenciaDetalhada, setOcorrenciaDetalhada] = useState(null);
   const [showDetalhesModal, setShowDetalhesModal] = useState(false);
+  const [showAcaoModal, setShowAcaoModal] = useState(false);
+  const [acaoTexto, setAcaoTexto] = useState('');
   const token = localStorage.getItem('token');
 
   // Validações: módulo 3 (Núcleo Técnico), sem submodulo, ação de leitura (1)
@@ -339,6 +343,33 @@ const OcorrenciasGV = () => {
     
     return grupos;
   };
+
+
+const salvarAcaoOcorrencia = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/ocorrencia-grande-vulto/${ocorrenciaDetalhada.OCORRENCIA}/acao`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ acao: acaoTexto })
+      });
+  
+      if (!response.ok) throw new Error('Erro ao atualizar ação');
+  
+      setShowAcaoModal(false);
+      setAcaoTexto('');
+  
+      // Atualizar lista após edição
+      const responseAtualizado = await fetch(`${import.meta.env.VITE_API_URL}/nucleo-tecnico/ocorrencia-grande-vulto/buscar`);
+      const dadosAtualizados = await responseAtualizado.json();
+      setOcorrencias(dadosAtualizados);
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+  
 
   const colunas = [
     { chave: 'OCORRENCIA', titulo: 'Ocorrência', formato: (valor) => <Badge bg="secondary">{valor || "N/A"}</Badge> },
@@ -822,6 +853,11 @@ const resetarFiltros = () => {
                       setOcorrenciaDetalhada(item);
                       setShowDetalhesModal(true);
                     }}
+                    onEditar={(item) => {
+                        setOcorrenciaDetalhada(item);
+                        setAcaoTexto(item.ACAO || '');
+                        setShowAcaoModal(true);
+                      }}
                     permissoes={permissions}
                   />
                 </Col>
@@ -1021,6 +1057,40 @@ const resetarFiltros = () => {
                 )}
             </Modal.Body>
             </Modal>
+
+            {/* Modal de Edição */}
+            <Modal show={showAcaoModal} onHide={() => setShowAcaoModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>
+                    <FontAwesomeIcon icon={faEdit} className="me-2" />
+                    Registrar Ação - Ocorrência {ocorrenciaDetalhada?.OCORRENCIA}
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                    <Form.Group>
+                        <Form.Label>Descrição da Ação</Form.Label>
+                        <Form.Control
+                        as="textarea"
+                        rows={4}
+                        value={acaoTexto}
+                        onChange={(e) => setAcaoTexto(e.target.value)}
+                        placeholder="Descreva a ação tomada..."
+                        />
+                    </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowAcaoModal(false)}>
+                    Cancelar
+                    </Button>
+                    <Button variant="primary" onClick={salvarAcaoOcorrencia}>
+                    <FontAwesomeIcon icon={faSave} className="me-2" />
+                    Salvar Ação
+                    </Button>
+                </Modal.Footer>
+                </Modal>
+
         </Container>
       }
     />

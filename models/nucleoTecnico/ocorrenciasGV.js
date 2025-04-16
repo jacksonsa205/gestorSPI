@@ -21,7 +21,8 @@ const listarOcorrencias = async (filtro = {}) => {
             STATUS, 
             mun, 
             LAT, 
-            LNG
+            LNG,
+            ACAO
         FROM railway.TB_GSPI_NT_Ocorrencias_GV
         WHERE LAT IS NOT NULL AND LNG IS NOT NULL
     `;
@@ -76,8 +77,19 @@ const atualizarCoordenadas = async (ocorrencia, lat, lng) => {
 };
 
 
+const atualizarAcao = async (ocorrencia, acao) => {
+    const query = `
+        UPDATE railway.TB_GSPI_NT_Ocorrencias_GV
+        SET ACAO = ?
+        WHERE OCORRENCIA = ?;
+    `;
+
+    await pool.execute(query, [acao, ocorrencia]);
+};
+
 module.exports = {
     listarOcorrencias,
     listarOcorrenciasSemCoordenadas,
-    atualizarCoordenadas
+    atualizarCoordenadas,
+    atualizarAcao
 };

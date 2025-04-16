@@ -49,7 +49,35 @@ const getById = async (req, res) => {
     }
 };
 
+const updateAcao = async (req, res) => {
+    try {
+        const { ocorrencia } = req.params;
+        const { acao } = req.body;
+
+        if (!acao) {
+            return res.status(400).json({ error: 'O campo "acao" é obrigatório' });
+        }
+
+        // Verifica se a ocorrência existe
+        const ocorrencias = await Model.listarOcorrencias({ ocorrencia });
+        if (ocorrencias.length === 0) {
+            return res.status(404).json({ error: 'Ocorrência não encontrada' });
+        }
+
+        // Atualiza a ação
+        await Model.atualizarAcao(ocorrencia, acao);
+
+        // Invalida o cache para garantir que os próximos requests tragam dados atualizados
+        await redisClient.del('ocorrencias_com_coordenadas');
+
+        res.json({ success: true, message: 'Ação atualizada com sucesso' });
+    } catch (error) {
+        handleDatabaseError(res, error);
+    }
+};
+
 module.exports = {
     get,
-    getById
+    getById,
+    updateAcao
 };
