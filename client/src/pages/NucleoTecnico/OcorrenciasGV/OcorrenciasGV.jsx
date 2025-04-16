@@ -912,9 +912,9 @@ const resetarFiltros = () => {
                                     <thead>
                                       <tr>
                                         <th>Ocorrência</th>
-                                        <th>Status</th>
                                         <th>Primárias</th>
                                         <th>Afetação</th>
+                                        <th>Causa</th>
                                       </tr>
                                     </thead>
                                     <tbody>
@@ -923,23 +923,9 @@ const resetarFiltros = () => {
                                         .map((ocorrencia, index) => (
                                           <tr key={index}>
                                             <td>{ocorrencia.OCORRENCIA}</td>
-                                            <td>
-                                            <Badge
-                                                bg={
-                                                    ocorrencia.STATUS === 'FECHADO' ? 'secondary' :
-                                                    ocorrencia.STATUS === 'ASSOCIADO' ? 'warning' :
-                                                    ocorrencia.STATUS === 'IMPROCEDIDO' ? 'danger' :
-                                                    ocorrencia.STATUS === 'CANCELADO' ? 'dark' :
-                                                    ocorrencia.STATUS === 'ABERTO' ? 'success' :
-                                                    'light'
-                                                }
-                                                className="ms-2"
-                                                >
-                                                {statusConfig[ocorrencia.STATUS]?.label || ocorrencia.STATUS || "N/A"}
-                                            </Badge>
-                                            </td>
                                             <td>{ocorrencia['QTD PRIMARIAS'] || '0'}</td>
                                             <td>{ocorrencia.AFETACAO || '0'}</td>
+                                            <td>{ocorrencia.CAUSA || '0'}</td>
                                           </tr>
                                         ))
                                       }
