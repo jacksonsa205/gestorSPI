@@ -27,7 +27,8 @@ import {
     faChevronUp,
     faChevronDown,
     faEdit,
-    faSave
+    faSave,
+    faBullseye
   } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -1034,6 +1035,11 @@ const resetarFiltros = () => {
                         <td><strong><FontAwesomeIcon icon={faUsers} className="descricao-title me-2" />Clientes Afetados</strong></td>
                         <td>{ocorrenciaDetalhada.AFETACAO || "N/A"}</td>
                         </tr>
+                        <tr>
+                        <td><strong><FontAwesomeIcon icon={faBullseye} className="descricao-title me-2" />Plano de Ação</strong></td>
+                        <td>{ocorrenciaDetalhada.ACAO || "N/A"}</td>
+                        </tr>
+                        
                         
                     </tbody>
                     </table>
