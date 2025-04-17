@@ -17,6 +17,7 @@ import OcorrenciasGV from './pages/NucleoTecnico/OcorrenciasGV/OcorrenciasGV';
 import ReporteREM from './pages/GestaoObras/ReporteREM/ReporteREM';
 import MapaREM from './pages/GestaoObras/Mapa/MapaREM';
 import Telegram from './pages/Telegram/Telegram';
+import Clima from './pages/Clima/Clima';
 
 
 function App() {
@@ -39,6 +40,8 @@ function App() {
         <Route path="/log-aplicacao" element={<LogAplicacao />} />
         <Route path="/escala-plantao" element={<EscalaPlantao />} />
         <Route path="/Telegram" element={<Telegram />} />
+        <Route path="/informacao-climatica" element={<Clima />} />
+        
       </Routes>
     </Router>
   );

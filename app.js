@@ -4,13 +4,30 @@ const cors = require('cors');
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const cron = require('node-cron');
+const axios = require('axios');
 const path = require('path');
 const { redisClient } = require('./config/redis');
 const RedisStore = require('connect-redis').default;
-const { logs,auth,permissoes, sessao,cadastro,reporteREM,consultaOLT,consultaPrioritaria,oltIsolada,oltUplink,gestaoCarimbo,ocorrenciasGV,olt,municipios,telegram,whatsapp } = require('./routes/index.routes');
+const { logs,auth,permissoes, sessao,cadastro,reporteREM,consultaOLT,consultaPrioritaria,oltIsolada,oltUplink,gestaoCarimbo,ocorrenciasGV,olt,municipios,telegram,whatsapp,clima } = require('./routes/index.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const URL = process.env.BACKEND_URL;
+
+
+// tarefa de dados climaticos
+
+cron.schedule('0 5 * * *', async () => {
+  console.log('⏰ Executando atualização climática diária às 05:00');
+
+  try {
+    await axios.post(`${URL}/clima/atualizar-clima`);
+    console.log('✅ Atualização climática concluída pelo cron');
+  } catch (error) {
+    console.error('❌ Erro ao executar atualização via cron:', error.message);
+  }
+});
 
 // Configuração da sessão
 app.use(session({
@@ -48,6 +65,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use('/municipios', municipios);
   app.use('/telegram', telegram);
   app.use('/whatsapp', whatsapp);
+  app.use('/clima',clima);
   app.use(express.static(path.join(__dirname, 'client', 'dist')));
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));

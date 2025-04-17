@@ -11,6 +11,7 @@ import {
   faCircle,
   faScrewdriverWrench,
   faBars,
+  faCloudRain
 } from '@fortawesome/free-solid-svg-icons';
 import { faTelegram } from '@fortawesome/free-brands-svg-icons';
 import logo from "../../assets/imagens/sidebar.png";
@@ -64,11 +65,19 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
       ]
     },
     {
+      id: 9,
+      icon: faCloudRain,
+      text: 'Clima',
+      link: '/informacao-climatica'
+    },
+    {
       id: 8,
       icon: faTelegram,
       text: 'Telegram',
       link: '/Telegram'
     },
+
+    
   ];
 
   const hasModulePermission = (moduleId) => permissoesModulo.includes(moduleId);

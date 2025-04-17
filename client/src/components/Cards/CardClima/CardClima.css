@@ -1,0 +1,277 @@
+/* Estrutura principal do card */
+.card-clima-container {
+  border: none;
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  position: relative;
+  min-height: 180px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  height: 100%;
+}
+
+.card-clima-body {
+  padding: 1.2rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.card-clima-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  min-height: 60px;
+}
+
+.card-clima-cidade {
+  color: #2c3e50;
+  font-size: 1.2rem;
+  font-weight: 600;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-right: 1rem;
+}
+
+.card-clima-temp-wrapper {
+  display: flex;
+  align-items: center;
+  min-width: 110px;
+}
+
+.card-clima-icon-wrapper {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+  margin-right: 0.5rem;
+}
+
+.card-clima-icon {
+  color: white !important;
+  font-size: 1.5rem;
+  transition: transform 0.2s ease; /* Efeito original */
+}
+
+.card-clima-temp {
+  color: #2c3e50;
+  font-size: 1.8rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.card-clima-range {
+  color: #7f8c8d;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Tabela de dados */
+.card-clima-tabela {
+  width: 100%;
+  margin-top: 0.5rem;
+  font-feature-settings: 'tnum';
+  font-variant-numeric: tabular-nums;
+}
+
+.card-clima-row {
+  display: flex;
+  align-items: center;
+  padding: 0.35rem 0;
+}
+
+.card-clima-row:not(:last-child) {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.card-clima-label {
+  color: #6c757d;
+  font-size: 0.7rem;
+  font-weight: 400;
+  width: 60px;
+  flex-shrink: 0;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  padding-left: 4px;
+}
+
+.card-clima-value {
+  color: #495057;
+  font-size: 0.8rem;
+  font-weight: 400;
+  text-align: center;
+  flex: 1;
+  min-width: 45px;
+  padding: 0 0.15rem;
+  line-height: 1.3;
+}
+
+/* Escala de cores para temperatura em negrito */
+.card-clima-row:nth-child(3) .card-clima-value {
+  font-weight: 600;
+}
+
+.card-clima-row:nth-child(3) .card-clima-value {
+  /* Verde para temperaturas baixas (10-19°C) */
+  color: #27ae60;
+}
+
+.card-clima-row:nth-child(3) .card-clima-value[data-temp^="1"] {
+  color: #27ae60;
+}
+
+.card-clima-row:nth-child(3) .card-clima-value[data-temp^="2"] {
+  /* Amarelo para temperaturas médias (20-29°C) */
+  color: #f39c12;
+}
+
+.card-clima-row:nth-child(3) .card-clima-value[data-temp^="3"] {
+  /* Vermelho para temperaturas altas (30°C+) */
+  color: #e74c3c;
+}
+
+.card-clima-row:nth-child(7) .card-clima-value[data-chuva$="mm"]:not([data-chuva="0.00mm"]) {
+  color: #0066ff;
+}
+
+/* Ícones minimalistas */
+.card-clima-icon-small-wrapper {
+  width: 22px;
+  height: 22px;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  margin: 0 auto;
+}
+
+.card-clima-icon-small {
+  opacity: 0.9;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* EFEITOS ORIGINAIS DO CARD (MANTIDOS) */
+.card-clima-container:hover {
+  transform: translateY(-5px); /* Efeito original de levantar */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* Sombra original */
+}
+
+.card-clima-container:hover .card-clima-icon {
+  transform: scale(1.1); /* Efeito original no ícone */
+}
+
+/* Adicione ao seu CardClima.css */
+.wind-direction-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.wind-direction-arrow {
+  color: #e74c3c;
+  transition: transform 0.3s ease;
+}
+
+
+/* Responsividade */
+@media (max-width: 1200px) {
+  .card-clima-cidade {
+    font-size: 1.1rem;
+  }
+  
+  .card-clima-icon-wrapper {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .card-clima-icon {
+    font-size: 1.3rem;
+  }
+  
+  .card-clima-temp {
+    font-size: 1.6rem;
+  }
+  
+  .card-clima-value {
+    font-size: 0.78rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .card-clima-container {
+    min-height: auto;
+  }
+  
+  .card-clima-label {
+    width: 45px;
+    font-size: 0.68rem;
+  }
+  
+  .card-clima-icon-small-wrapper {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .card-clima-value {
+    min-width: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .card-clima-body {
+    padding: 1rem;
+  }
+  
+  .card-clima-header {
+    min-height: 50px;
+  }
+  
+  .card-clima-cidade {
+    font-size: 1rem;
+  }
+  
+  .card-clima-icon-wrapper {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 576px) {
+  .card-clima-tabela {
+    overflow-x: auto;
+    display: block;
+    width: calc(100% + 2rem);
+    margin-left: -1rem;
+    padding: 0 1rem;
+  }
+  
+  .card-clima-row {
+    width: max-content;
+    min-width: 100%;
+  }
+}
+
+/* Ícones de imagem */
+.card-clima-icon-wrapper img,
+.card-clima-icon-small-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Remove padding do wrapper do ícone principal */
+.card-clima-icon-wrapper {
+  padding: 0 !important;
+}

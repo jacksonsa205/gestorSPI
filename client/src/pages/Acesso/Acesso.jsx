@@ -42,6 +42,13 @@ const Acesso = () => {
       gradient: ['#4e54c8', '#8f94fb'],
       etapa: 'Total' // Adicionando a chave etapa que estava faltando
     },
+    DIRETOR: {
+      cor: '#dc3545', // Vermelho igual ao badge
+      label: 'Diretor',
+      icone: faUserTie,
+      gradient: ['#dc3545', '#c82333'], // Gradiente do vermelho
+      etapa: 'Diretor'
+    },
     GERENTE: {
       cor: '#dc3545', // Vermelho igual ao badge
       label: 'Gerente',
@@ -382,6 +389,7 @@ const Acesso = () => {
       titulo: 'Cargo',
       formato: (valor) => (
         <Badge bg={
+          valor === 'DIRETOR' ? 'danger' : 
           valor === 'GERENTE' ? 'danger' : 
           valor === 'CONSULTOR' ? 'warning' : 
           valor === 'COORDENADOR' ? 'warning' : 

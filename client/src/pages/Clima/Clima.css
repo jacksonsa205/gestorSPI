@@ -1,0 +1,242 @@
+/* Arquivo ConsultaOLT.css */
+.tabela-dados {
+    font-size: 12px; /* Ajuste o tamanho da fonte conforme necessário */
+    text-align: center;
+  }
+
+.tabela-head{
+    text-align: center;
+    font-size: 13px;
+}
+
+ /* Estilo para a seção de Causa e Solução */
+.causa-solucao {
+    
+    padding: 1rem;
+    background-color: #f8f9fa; /* Fundo cinza claro */
+    border-radius: 0.5rem; /* Bordas arredondadas */
+  }
+  
+  .causa-title {
+    font-size: 18px;
+    font-weight: 600;
+    
+    color: red;
+  }
+  
+  .solucao-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: green;
+  }
+
+  .descricao-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #0066ff !important;
+  }
+  .descricao {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #555;
+  }
+  
+  .paginacao-container {
+    margin-top: 5px; /* Espaçamento superior */
+    width: 100%; /* Ocupa toda a largura disponível */
+  }
+
+  .filtros-section .btn {
+    margin-left: 8px; /* Espaçamento entre os botões */
+  }
+
+/* Formatação da tabela do modal detalhes */
+
+/* Tabela de detalhes - Estilo completo */
+.table-detalhe-ocorrencias-grande-vulto {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    background-color: #fff;
+    border: 1px solid #e0e0e0; /* Borda externa da tabela */
+  }
+  
+  /* Cabeçalho da tabela */
+  .table-detalhe-ocorrencias-grande-vulto thead {
+    background-color: #dc3545;
+    color: white;
+    position: sticky;
+    top: 0;
+    font-size: 1.1rem;
+  }
+  
+  .table-detalhe-ocorrencias-grande-vulto thead th {
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+    border: none;
+    position: relative; /* Para a borda vertical */
+  }
+  
+  /* Adiciona divisão entre colunas no cabeçalho */
+  .table-detalhe-ocorrencias-grande-vulto thead th:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 25%;
+    height: 50%;
+    width: 1px;
+    background-color: rgba(255, 255, 255, 0.3); /* Linha divisória sutil */
+  }
+  
+  /* Corpo da tabela */
+  .table-detalhe-ocorrencias-grande-vulto tbody tr {
+    transition: background-color 0.2s;
+  }
+  
+  .table-detalhe-ocorrencias-grande-vulto tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+  }
+  
+  .table-detalhe-ocorrencias-grande-vulto tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .table-detalhe-ocorrencias-grande-vulto tbody td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #dee2e6;
+    vertical-align: top;
+    position: relative; /* Para a borda vertical */
+  }
+  
+  /* Divisão entre colunas no corpo */
+  .table-detalhe-ocorrencias-grande-vulto tbody td:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 15%;
+    height: 70%;
+    width: 1px;
+    background-color: #e0e0e0; /* Cor da linha divisória */
+  }
+  
+  /* Célula de descrição */
+  .table-detalhe-ocorrencias-grande-vulto tbody td:first-child {
+    font-weight: 500;
+    color: #495057;
+    width: 40%;
+  }
+  
+  /* Célula de atualização */
+  .table-detalhe-ocorrencias-grande-vulto tbody td:last-child {
+    color: #212529;
+  }
+  
+  /* Borda arredondada na tabela */
+  .table-detalhe-ocorrencias-grande-vulto {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+  }
+
+
+  /* formatação do popup do mapa */
+
+  /* Adicione ao seu arquivo GestaoCarimbo.css */
+
+.popup-title{
+
+    font-size: 0.9em !important;
+}
+
+.popup-table-ocorrencias-grande-vulto {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+  }
+  
+  .popup-table-ocorrencias-grande-vulto th, .popup-table-ocorrencias-grande-vulto td {
+    font-size: 0.8em;
+    padding: 6px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .popup-table-ocorrencias-grande-vulto th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  
+  .popup-table-ocorrencias-grande-vulto tr:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .popup-subtitle {
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+  }
+
+  /* Adicione no seu arquivo CSS */
+.spinner-border {
+  vertical-align: middle;
+}
+
+.btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+
+/* Estilos para os filtros */
+.filter-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    color: #495057;
+  }
+  
+  .filter-select {
+    margin-bottom: 1rem;
+  }
+  
+  .filtros-section {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  }
+  
+  /* Ajuste para os botões de ação */
+  .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
+  
+  /* Ajuste para o botão de limpar filtros */
+  .btn-secondary {
+    margin-right: 0.5rem;
+  }
+
+  
+  /* Adaptação para mobile */
+  @media (max-width: 768px) {
+    .table-detalhe-ocorrencias-grande-vulto {
+      font-size: 0.8rem;
+    }
+    
+    .table-detalhe-ocorrencias-grande-vulto thead th,
+    .table-detalhe-ocorrencias-grande-vulto tbody td {
+      padding: 8px 10px;
+    }
+  
+    /* Remove bordas verticais em mobile para economizar espaço */
+    .table-detalhe-ocorrencias-grande-vulto thead th:not(:last-child)::after,
+    .table-detalhe-ocorrencias-grande-vulto tbody td:not(:last-child)::after {
+      display: none;
+    }
+  }

@@ -14,6 +14,7 @@ const olt = require('./olt/olt.routes');
 const municipios = require('./municipios/municipios.routes');
 const telegram = require('./telegram/telegram.routes');
 const whatsapp = require('./whatsapp/whatsapp.routes');
+const clima = require('./clima/clima.routes');
 
 module.exports = {
   logs,
@@ -32,4 +33,5 @@ module.exports = {
   municipios,
   telegram,
   whatsapp,
+  clima
 };
