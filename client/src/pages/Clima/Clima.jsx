@@ -19,6 +19,7 @@ import 'leaflet/dist/leaflet.css';
 import './Clima.css';
 import useAuthValidation from '../../hooks/useAuthValidation';
 import WhatsAppSender from '../../components/WhatsAppSender/WhatsAppSender';
+import { registrarLog } from '../../hooks/logs';
 import Papa from 'papaparse';
 
 const Clima = () => {
@@ -43,9 +44,13 @@ const Clima = () => {
         if (!response.ok) throw new Error('Erro ao carregar dados climáticos');
         
         const data = await response.json();
-
-        console.log('DADOS DO CLIMA',data);
         setDadosClima(data);
+
+        await registrarLog(
+          token,
+          'Consulta',
+          'Clima - Página inicial carregada com sucesso'
+        );
 
         // Extrai municípios para o filtro
         const municipiosUnicos = [...new Set(data.map(item => item.MUNICIPIO))]
