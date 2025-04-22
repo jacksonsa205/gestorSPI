@@ -27,7 +27,8 @@ const weatherConfig = {
     apiIcons: {
       day: '//cdn.weatherapi.com/weather/64x64/day/113.png',
       night: '//cdn.weatherapi.com/weather/64x64/night/113.png'
-    }
+    },
+    translation: 'Ensolarado'
   },
   'Clear': {
     gradient: ['#FFD700', '#FFA500'],
@@ -35,7 +36,8 @@ const weatherConfig = {
     apiIcons: {
       day: '//cdn.weatherapi.com/weather/64x64/day/113.png',
       night: '//cdn.weatherapi.com/weather/64x64/night/113.png'
-    }
+    },
+    translation: 'Céu limpo'
   },
   
   // Condições nubladas
@@ -45,7 +47,8 @@ const weatherConfig = {
     apiIcons: {
       day: '//cdn.weatherapi.com/weather/64x64/day/116.png',
       night: '//cdn.weatherapi.com/weather/64x64/night/116.png'
-    }
+    },
+    translation: 'Parcialmente nublado'
   },
   'Cloudy': {
     gradient: ['#A9A9A9', '#778899'],
@@ -53,7 +56,8 @@ const weatherConfig = {
     apiIcons: {
       day: '//cdn.weatherapi.com/weather/64x64/day/119.png',
       night: '//cdn.weatherapi.com/weather/64x64/night/119.png'
-    }
+    },
+    translation: 'Nublado'
   },
   'Overcast': {
     gradient: ['#A9A9A9', '#778899'],
@@ -61,7 +65,8 @@ const weatherConfig = {
     apiIcons: {
       day: '//cdn.weatherapi.com/weather/64x64/day/122.png',
       night: '//cdn.weatherapi.com/weather/64x64/night/122.png'
-    }
+    },
+    translation: 'Encoberto'
   },
   
   // Condições de chuva
@@ -71,7 +76,8 @@ const weatherConfig = {
     apiIcons: {
       day: '//cdn.weatherapi.com/weather/64x64/day/176.png',
       night: '//cdn.weatherapi.com/weather/64x64/night/176.png'
-    }
+    },
+    translation: 'Chuvas isoladas próximas'
   },
   'Light rain shower': {
     gradient: ['#4682B4', '#1E90FF'],
@@ -79,7 +85,8 @@ const weatherConfig = {
     apiIcons: {
       day: '//cdn.weatherapi.com/weather/64x64/day/353.png',
       night: '//cdn.weatherapi.com/weather/64x64/night/353.png'
-    }
+    },
+    translation: 'Chuva leve'
   },
   'Patchy light drizzle': {
     gradient: ['#4682B4', '#1E90FF'],
@@ -87,7 +94,26 @@ const weatherConfig = {
     apiIcons: {
       day: '//cdn.weatherapi.com/weather/64x64/day/263.png',
       night: '//cdn.weatherapi.com/weather/64x64/night/263.png'
-    }
+    },
+    translation: 'Garoa leve isolada'
+  },
+  'Light rain': {
+    gradient: ['#4682B4', '#1E90FF'],
+    icon: faCloudRain,
+    apiIcons: {
+      day: '//cdn.weatherapi.com/weather/64x64/day/296.png',
+      night: '//cdn.weatherapi.com/weather/64x64/night/296.png'
+    },
+    translation: 'Chuva fraca'
+  },
+  'Light drizzle': {
+    gradient: ['#4682B4', '#1E90FF'],
+    icon: faCloudRain,
+    apiIcons: {
+      day: '//cdn.weatherapi.com/weather/64x64/day/266.png',
+      night: '//cdn.weatherapi.com/weather/64x64/night/266.png'
+    },
+    translation: 'Garoa leve'
   },
   
   // Condições de tempestade
@@ -97,7 +123,26 @@ const weatherConfig = {
     apiIcons: {
       day: '//cdn.weatherapi.com/weather/64x64/day/200.png',
       night: '//cdn.weatherapi.com/weather/64x64/night/200.png'
-    }
+    },
+    translation: 'Trovoada'
+  },
+  'Patchy light rain in area with thunder': {
+    gradient: ['#4B0082', '#9400D3'],
+    icon: faBolt,
+    apiIcons: {
+      day: '//cdn.weatherapi.com/weather/64x64/day/386.png',
+      night: '//cdn.weatherapi.com/weather/64x64/night/386.png'
+    },
+    translation: 'Chuvas leves com trovoadas na região'
+  },
+  'Thundery outbreaks in nearby': {
+    gradient: ['#4B0082', '#9400D3'],
+    icon: faBolt,
+    apiIcons: {
+      day: '//cdn.weatherapi.com/weather/64x64/day/200.png',
+      night: '//cdn.weatherapi.com/weather/64x64/night/200.png'
+    },
+    translation: 'Trovoadas nas proximidades'
   },
   
   // Condições de neve
@@ -107,7 +152,8 @@ const weatherConfig = {
     apiIcons: {
       day: '//cdn.weatherapi.com/weather/64x64/day/179.png',
       night: '//cdn.weatherapi.com/weather/64x64/night/179.png'
-    }
+    },
+    translation: 'Neve'
   },
   
   // Condições de neblina
@@ -117,7 +163,17 @@ const weatherConfig = {
     apiIcons: {
       day: '//cdn.weatherapi.com/weather/64x64/day/248.png',
       night: '//cdn.weatherapi.com/weather/64x64/night/248.png'
-    }
+    },
+    translation: 'Neblina'
+  },
+  'Mist': {
+    gradient: ['#D3D3D3', '#C0C0C0'],
+    icon: faSmog,
+    apiIcons: {
+      day: '//cdn.weatherapi.com/weather/64x64/day/143.png',
+      night: '//cdn.weatherapi.com/weather/64x64/night/143.png'
+    },
+    translation: 'Névoa'
   },
   
   // Condição padrão para casos não mapeados
@@ -127,7 +183,8 @@ const weatherConfig = {
     apiIcons: {
       day: '//cdn.weatherapi.com/weather/64x64/day/113.png',
       night: '//cdn.weatherapi.com/weather/64x64/night/113.png'
-    }
+    },
+    translation: 'Condição desconhecida'
   }
 };
 
@@ -182,10 +239,16 @@ const CardClima = ({ weatherData }) => {
   return (
     <Row className="g-3 mb-4">
       {weatherData.map((weather, index) => {
-        const weatherCondition = weather.conditionText in weatherConfig 
-          ? weatherConfig[weather.conditionText] 
-          : weatherConfig['default'];
-          
+        // Verifica se a condição climática existe no weatherConfig
+        const normalize = (text) => text?.toLowerCase().replace(/\s+/g, ' ').trim();
+
+        const conditionKey = Object.keys(weatherConfig).find(key =>
+          normalize(key) === normalize(weather.conditionText)
+        ) || 'default';
+
+        
+        const weatherCondition = weatherConfig[conditionKey];
+        
         return (
           <Col key={index} xs={12} md={6} lg={4}>
             <Card className="card-clima-container">
@@ -194,6 +257,9 @@ const CardClima = ({ weatherData }) => {
                 <div className="card-clima-header">
                   <div className="card-clima-cidade text-truncate">
                     {weather.cidade}
+                    <div className="card-clima-condicao">
+                      {weatherCondition.translation}
+                    </div>
                   </div>
                   <div className="card-clima-temp-wrapper">
                     <div 

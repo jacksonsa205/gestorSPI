@@ -187,7 +187,7 @@ const Clima = () => {
     const registros = dadosAgrupados[cidade]
       .map((item) => ({
         hora: new Date(item.DATA_HORA).getHours(),
-        conditionText: item.CONDICAO_TEXTO,
+        conditionText: item.CONDICAO_TEXTO, 
         conditionIcon: item.CONDICAO_ICON,
         temp: Math.round(parseFloat(item.TEMP_C)),
         vento: Math.round(parseFloat(item.WIND_KPH)),

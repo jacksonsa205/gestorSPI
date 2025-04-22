@@ -275,3 +275,16 @@
 .card-clima-icon-wrapper {
   padding: 0 !important;
 }
+
+.card-clima-cidade {
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.card-clima-condicao {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: normal;
+  text-transform: capitalize;
+  margin-top: 4px;
+}
