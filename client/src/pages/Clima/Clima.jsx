@@ -106,6 +106,12 @@ const Clima = () => {
       link.click();
       URL.revokeObjectURL(link.href);
 
+      await registrarLog(
+              token,
+              'Download',
+              'Clima - CSV baixado com sucesso'
+            );
+
     } catch (error) {
       setErro(error.message);
     }
