@@ -9,7 +9,7 @@ const EMPRESAS = ['Vivo', 'Ability', 'Tel', 'Telemom', 'Icomon'];
 const REGIONAIS = ['SP Interior'];
 const DIVISOES = ['Assistência', 'Rede Externa','Núcleo Técnico', 'Planta Interna', 'Móvel', 'Escritório', 'Planejamento'];
 const CONTRATOS = ['Osasco', 'São Jose dos Campo', 'Campinas', 'Interior', 'PC/SC', 'Jundiai'];
-const CARGOS = ['Técnico', 'Assistente', 'Analista', 'Consultor','Coordenador','Especialista', 'Gerente','Diretor'];
+const CARGOS = ['Técnico', 'Assistente', 'Analista', 'Supervisor','Consultor','Coordenador','Especialista', 'Gerente','Diretor'];
 
 // Função para normalizar texto
 const normalizeText = (text) => {
